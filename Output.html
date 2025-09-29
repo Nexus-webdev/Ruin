@@ -754,7 +754,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
      document.dispatchEvent(event);
     };
     
-    function createComponent(files, entry = {}, addProgress) {
+    function createComponent(files = {}, entry = {}, addProgress) {
      if (!specified) namespace = entry.name;
      
      return new Promise(async(resolve) => {
