@@ -384,7 +384,6 @@ ${fix(txt)}
    this.set(structs);
    this.name = arg;
    
-   if (arg == 'RLN') $.log([this, prototype]);
    if (args[0] != '⌀' && this.construct) this.construct(...args);
   };
   
