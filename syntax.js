@@ -2165,250 +2165,132 @@ $.struct('Database', {
  },
 });
 
-$.struct('Net', {
- construct(neurons) {
+$.struct('NeuralNetwork', {
+ construct(levelData) {
   this.levels = [];
-  for (let i = 0; i < neurons.length -1; i ++) {
-   this.levels.push(new $.Level(neurons[i], neurons[i +1]));
-  };
+  this.set(levelData);
  },
  
- static: {
-  copy(network) {
-   const net = JSON.parse(JSON.stringify(network));
+ set(levelData, levels) {
+  this.levels.length = 0;
+  this.levelData = levelData;
+  if (levels)
+  {
+   for (let lvl of levels)
+   this.levels.push(typeof lvl == 'string' ? $.Level.parse(lvl) : lvl.copy());
+   
+   return;
+  }
+  
+  for (let i = 0; i < levelData.length -1; i ++)
+  this.levels.push(new $.Level(levelData[i], levelData[i +1]));
+ },
+ 
+ copy() {
+  const network = $.NeuralNetwork.parse($.NeuralNetwork.stringify(this));
+  const copy = new $.NeuralNetwork([]);
+  
+  copy.set(network.levelData, network.levels);
+  return copy;
+ },
 
-   const copy = new $.Net(...net.$args);
-   copy.levels = net.levels.map(lvl => $.Level.copy(lvl));
-
-   return copy;
-  },
-
-  mutate(net, amount = .5) {
-   net.levels.forEach(lvl => {
-    for (let i = 0; i < lvl.biases.length; i ++)
-    {
-     lvl.biases[i] = $.math.lerp(lvl.biases[i], $.math.rand(-1, 1), Number(amount));
-    }
-    
-    for (let i = 0; i < lvl.weights.length; i ++)
-    {
-     for (let j = 0; j < lvl.weights[i].length; j ++)
-     {
-      lvl.weights[i][j] = $.math.lerp(lvl.weights[i][j], $.math.rand(-1, 1), Number(amount));
-     }
-    }
-   });
+ mutate(t = .5) {
+  this.levels.forEach(lvl => {
+   for (let i = 0; i < lvl.biases.length; i ++)
+   lvl.biases[i] = $.math.lerp(lvl.biases[i], $.math.rand(-1, 1), Number(t));
+   
+   for (let i = 0; i < lvl.weights.length; i ++)
+   for (let j = 0; j < lvl.weights[i].length; j ++)
+   lvl.weights[i][j] = $.math.lerp(lvl.weights[i][j], $.math.rand(-1, 1), Number(t));
+  });
+ },
+ 
+ feedForward(givenInputs) {
+  let inputs = this.levels[0].feedForward(givenInputs);
+  let outputs = null;
+  
+  for (let lvl of this.levels.slice(1))
+  {
+   inputs = lvl.feedForward(inputs);
+   outputs = inputs;
+  }
+  
+  return outputs;
+ },
+ 
+ static: {  
+  stringify(network, binary = true) {
+   network.levels = network.levels.map(lvl => $.Level.stringify(lvl));
+   return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(network));
   },
   
-  feedForward(net, givenInputs, callback) {
-   let inputs = $.Level.feedForward(givenInputs, net.levels[0]);
-   let outputs = null;
+  parse(binaryData) {
+   const data = $.$.parse.obj($.$.parse.binary(binaryData));
+   const network = new $.NeuralNetwork([]);
+   network.set(data.levelData, data.levels);
    
-   for (let level of net.levels.slice(1))
-   {
-    inputs = $.Level.feedForward(inputs, level);
-    outputs = inputs;
-   }
-   
-   if (typeof callback == 'function') callback(net, outputs);
-   return outputs;
-  },
-  
-  actOn(outputs, functions) {
-   return outputs.filter((_, i) => {
-    if (_ == 1) return functions[i]();
-   })
+   return network;
   },
  },
 })
 
 $.struct('Level', {
- construct(inputs, outputs) {
+ construct(inputs, outputs, biases, weights = []) {
   this.inputs = new Array(inputs);
   this.outputs = new Array(outputs);
-  this.biases = new Array(outputs);
+  this.biases = new Array(biases ?? outputs);
+  this.weights = weights;
   
-  this.weights = [];
+  if (!weights.length) 
   for (let i = 0; i < inputs; i ++)
-   this.weights.push(new Array(outputs));
+  this.weights.push(new Array(outputs));
   
-  $.Level.randomize(this);
+  if (!biases) $.Level.randomize(this);
+ },
+ 
+ copy() {
+  const lvl = $.Level.parse($.Level.stringify(this));
+  const copy = new $.Level(lvl.inputs, lvl.outputs, lvl.biases, lvl.weights);
+  return copy;
+ },
+  
+ feedForward(givenInputs, useDefault = true) {
+  const outputs = this.outputs;
+  
+  for (let i = 0; i < this.inputs.length; i ++)
+  this.inputs[i] = givenInputs[i];
+  
+  for (let i = 0; i < outputs.length; i ++)
+  {
+   let sum = 0;
+   for (let j = 0; j < this.inputs.length; j ++)
+   sum += this.inputs[j] *this.weights[j][i];
+   
+   data[i] = useDefault ? (sum > this.biases[i] ? 1 : 0) :
+   { sum, bias: this.biases[i], weights: this.weights[j] };
+  }
+  
+  return outputs;
  },
  
  static: {
-  copy(level) {
-   const lvl = JSON.parse(JSON.stringify(level));
-
-   const copy = new $.Level(...lvl.$args);
-   copy.inputs = lvl.inputs;
-   copy.outputs = lvl.outputs;
-   copy.biases = lvl.biases;
-   copy.weights = lvl.weights;
-
-   return copy;
-  },
-
-  randomize(level) {
-   for (let i = 0; i < level.inputs.length; i ++)
-   {
-    for (let j = 0; j < level.outputs.length; j ++)
-    {
-     level.weights[i][j] = $.math.rand(-1, 1);
-    }
-   }
-   
-   for (let i = 0; i < level.biases.length; i ++)
-   {
-    level.biases[i] = $.math.rand(-1, 1);
-   }
+  stringify(lvl, binary = true) {
+   return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(lvl));
   },
   
-  feedForward(givenInputs, level) {
-   for (let i = 0; i < level.inputs.length; i ++)
-   {
-    level.inputs[i] = givenInputs[i];
-   }
-   
-   for (let i = 0; i < level.outputs.length; i ++)
-   {
-    let sum = 0;
-    for (let j = 0; j < level.inputs.length; j ++)
-    {
-     sum += level.inputs[j] *level.weights[j][i];
-    }
-    
-    level.outputs[i] = sum > level.biases[i] ? 1 : 0;
-   }
-   
-   return [...level.outputs];
+  parse(binaryData) {
+   const data = $.$.parse.obj($.$.parse.binary(binaryData));
+   const lvl = new $.Level(data.inputs, data.outputs, data.biases, data.weights);
+   return lvl;
   },
- },
-})
 
-$.struct('Visualizer', {
- static: {
-  drawNetwork(e, net, { time, dash = [7, 3], margin = 50, labels = [], font, fill, stroke } = {}) {
-   const board = e.canvas ? e.canvas : e;
-   const ctx = e.canvas ? e : board.getContext('2d');
-   board.style.backgroundColor = '#0A0A0A';
-
-   const left = margin;
-   const top = margin;
-   const width = board.width -(margin *2);
-   const height = board.height -(margin *2);
-   const levelHeight = height /net.levels.length;
+  randomize(lvl) {
+   for (let i = 0; i < lvl.inputs.length; i ++)
+   for (let j = 0; j < lvl.outputs.length; j ++)
+   lvl.weights[i][j] = $.math.rand(-1, 1);
    
-   if (time) ctx.lineDashOffset = -time;
-   for (let i = net.levels.length -1; i >= 0; i --)
-   {
-    const scaling = net.levels.length == 1 ? .5 : i /(net.levels.length -1);
-    const levelTop = top +$.math.lerp(height -levelHeight, 0, scaling);
-    
-    ctx.setLineDash(dash);
-    $.Visualizer.drawLevel(ctx, net.levels[i], {
-     height: levelHeight,
-     top: levelTop,
-     width,
-     left,
-     labels: i == net.levels.length -1 ? labels : [],
-     font,
-     fill,
-     stroke,
-    });
-   }
-  },
-  
-  drawLevel(ctx, { inputs, outputs, weights, biases }, { left = 50, top = 50, width = 200, height = 300, labels = [], font, fill = 'black', stroke = 'white' }) {
-   const e = $.Visualizer;
-   const right = left +width;
-   const bottom = top +height;
-   const drawNode = e.drawNode(ctx);
-   
-   const rad = 18;
-   for (let i = 0; i < inputs.length; i ++)
-   {  
-    for (let j = 0; j < outputs.length; j ++)
-    {
-     ctx.beginPath();
-     ctx.moveTo(e.getX(inputs, i, left, right), bottom);
-     ctx.lineTo(e.getX(outputs, j, left, right), top);
-     ctx.strokeStyle = e.getRGBA(weights[i][j]);
-     ctx.lineWidth = 2;
-     ctx.stroke();
-    }
-   }
-   
-   for (let i = 0; i < inputs.length; i ++)
-   {
-    const x = e.getX(inputs, i, left, right);
-    
-    ctx.beginPath();
-    drawNode(x, bottom, rad, 'black');
-    drawNode(x, bottom, rad *.6, e.getRGBA(inputs[i]));
-    
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.arc(x, bottom, rad *.8, 0, $.math.pi *2);
-    ctx.strokeStyle = e.getRGBA(inputs[i] || .2);
-    ctx.stroke();
-   }
-   
-   for (let i = 0; i < outputs.length; i ++)
-   {
-    const x = e.getX(outputs, i, left, right);
-    
-    drawNode(x, top, rad, 'black');
-    drawNode(x, top, rad *.6, e.getRGBA(outputs[i]));
-    
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.arc(x, top, rad *.8, 0, $.math.pi *2);
-    ctx.strokeStyle = e.getRGBA(biases[i]);
-    ctx.setLineDash([3, 3]);
-    ctx.stroke();
-    
-    ctx.setLineDash([]);
-    
-    const label = labels[i];
-    if (label)
-    {
-     ctx.beginPath();
-     
-     ctx.textAlign = 'center';
-     ctx.textBaseLine = 'middle';
-     ctx.strokeStyle = stroke;
-     ctx.fillStyle = fill;
-     
-     ctx.font = font ?? (rad *1.5) +'px Arial';
-     const y = top +(rad * .1);
-     ctx.fillText(label, x, y);
-     
-     ctx.lineWidth = .5;
-     ctx.strokeText(label, x, y);
-    }
-   }
-  },
-  
-  getX(nodes, i, left, right) {
-   return $.math.lerp(left, right, nodes.length == 1 ? .5 : i /(nodes.length -1));
-  },
-  
-  drawNode(ctx) {   
-   return(x, y, rad, color = 'white') => {
-    ctx.beginPath();
-    ctx.arc(x, y, rad, 0, $.math.pi *2);
-    ctx.fillStyle = color;
-    ctx.fill();
-   };
-  },
-  
-  getRGBA(weight) {
-   const alpha = $.math.abs(weight);
-   const r = weight < 0 ? 0 : 255;
-   const g = r;
-   const b = weight > 0 ? 0 : 255;
-
-   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+   for (let i = 0; i < lvl.biases.length; i ++)
+   lvl.biases[i] = $.math.rand(-1, 1);
   },
  },
 })
