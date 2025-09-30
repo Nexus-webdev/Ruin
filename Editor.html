@@ -526,11 +526,11 @@ ${indentation}${value.substring(end)}`;
     const linesB = lineNumbers.value.split('\n').length;
     console.log({ linesA, linesB });
     
-    if (linesB > linesA)
+    if (linesB < linesA)
     {
      for (let i = linesB; i <= linesA; i ++)
      lineNumbers.value += i +'\n';
-    } else if (linesB < linesA)
+    } else if (linesB > linesA)
     lineNumbers.value = linesB.slice(0, linesA);
    };
   </script>
