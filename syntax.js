@@ -2286,11 +2286,8 @@ $.struct('NeuralNetwork', {
  },
  
  static: {  
-  stringify(network, binary = true) {
-   const net = new $.NeuralNetwork([]);
-   net.setData(network.levelData, network.levels);
-   
-   net.levels = net.levels.map(lvl => $.Level.stringify(lvl));
+  stringify({ levelData, levels }, binary = true) {
+   const net = { levelData, levels: levels.map(lvl => $.Level.stringify(lvl)) };
    return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(net));
   },
   
@@ -2344,7 +2341,8 @@ $.struct('Level', {
  },
  
  static: {
-  stringify(lvl, binary = true) {
+  stringify({ inputs, outputs, biases, weights }, binary = true) {
+   const lvl = { inputs, outputs, biases, weights };
    return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(lvl));
   },
   
