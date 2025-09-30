@@ -531,7 +531,7 @@ ${indentation}${value.substring(end)}`;
      for (let i = linesB.length; i <= linesA.length; i ++)
      lineNumbers.value += i +'\n';
     } else if (linesB.length > linesA.length)
-    lineNumbers.value = linesB.slice(0, linesA.length);
+    lineNumbers.value = linesB.slice(0, linesA.length).join('\n');
    };
   </script>
  </body>
