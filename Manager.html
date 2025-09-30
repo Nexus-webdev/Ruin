@@ -409,7 +409,7 @@ prefix: null,
     newLink.textContent = entry.name;
     newLink.id = entry.name;
     
-    newLink.setAttribute('data-url', entry.url);
+    newLink.setAttribute('data-url', `${entry.url}&nocache=${Date.now()}`);
     newListItem.appendChild(newLink);
     urlList.appendChild(newListItem);
    });
@@ -481,7 +481,7 @@ prefix: null,
   function addUrl(project, prefix, encoding = '') {
    const newUrlName = prefix ? `${prefix} - ${project}` : project;
    const searchParams = new URLSearchParams({ project: newUrlName, encoding: encoding != 'null' ? encoding : '', opened: true, inManager: true });
-   const newUrl = `Ruin EDITOR.html?${searchParams.toString()}`;
+   const newUrl = `Editor.html?${searchParams.toString()}`;
    
    const newLink = document.getElementById(newUrlName) ?? document.createElement('a');
    const newListItem = document.createElement('li');
