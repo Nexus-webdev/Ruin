@@ -522,16 +522,16 @@ ${indentation}${value.substring(end)}`;
    };
    
    function updateLineNumbers() {
-    const linesA = textarea.value.split('\n').length;
-    const linesB = lineNumbers.value.split('\n').length;
-    console.log({ linesA, linesB });
+    const linesA = textarea.value.split('\n');
+    const linesB = lineNumbers.value.split('\n');
+    console.log(linesA.length, linesB.length);
     
-    if (linesB < linesA)
+    if (linesB.length < linesA.length)
     {
-     for (let i = linesB; i <= linesA; i ++)
+     for (let i = linesB.length; i <= linesA.length; i ++)
      lineNumbers.value += i +'\n';
-    } else if (linesB > linesA)
-    lineNumbers.value = linesB.slice(0, linesA);
+    } else if (linesB.length > linesA.length)
+    lineNumbers.value = linesB.slice(0, linesA.length);
    };
   </script>
  </body>
