@@ -146,7 +146,7 @@
     
     audio: new Proxy({
      assign(id, src) { 
-      const elem = document.createElement("audio");
+      const elem = document.createElement('audio');
       elem.id = id;
       elem.src = src;
       $.$.htmlTarget.appendChild(elem);
@@ -995,7 +995,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
     },
    });
    
-   "eof;
+   // eof;
    const program = urlData();
    const watch = [program.name];
    const prev = {};
@@ -1017,7 +1017,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
      e.preventDefault();
      
      let content = document.documentElement.innerHTML;
-     content = `${content.slice(0, content.indexOf('"eof;'))}
+     content = `${content.slice(0, content.indexOf('// eof;'))}
    window.onload = x => {
     $.$.htmlTarget = document.body;
     $.ruin(\`${modify(code)}\`);
