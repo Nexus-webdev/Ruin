@@ -222,7 +222,6 @@ ${fix(txt)}
   const obj = this.module && !overrideModule ? this.module.exports : destinationObject;
   const staticValues = {};
   const arg = prep(0);
-
   function prep(i, lw = false, str = name) {
    const result = str.split(':')[i]?.trim();
    if (lw == true) return result?.toLowerCase();
@@ -385,6 +384,7 @@ ${fix(txt)}
    this.set(structs);
    this.name = arg;
    
+   if (arg == 'RLN') $.log([this, prototype]);
    if (args[0] != '⌀' && this.construct) this.construct(...args);
   };
   
@@ -2173,11 +2173,14 @@ $.struct('RLN', {
   for (let i = 0; i < this.learningRate; i ++)
   {
    const net = new $.NeuralNetwork(levelData);
+   net.id = i;
+   
    this.nets.push(net);
   }
  },
  
- set(net, t = .2) {
+ setData(net, t = .2) {
+  net.id = 0;
   this.nets.length = 0;
   this.nets.push(net);
   
@@ -2185,13 +2188,15 @@ $.struct('RLN', {
   for (let i = 1; i < this.learningRate; i ++)
   {
    const child = net.mutate(n ? t : t[i -1], true);
+   child.id = i;
+   
    this.nets.push(child);
   }
  },
  
  run(callback) {
   return new Promise(async resolve => {
-   for await (let net of nets)
+   for await (let net of this.nets)
    await callback(net);
    
    this.sort();
@@ -2219,7 +2224,7 @@ $.struct('NeuralNetwork', {
  construct(levelData) {
   this.score = 0;
   this.levels = [];
-  this.set(levelData);
+  this.setData(levelData);
  },
  
  reward(amount) {
@@ -2230,7 +2235,7 @@ $.struct('NeuralNetwork', {
   this.score -= amount;
  },
  
- set(levelData, levels) {
+ setData(levelData, levels) {
   this.levels.length = 0;
   this.levelData = levelData;
   if (levels)
@@ -2249,7 +2254,7 @@ $.struct('NeuralNetwork', {
   const network = $.NeuralNetwork.parse($.NeuralNetwork.stringify(this));
   const copy = new $.NeuralNetwork([]);
   
-  copy.set(network.levelData, network.levels);
+  copy.setData(network.levelData, network.levels);
   return copy;
  },
 
@@ -2290,7 +2295,7 @@ $.struct('NeuralNetwork', {
   parse(binaryData) {
    const data = $.$.parse.obj($.$.parse.binary(binaryData));
    const network = new $.NeuralNetwork([]);
-   network.set(data.levelData, data.levels);
+   network.setData(data.levelData, data.levels);
    
    return network;
   },
