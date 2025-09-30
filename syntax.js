@@ -2165,16 +2165,69 @@ $.struct('Database', {
  },
 });
 
-$.struct('RNN', {
- construct() {
+$.struct('RLN', {
+ construct(levelData, learningRate = 5) {
+  this.nets = [];
+  this.learningRate = learningRate;
   
+  for (let i = 0; i < this.learningRate; i ++)
+  {
+   const net = new $.NeuralNetwork(levelData);
+   this.nets.push(net);
+  }
+ },
+ 
+ set(net, t = .2) {
+  this.nets.length = 0;
+  this.nets.push(net);
+  
+  const n = typeof t == 'number';
+  for (let i = 1; i < this.learningRate; i ++)
+  {
+   const child = net.mutate(n ? t : t[i -1], true);
+   this.nets.push(child);
+  }
+ },
+ 
+ run(callback) {
+  return new Promise(async resolve => {
+   for await (let net of nets)
+   await callback(net);
+   
+   this.sort();
+  })
+ },
+ 
+ sort() {
+  return this.nets.sort((a, b) => b.score -a.score);
+ },
+ 
+ static: {
+  stringifyBest(rln) {
+   const binaryData = $.NeuralNetwork.stringify(rln.nets[0]);
+   return binaryData;
+  },
+  
+  parseBest(binaryData) {
+   const net = $.NeuralNetwork.parse(binaryData);
+   return net;
+  },
  },
 })
 
 $.struct('NeuralNetwork', {
  construct(levelData) {
+  this.score = 0;
   this.levels = [];
   this.set(levelData);
+ },
+ 
+ reward(amount) {
+  this.score += amount;
+ },
+ 
+ sanction(amount) {
+  this.score -= amount;
  },
  
  set(levelData, levels) {
@@ -2200,8 +2253,9 @@ $.struct('NeuralNetwork', {
   return copy;
  },
 
- mutate(t = .5) {
-  this.levels.forEach(lvl => {
+ mutate(t = .5, copy) {
+  const net = copy ? this.copy() : this;
+  net.levels.forEach(lvl => {
    for (let i = 0; i < lvl.biases.length; i ++)
    lvl.biases[i] = $.math.lerp(lvl.biases[i], $.math.rand(-1, 1), Number(t));
    
@@ -2209,6 +2263,8 @@ $.struct('NeuralNetwork', {
    for (let j = 0; j < lvl.weights[i].length; j ++)
    lvl.weights[i][j] = $.math.lerp(lvl.weights[i][j], $.math.rand(-1, 1), Number(t));
   });
+  
+  return net;
  },
  
  feedForward(givenInputs) {
@@ -2226,7 +2282,8 @@ $.struct('NeuralNetwork', {
  
  static: {  
   stringify(network, binary = true) {
-   network.levels = network.levels.map(lvl => $.Level.stringify(lvl));
+   const net = network.copy();
+   net.levels = net.levels.map(lvl => $.Level.stringify(lvl));
    return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(network));
   },
   
@@ -2244,7 +2301,7 @@ $.struct('Level', {
  construct(inputs, outputs, biases, weights = []) {
   this.inputs = new Array(inputs);
   this.outputs = new Array(outputs);
-  this.biases = new Array(biases ?? outputs);
+  this.biases = biases ?? new Array(outputs);
   this.weights = weights;
   
   if (!weights.length) 
@@ -2272,8 +2329,8 @@ $.struct('Level', {
    for (let j = 0; j < this.inputs.length; j ++)
    sum += this.inputs[j] *this.weights[j][i];
    
-   data[i] = useDefault ? (sum > this.biases[i] ? 1 : 0) :
-   { sum, bias: this.biases[i], weights: this.weights[j] };
+   outputs[i] = useDefault ? (sum > this.biases[i] ? 1 : 0) :
+   { sum, bias: this.biases[i] };
   }
   
   return outputs;
