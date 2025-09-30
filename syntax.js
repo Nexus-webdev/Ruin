@@ -2165,6 +2165,12 @@ $.struct('Database', {
  },
 });
 
+$.struct('RNN', {
+ construct() {
+  
+ },
+})
+
 $.struct('NeuralNetwork', {
  construct(levelData) {
   this.levels = [];
