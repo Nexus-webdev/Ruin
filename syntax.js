@@ -2287,12 +2287,11 @@ $.struct('NeuralNetwork', {
  
  static: {  
   stringify(network, binary = true) {
-   const copy = x => $.$.parse.obj($.$.stringify.obj(x));
    const net = new $.NeuralNetwork([]);
    net.setData(network.levelData, network.levels.map(lvl => lvl.copy()));
    
    net.levels = net.levels.map(lvl => $.Level.stringify(lvl));
-   return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(network));
+   return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(net));
   },
   
   parse(binaryData) {
