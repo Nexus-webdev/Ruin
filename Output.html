@@ -55,7 +55,12 @@
   </div>
   
   <script src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'></script>
-  <script src='syntax.js?v=<?php echo time(); ?>'></script>
+  <script>
+   const script = document.createElement('script');
+   script.src = 'syntax.js?nocache=' + Date.now();
+   document.head.appendChild(script);
+  </script>
+  
   <script>
    function urlData() {
     const Params = new URLSearchParams(window.location.search).entries();
@@ -990,7 +995,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
     },
    });
    
-   "eof";
+   "eof;
    const program = urlData();
    const watch = [program.name];
    const prev = {};
@@ -1012,7 +1017,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
      e.preventDefault();
      
      let content = document.documentElement.innerHTML;
-     content = `${content.slice(0, content.indexOf('"eof";'))}
+     content = `${content.slice(0, content.indexOf('"eof;'))}
    window.onload = x => {
     $.$.htmlTarget = document.body;
     $.ruin(\`${modify(code)}\`);
