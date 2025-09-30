@@ -2288,7 +2288,7 @@ $.struct('NeuralNetwork', {
  static: {  
   stringify(network, binary = true) {
    const net = new $.NeuralNetwork([]);
-   net.setData(network.levelData, network.levels.map(lvl => lvl.copy()));
+   net.setData(network.levelData, network.levels);
    
    net.levels = net.levels.map(lvl => $.Level.stringify(lvl));
    return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(net));
