@@ -2199,6 +2199,7 @@ $.struct('RLN', {
    await callback(net);
    
    this.sort();
+   resolve();
   })
  },
  
