@@ -380,7 +380,7 @@
    })
    
    textarea.addEventListener('keydown', e => {
-    if ((['Enter', 'BackSpace']).includes(e.key) && !e.shiftKey) updateLineNumbers();
+    if ((['Enter', 'Backspace']).includes(e.key) && !e.shiftKey) updateLineNumbers();
     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
     
     const lines = textarea.value.split('\n');
@@ -522,11 +522,16 @@ ${indentation}${value.substring(end)}`;
    };
    
    function updateLineNumbers() {
-    const lines = textarea.value.split('\n').length;
-    lineNumbers.value = '';
-
-    for (let i = 0; i <= lines; i ++)
-    lineNumbers.value += i +'\n';
+    const linesA = textarea.value.split('\n').length;
+    const linesB = lineNumbers.value.split('\n').length;
+    console.log({ linesA, linesB });
+    
+    if (linesB > linesA)
+    {
+     for (let i = linesB; i <= linesA; i ++)
+     lineNumbers.value += i +'\n';
+    } else if (linesB < linesA)
+    lineNumbers.value = linesB.slice(0, linesA);
    };
   </script>
  </body>
