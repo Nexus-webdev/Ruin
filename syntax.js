@@ -2225,7 +2225,7 @@ $.struct('RLN', {
   },
   
   parseBest(binaryData) {
-   const net = $.NeuralNetwork.parse(binaryData); $.log(net);
+   const net = $.NeuralNetwork.parse(binaryData);
    return net;
   },
  },
@@ -2353,7 +2353,7 @@ $.struct('Level', {
  
  static: {
   stringify({ inputs, outputs, biases, weights }, binary = true) {
-   const lvl = { inputs, outputs, biases, weights };
+   const lvl = { inputs: inputs.length, outputs: outputs.length, biases, weights };
    return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(lvl));
   },
   
