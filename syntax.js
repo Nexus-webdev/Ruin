@@ -290,24 +290,7 @@ _obj[key] = value;
     };
    }
    
-   this.priv = async function(callback, ...args) {
-    if (typeof callback != 'function') throw `param 'callback' must be of type 'function'`;
-    for (let key in _private)
-    t[key] = _private[key];
-    
-    const result = callback.apply(t, args);
-    for (let key in t)
-    {
-     if (key.startsWith('$'))
-     {
-      _private[key] = t[key];
-      delete t[key];
-     }
-    };
-    
-    return result;
-   }
-   
+   this.priv = x => x();
    const structs = {};
    const contractExists = _private.$contract && _private.$contract.length > 0;
    
@@ -2422,7 +2405,7 @@ $.struct('Visualizer: static', {
   {
    ctx.beginPath();
    ctx.lineWidth = 2;
-   ctx.strokeStyle = getRGBA(weights[i][j]);
+   ctx.strokeStyle = $.getRGBA(weights[i][j]);
    
    ctx.moveTo($.Visualizer.getNodeX(inputs, i, left, right), bottom);
    ctx.lineTo($.Visualizer.getNodeX(outputs, j, left, right), top);
