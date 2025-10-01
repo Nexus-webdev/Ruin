@@ -120,8 +120,9 @@
      document.head.appendChild(elem);
     },
     
-    win(data, name) {
-     window[name || data.name] = data;
+    win(...args) {
+     for (let arg of args)
+     window[arg.name] = arg;
     },
    
     Q(query, { type = '', searchEngine = 'https://duckduckgo.com/?q=', win = window } = {}) {

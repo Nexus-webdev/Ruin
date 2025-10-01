@@ -475,7 +475,7 @@ ${fix(txt)}
    return;
   },
 
-  Intersect(a, b) {
+  polysIntersect(a, b) {
    for (let i = 0; i < a.length; i ++)
    {
     for (let j = 0; j < b.length; j ++)
@@ -1416,7 +1416,7 @@ $.foxx = new $.Interpreter(e => {
     const id = `DIRECTORY - ${directoryName.trim()}`;
     
     const handle = scope[id] ?? $.$.modChildren[directoryName.trim()] ?? (await $.get(id)) ??
-                   (self.window ? (await window.showDirectoryPicker()) : null);
+                   (await showDirectoryPicker());
     
     if (handle)
     {
@@ -1460,7 +1460,7 @@ $.foxx = new $.Interpreter(e => {
     const id = `DIRECTORY - ${directoryName.trim()}`;
     
     const handle = scope[id] ?? $.$.modChildren[directoryName.trim()] ?? (await $.get(id)) ??
-                   (self.window ? (await window.showDirectoryPicker()) : null);
+                   ((await showDirectoryPicker()));
     
     if (handle)
     {
@@ -2213,7 +2213,13 @@ $.struct('RLN', {
  },
  
  sort() {
-  return this.nets.sort((a, b) => b.score -a.score);
+  this.nets.sort((a, b) => b.score -a.score);
+  return this.nets[0];
+ },
+ 
+ push(net) {
+  net.id = this.learningRate ++;
+  this.nets.push(net);
  },
  
  static: {
@@ -2468,6 +2474,83 @@ $.struct('Visualizer: static', {
  
  getNodeX(nodes, index, left, right) {
   return $.math.lerp(left, right, nodes.length == 1 ? .5 : index /(nodes.length -1));
+ },
+})
+
+$.struct('Sensor', {
+ construct(object, { count = 5, length = 150, spread = $.math.pi /2 } = {}) {
+  this.object = object;
+  this.ray = { count, length, spread };
+
+  this.rays = [];
+  this.readings = [];
+ },
+ 
+ update(callback) {
+  this.$castRays();
+  this.readings.length = 0;
+  
+  for (let ray of this.rays)
+  this.readings.push(this.$getReading(ray, callback));
+ },
+ 
+ $getReading(ray, callback) {
+  const touches = [];
+  const result = callback(ray, touches);
+  
+  if (result != undefined) return result;
+  if (touches.length == 0) return null;
+  
+  const offsets = touches.map(e => e.offset);
+  const minOffset = $.math.min(...offsets);
+  
+  return touches.find(e => e.offset == minOffset);
+ },
+  
+ $castRays() {
+  this.rays.length = 0;
+  const { x, y, angle } = this.object.location ?? this.object;
+  
+  for (let i = 0; i < this.ray.count; i ++)
+  {
+   const t = this.ray.count == 1 ? .5 : i /(this.ray.count -1);
+   const rayAngle = $.math.lerp(this.ray.spread /2, -this.ray.spread /2, t) +angle;
+
+   const start = { x, y };
+   const end = {
+    x: x -$.math.sin(rayAngle) *this.ray.length,
+    y: y -$.math.cos(rayAngle) *this.ray.length,
+   };
+    
+   this.rays.push([start, end]);
+  }
+ },
+  
+ draw(ctx) {
+  for (let i = 0; i < this.ray.count; i ++)
+  {
+   const ray = this.rays[i];
+   const end = this.readings[i] ?? ray[i][1];
+   
+   ctx.beginPath();
+   ctx.lineWidth = 2;
+   ctx.strokeStyle = 'yellow';
+   
+   ctx.arc(end.x, end.y, 4, 0, $.math.pi *2);
+   ctx.moveTo(ray[0].x, ray[0].y);
+   ctx.lineTo(end.x, end.y);
+   
+   ctx.stroke();
+   ctx.fill();
+
+   ctx.beginPath();
+   ctx.lineWidth = 2;
+   ctx.strokeStyle = 'black';
+   
+   ctx.moveTo(ray[1].x, ray[1].y);
+   ctx.lineTo(end.x, end.y);
+   ctx.stroke();
+  }
  },
 })
 
