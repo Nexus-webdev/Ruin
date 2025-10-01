@@ -281,15 +281,17 @@ ${fix(txt)}
       for (let key in _private)
       this[key] = _private[key];
       
-      const result = value.apply(this, args);
-      for (let key in this)
-      {
-       if (key.startsWith('$'))
+      let result = value.apply(this, args).then(x => {
+       if (x) result = x;
+       for (let key in this)
        {
-        _private[key] = this[key];
-        if (this != _private) delete this[key];
-       }
-      };
+        if (key.startsWith('$'))
+        {
+         _private[key] = this[key];
+         if (this != _private) delete this[key];
+        }
+       };
+      })
       
       return result;
      }
