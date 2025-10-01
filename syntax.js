@@ -265,9 +265,7 @@ ${fix(txt)}
    this.set = (obj, override = true) => {
     for (let key in obj)
     if (override || !this[key])
-    
-    if (typeof obj[key] == 'function') this[key] = obj[key].bind(this);
-    else this[key] = obj[key];
+    this[key] = obj[key];
    };
 
    for (let key in prototype)
