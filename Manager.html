@@ -335,10 +335,10 @@ prefix: null,
    {
     e.preventDefault();
     const url = e.target.getAttribute('data-url');
-    const entry = urls.find(entry => entry.url.includes(url));
+    const entry = urls.find(entry => url.includes(entry.url));
     deleteEntry(entry.id);
     
-    urls = urls.filter(entry => !entry.url.includes(url));
+    urls = urls.filter(entry => !url.includes(entry.url));
     localStorage[id] = JSON.stringify(urls);
     e.target.remove();
    }
