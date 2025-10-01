@@ -2487,7 +2487,11 @@ $.struct('Sensor', {
   this.readings.length = 0;
   
   for (let ray of this.rays)
-  this.readings.push(this.$getReading(ray, callback));
+  {
+   const reading = this.$getReading(ray, callback);
+   this.readings.push(reading);
+   $.log(reading);
+  }
  },
  
  $getReading(ray, callback) {
