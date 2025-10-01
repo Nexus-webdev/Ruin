@@ -2494,16 +2494,11 @@ $.struct('Sensor', {
  },
  
  $getReading(ray, callback) {
-  const touches = [];
-  $.log(ray);
-  const result = callback(ray, touches);
-  
-  if (result != undefined) return result;
+  const touches = callback(ray, touches);
   if (touches.length == 0) return null;
   
   const offsets = touches.map(e => e.offset);
   const minOffset = $.math.min(...offsets);
-  
   return touches.find(e => e.offset == minOffset);
  },
   
