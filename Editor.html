@@ -346,19 +346,6 @@
      textarea.selectionStart = start;
      textarea.selectionEnd = start +modifiedText.length;
     }
-    
-    if (e.key == 'Backspace')
-    {
-     if (value.slice(start -1, start) == '"')
-     {
-      const semicolon = value.indexOf('";', start);
-      if (semicolon != -1)
-      {      
-       textarea.value = value.slice(0, semicolon) +value.slice(semicolon +1);
-       textarea.selectionStart = textarea.selectionEnd = start;
-      }
-     }
-    };
    
     if (e.key == 'Delete')
     {
