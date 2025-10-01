@@ -2409,7 +2409,10 @@ $.struct('Visualizer: static', {
    
    ctx.moveTo($.Visualizer.getNodeX(inputs, i, left, right), bottom);
    ctx.lineTo($.Visualizer.getNodeX(outputs, j, left, right), top);
+   
+   ctx.setLineDash([3, 3]);
    ctx.stroke();
+   ctx.setLineDash([]);
   }
   
   for (let i = 0; i < inputs.length; i ++)
