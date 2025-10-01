@@ -280,6 +280,7 @@ ${fix(txt)}
      _obj[key] = function(...args) {
       for (let key in _private)
       this[key] = _private[key];
+      if (arg == 'Sensor') $.log([this, _private, this == _private]);
       
       let result = value.apply(this, args);
       if (result?.then && typeof result.then == 'function')
