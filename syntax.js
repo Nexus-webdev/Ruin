@@ -2483,7 +2483,7 @@ $.struct('Sensor', {
  },
  
  update(callback) {
-  this.$castRays();
+  this.$castRays(); $.log(this.rays)
   this.readings.length = 0;
   
   for (let ray of this.rays)
@@ -2497,7 +2497,6 @@ $.struct('Sensor', {
   const touches = [];
   const result = callback(ray, touches);
   
-  $.log([result, touches])
   if (result != undefined) return result;
   if (touches.length == 0) return null;
   
@@ -2531,7 +2530,6 @@ $.struct('Sensor', {
   {
    const ray = this.rays[i];
    const end = this.readings[i] ?? ray[i][1];
-   if (!ray) continue;
    
    ctx.beginPath();
    ctx.lineWidth = 2;
