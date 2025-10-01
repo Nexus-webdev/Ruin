@@ -2494,7 +2494,7 @@ $.struct('Sensor', {
  },
  
  $getReading(ray, callback) {
-  const touches = callback(ray, touches);
+  const touches = callback(ray);
   if (touches.length == 0) return null;
   
   const offsets = touches.map(e => e.offset);
