@@ -818,6 +818,15 @@ _obj[key] = value;
   }
  }),
  
+ getRGBA(value) {
+  const alpha = Math.abs(value);
+  const R = value < 0 ? 0 : 255;
+  const G = R;
+  const B = value > 0 ? 0 : 255;
+  
+  return `rgba(${R}, ${G}, ${B}, ${alpha})`;
+ },
+ 
  when(condition, checkDelay = 100) {
   return new Promise(resolve => {
    check(condition());
@@ -882,15 +891,6 @@ $.struct('Interpreter', {
    if (typeof property == 'function') property(statement, { syntax: this.syntax, chars });
   }
   else if (command != '') throw new Error(`Invalid Keyword: ${command}; @statement: ${_statement}; @line: ${line}`);
- },
- 
- getRGBA(value) {
-  const alpha = Math.abs(value);
-  const R = value < 0 ? 0 : 255;
-  const G = R;
-  const B = value > 0 ? 0 : 255;
-  
-  return `rgba(${R}, ${G}, ${B}, ${alpha})`;
  },
 })
 
