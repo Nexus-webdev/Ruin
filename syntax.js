@@ -2313,7 +2313,7 @@ $.struct('NeuralNetwork', {
 })
 
 $.struct('Level', {
- construct(inputs, outputs, biases = [], weights = []) {
+ construct(inputs, outputs, biases = [], weights = []) { $.log([inputs, outputs, biases, weights])
   this.inputs = []; this.inputs.length = inputs;
   this.outputs = []; this.outputs.length = outputs;
   this.biases = biases; this.biases.length = outputs;
