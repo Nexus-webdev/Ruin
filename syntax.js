@@ -2320,13 +2320,13 @@ $.struct('Level', {
   this.inputs = []; this.inputs.length = inputs;
   this.outputs = []; this.outputs.length = outputs;
   this.biases = biases; this.biases.length = outputs;
-  this.weights = weights;
+  this.weights = weights; this.weights.length = outputs;
   
   if (!weights.length) 
   for (let i = 0; i < inputs; i ++)
   this.weights.push(new Array(outputs));
   
-  if (!biases) $.Level.randomize(this);
+  if (!biases[0]) $.Level.randomize(this);
  },
  
  copy() {
