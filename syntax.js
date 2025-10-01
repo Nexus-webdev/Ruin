@@ -277,21 +277,21 @@ ${fix(txt)}
 
     if (typeof value == 'function')
     {
-     _obj[key] = function(...args) {
+     _obj[key] = async function(...args) {
       for (let key in _private)
-      this[key] = _private[key]; $.log(this)
+      this[key] = _private[key]; $.log(_private)
       
-      let result = value.apply(this, args).then(x => {
-       if (x) result = x;
-       for (let key in this)
+      let result = await value.apply(this, args);
+      for (let key in this)
+      {
+       if (key.startsWith('$'))
        {
-        if (key.startsWith('$'))
-        {
-         _private[key] = this[key];
-         if (this != _private) delete this[key];
-        }
-       };
-      })
+        const value = this[key];
+        delete this[key];
+        
+        _private[key] = value;
+       }
+      };
       
       return result;
      }
