@@ -279,7 +279,7 @@ ${fix(txt)}
     {
      _obj[key] = function(...args) {
       for (let key in _private)
-      this[key] = _private[key];
+      this[key] = _private[key]; $.log(this)
       
       let result = value.apply(this, args).then(x => {
        if (x) result = x;
