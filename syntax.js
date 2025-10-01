@@ -2488,7 +2488,6 @@ $.struct('Sensor', {
   
   for (let ray of this.rays)
   {
-   $.log(ray);
    const reading = this.$getReading(ray, callback);
    this.readings.push(reading);
   }
@@ -2496,6 +2495,7 @@ $.struct('Sensor', {
  
  $getReading(ray, callback) {
   const touches = [];
+  $.log(ray);
   const result = callback(ray, touches);
   
   if (result != undefined) return result;
