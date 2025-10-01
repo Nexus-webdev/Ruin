@@ -2530,7 +2530,8 @@ $.struct('Sensor', {
   for (let i = 0; i < this.ray.count; i ++)
   {
    const ray = this.rays[i];
-   const end = this.readings[i] ?? ray[i][1];
+   const end = this.readings[i] ?? ray[i][1]; log(ray);
+   if (!ray) continue;
    
    ctx.beginPath();
    ctx.lineWidth = 2;
