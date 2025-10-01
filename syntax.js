@@ -2358,8 +2358,8 @@ $.struct('Level', {
   },
   
   parse(binaryData) {
-   const data = $.$.parse.obj($.$.parse.binary(binaryData)); $.log(data);
-   const lvl = new $.Level(data.inputs, data.outputs, data.biases, data.weights);
+   const data = $.$.parse.obj($.$.parse.binary(binaryData));
+   const lvl = new $.Level(data.inputs, data.outputs, data.biases, data.weights); $.log(lvl);
    return lvl;
   },
 
