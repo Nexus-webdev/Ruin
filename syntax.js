@@ -277,7 +277,6 @@ ${fix(txt)}
     {
      _obj[key] = function(...args) {
       t.set(_private);
-      if (arg == 'Sensor') $.log([this, _private, this == _private]);
       
       let result = value.apply(this, args);
       if (result?.then && typeof result.then == 'function')
@@ -2496,6 +2495,7 @@ $.struct('Sensor', {
   this.$castRays();
   this.readings.length = 0;
   
+  $.log(this);
   for (let ray of this.rays)
   this.readings.push(this.$getReading(ray, callback));
  },
