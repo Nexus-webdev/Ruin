@@ -2372,7 +2372,7 @@ $.struct('Level', {
  },
 })
 
-$.struct('Visualizer: static' {
+$.struct('Visualizer: static', {
  drawNetwork(ctx, network, { margin = 50, outputLabels: x => ([]) } = {}) {
   const board = ctx.canvas ?? ctx.board;
   const left = margin;
