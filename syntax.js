@@ -277,25 +277,31 @@ ${fix(txt)}
 
     if (typeof value == 'function')
     {
-     _obj[key] = async function(...args) {
+     _obj[key] = function(...args) {
       for (let key in _private)
       this[key] = _private[key]; $.log(_private)
       
-      let result = await value.apply(this, args);
-      for (let key in this)
-      {
-       if (key.startsWith('$'))
-       {
-        const value = this[key];
-        delete this[key];
-        
-        _private[key] = value;
-       }
-      };
+      let result = value.apply(this, args);
+      if (typeof result.then == 'function')
+      result.then(x => privatize(this))
+      else privatize(this);
       
       return result;
      }
     } else _obj[key] = value;
+   }
+   
+   function privatize(t) {
+    for (let key in t)
+    {
+     if (key.startsWith('$'))
+     {
+      const value = t[key];
+      delete t[key];
+      
+      _private[key] = value;
+     }
+    };
    }
    
    this.priv = async function(callback, ...args) {
