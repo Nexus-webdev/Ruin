@@ -2324,7 +2324,7 @@ $.struct('Level', {
   
   if (!Array.isArray(weights[0])) 
   for (let i = 0; i < inputs; i ++)
-  this.weights.push(new Array(outputs));
+  this.weights.push([...outputs]);
   
   if (!biases[0]) $.Level.randomize(this);
  },
