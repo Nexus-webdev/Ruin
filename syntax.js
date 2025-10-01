@@ -2394,7 +2394,7 @@ $.struct('Visualizer: static', {
   }
  },
  
- drawLevel(ctx, lvl, left, top, width, height, outputLabels) {
+ drawLevel(ctx, lvl, left, top, width, height, outputLabels = []) {
   const right = left +width;
   const bottom = top +height;
   const nodeRadius = 18;
@@ -2459,7 +2459,7 @@ $.struct('Visualizer: static', {
     
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.font = (nodeRadius *1.5) +'px Courier New';
+    ctx.font = (nodeRadius *1.5) +'px Arial';
     
     const y = top +nodeRadius *.1;
     ctx.fillText(outputLabels[i], x, y);
