@@ -282,7 +282,7 @@ ${fix(txt)}
       this[key] = _private[key]; $.log(_private)
       
       let result = value.apply(this, args);
-      if (typeof result.then == 'function')
+      if (result?.then && typeof result.then == 'function')
       result.then(x => privatize(this))
       else privatize(this);
       
