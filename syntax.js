@@ -2225,7 +2225,7 @@ $.struct('RLN', {
   },
   
   parseBest(binaryData) {
-   const net = $.NeuralNetwork.parse(binaryData);
+   const net = $.NeuralNetwork.parse(binaryData); $.log(net);
    return net;
   },
  },
