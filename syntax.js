@@ -231,6 +231,8 @@ ${fix(txt)}
   function CONSTRUCTOR(...args) {
    const t = this;
    const types = {};
+   const privates = new WeakMap();
+
    const _private = {
     $relationships: relationships,
     $constructor: constructor,
@@ -272,20 +274,7 @@ ${fix(txt)}
    {
     const value = prototype[key];
     const _obj = key.startsWith('$') ? _private : this;
-
-    if (typeof value == 'function')
-    {
-     _obj[key] = function(...args) {
-      t.set(_private);
-      
-      let result = value.apply(this, args);
-      if (result?.then && typeof result.then == 'function')
-      result.then(x => privatize(this))
-      else privatize(this);
-      
-      return result;
-     }
-    } else _obj[key] = value;
+_obj[key] = value;
    }
    
    function privatize(t) {
@@ -388,8 +377,27 @@ ${fix(txt)}
    for (let member of relationships) $.$.opt(prep(1, true, member), options)(prep(0, false, member), obj, structs);
    this.set(structs);
    this.name = arg;
+
+   privates.set(this, _private);
+   const proxy = new Proxy(this, {
+    get(target, prop, receiver) {
+     const p = privates.get(target);
+     if (prop in p) return p[prop];
+     
+     return Reflect.get(target, prop, receiver);
+    },
+    
+    set(target, prop, value, receiver) {
+     const p = privates.get(target);
+     if (prop in p) { p[prop] = value; return true; };
+     
+     return Reflect.set(target, prop, value, receiver);
+    }
+   });
+
    
-   if (args[0] != '⌀' && this.construct) this.construct(...args);
+   if (args[0] != '⌀' && proxy.construct) proxy.construct(...args);
+   return proxy;
   };
   
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
@@ -2495,12 +2503,8 @@ $.struct('Sensor', {
   this.$castRays();
   this.readings.length = 0;
   
-  $.log(this);
   for (let ray of this.rays)
-  {
-   $.log([this, this.$getReading])
-   this.readings.push(this.$getReading(ray, callback));
-  }
+  this.readings.push(this.$getReading(ray, callback));
  },
  
  $getReading(ray, callback) {
