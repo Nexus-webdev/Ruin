@@ -2322,7 +2322,7 @@ $.struct('Level', {
   this.biases = biases; this.biases.length = outputs;
   this.weights = weights; this.weights.length = outputs;
   
-  if (!weights[0]) 
+  if (!Array.isArray(weights[0])) 
   for (let i = 0; i < inputs; i ++)
   this.weights.push(new Array(outputs));
   
