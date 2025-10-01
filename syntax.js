@@ -2490,15 +2490,12 @@ $.struct('Sensor', {
   {
    const reading = this.$getReading(ray, callback);
    this.readings.push(reading);
-   $.log(reading);
   }
  },
  
  $getReading(ray, callback) {
   const touches = [];
   const result = callback(ray, touches);
-  
-  if (result != undefined) return result;
   if (touches.length == 0) return null;
   
   const offsets = touches.map(e => e.offset);
@@ -2530,7 +2527,7 @@ $.struct('Sensor', {
   for (let i = 0; i < this.ray.count; i ++)
   {
    const ray = this.rays[i];
-   const end = this.readings[i] ?? ray[i][1]; log(ray);
+   const end = this.readings[i] ?? ray[i][1];
    if (!ray) continue;
    
    ctx.beginPath();
