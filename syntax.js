@@ -887,6 +887,15 @@ $.struct('Interpreter', {
   }
   else if (command != '') throw new Error(`Invalid Keyword: ${command}; @statement: ${_statement}; @line: ${line}`);
  },
+ 
+ getRGBA(value) {
+  const alpha = Math.abs(value);
+  const R = value < 0 ? 0 : 255;
+  const G = R;
+  const B = value > 0 ? 0 : 255;
+  
+  return `rgba(${R}, ${G}, ${B}, ${alpha})`;
+ },
 })
 
 Object.defineProperty($, '_', { writable: false, configurable: false });
@@ -1973,7 +1982,7 @@ $.foxx = new $.Interpreter(e => {
     if (current.returned == true) break; 
     function error(description) {
      throw `Foxx Error:
-description: "${description}";
+description: "${description};
 @program:
  statement: "${program ? st.replace(/\n/g, '\\n') : 'none'}";
  runId: ${program ? program.runId : 'none'};
@@ -2360,6 +2369,105 @@ $.struct('Level', {
    for (let i = 0; i < lvl.biases.length; i ++)
    lvl.biases[i] = $.math.rand(-1, 1);
   },
+ },
+})
+
+$.struct('Visualizer: static' {
+ drawNetwork(ctx, network, { margin = 50, outputLabels: x => ([]) } = {}) {
+  const board = ctx.canvas ?? ctx.board;
+  const left = margin;
+  const top = margin;
+  
+  const width = board.width -margin *2;
+  const height = board.height -margin *2;
+  const lvlHeight = height /network.levels.length;
+  
+  for (let i = network.levels.length -1; i >= 0; -- i)
+  {
+   const t = network.levels.length == 1 ? 0.5 : i /(network.levels.length -1);
+   const lvlTop = top +$.math.lerp(height -lvlHeight, 0, t);
+   ctx.setLineDash([7.3]);
+   
+   $.Visualizer.drawLevel(ctx, network.levels[i], left, lvlTop, width, lvlHeight, outputLabels(network, i));
+  }
+ },
+ 
+ drawLevel(ctx, lvl, left, top, width, height, outputLabels) {
+  const right = left +width;
+  const bottom = top +height;
+  const nodeRadius = 18;
+  
+  const { inputs, outputs, weights, biases } = lvl;
+  for (let i = 0; i < inputs.length; i ++)
+  for (let j = 0; j < outputs.length; j ++)
+  {
+   ctx.beginPath();
+   ctx.lineWidth = 2;
+   ctx.strokeStyle = getRGBA(weights[i][j]);
+   
+   ctx.moveTo($.Visualizer.getNodeX(inputs, i, left, right), bottom);
+   ctx.lineTo($.Visualizer.getNodeX(outputs, j, left, right), top);
+   ctx.stroke();
+  }
+  
+  for (let i = 0; i < inputs.length; i ++)
+  {
+   const x = $.Visualizer.getNodeX(inputs, i, left, right);
+   
+   ctx.beginPath();
+   ctx.arc(x, bottom, nodeRadius, 0, $.math.pi *2);
+   ctx.fillStyle = 'black';
+   ctx.fill();
+   
+   ctx.beginPath();
+   ctx.arc(x, bottom, nodeRadius *.6, 0, $.math.pi *2);
+   ctx.fillStyle = $.getRGBA(inputs[i]);
+   ctx.fill()
+  }
+  
+  for (let i = 0; i < outputs.length; i ++)
+  {
+   const x = $.Visualizer.getNodeX(outputs, i, left, right);
+   
+   ctx.beginPath();
+   ctx.arc(x, top, nodeRadius, 0, $.math.pi *2);
+   ctx.fillStyle = 'black';
+   ctx.fill();
+   
+   ctx.beginPath();
+   ctx.arc(x, top, nodeRadius *.6, 0, $.math.pi *2);
+   ctx.fillStyle = $.getRGBA(outputs[i]);
+   ctx.fill();
+   
+   ctx.beginPath();
+   ctx.lineWidth = 2;;
+   ctx.arc(x, top, nodeRadius *.8, 0, $.math.pi *2);
+   ctx.strokeStyle = $.getRGBA(biases[i])
+   ctx.setLineDash([3, 3]);
+   
+   ctx.stroke();
+   ctx.setLineDash([]);
+   
+   if (outputLabels[i])
+   {
+    ctx.beginPath();
+    ctx.lineWidth = 0.5;
+    ctx.fillStyle = 'black';
+    ctx.strokeStyle = 'white';
+    
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = (nodeRadius *1.5) +'px Courier New';
+    
+    const y = top +nodeRadius *.1;
+    ctx.fillText(outputLabels[i], x, y);
+    ctx.strokeText(outputLabels[i], x, y);
+   }
+  }
+ },
+ 
+ getNodeX(nodes, index, left, right) {
+  return $.math.lerp(left, right, nodes.length == 1 ? .5 : index /(nodes.length -1));
  },
 })
 
