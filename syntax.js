@@ -2313,10 +2313,10 @@ $.struct('NeuralNetwork', {
 })
 
 $.struct('Level', {
- construct(inputs, outputs, biases, weights = []) {
-  this.inputs = new Array(inputs);
-  this.outputs = new Array(outputs);
-  this.biases = biases ?? new Array(outputs);
+ construct(inputs, outputs, biases = [], weights = []) {
+  this.inputs = []; this.inputs.length = inputs;
+  this.outputs = []; this.outputs.length = outputs;
+  this.biases = biases; this.biases.length = outputs;
   this.weights = weights;
   
   if (!weights.length) 
@@ -2359,7 +2359,7 @@ $.struct('Level', {
   
   parse(binaryData) {
    const data = $.$.parse.obj($.$.parse.binary(binaryData));
-   const lvl = new $.Level(data.inputs, data.outputs, data.biases, data.weights); $.log(lvl);
+   const lvl = new $.Level(data.inputs, data.outputs, data.biases, data.weights);
    return lvl;
   },
 
