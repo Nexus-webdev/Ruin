@@ -2602,7 +2602,7 @@ $.struct('GitHub: static', {
   this.url = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
  },
  
- setToken(token, id) {
+ token(token, id) {
   this.tokens[id] = id ? (this.token = token) : null;
  },
  
@@ -2639,7 +2639,7 @@ $.struct('GitHub: static', {
    });
    
    if (!response.ok) throw `Failed to read: ${response.status}`;
-   resolve(await response.text());
+   resolve(JSON.parse(await response.text()));
   })
  },
  
