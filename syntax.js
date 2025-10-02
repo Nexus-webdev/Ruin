@@ -2589,3 +2589,111 @@ $.struct('Template', {
   })
  },
 })
+
+$.struct('GitHub: static', {
+ construct() {
+  this.tokens = {};
+  this.token = '';
+  this.url = '';
+ },
+ 
+ repo(owner, name, subdirectory) {
+  const path = subdirectory ? subdirectory +'/' : '';
+  this.url = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
+ },
+ 
+ setToken(token, id) {
+  this.tokens[id] = id ? (this.token = token) : null;
+ },
+ 
+ get(path) {
+  return new Promise(async resolve => {
+   const response = await fetch(this.url +path);
+   if (!response.ok) throw `Failed to fetch: ${response.status}`;
+   const data = await response.json();
+ 
+   resolve(Array.isArray(data) ? data.map(item => ({
+    sha: item.sha,
+    name: item.name,
+    path: item.path,
+    type: item.type,
+    download_url: item.download_url,
+   })) : {
+    sha: data.sha,
+    name: data.name,
+    path: data.path,
+    type: data.type,
+    download_url: data.download_url,
+   });
+  })
+ },
+ 
+ read(path) {
+  return new Promise(async resolve => {
+   const url = this.url +path;
+   const response = await fetch(url, {
+    headers: {
+     Authorization: `Bearer ${this.token}`,
+     Accept: 'application/vnd.github.v3.raw',
+    },
+   });
+   
+   if (!response.ok) throw `Failed to read: ${response.status}`;
+   resolve(await response.text());
+  })
+ },
+ 
+ write(path, content) {
+  return new Promise(async resolve => {
+   const sha = (await this.get(path)).sha;
+   const url = this.url +path;
+   const body = {
+    message: 'Update file via API',
+    content: btoa(unescape(encodeURIComponent(content))),
+    ...(sha && { sha }),
+   };
+ 
+   const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+     Authorization: `Bearer ${this.token}`,
+     Accept: 'application/vnd.github.v3+json',
+    },
+    
+    body: JSON.stringify(body),
+   });
+ 
+   if (!res.ok) throw `Failed to write: ${res.status}`;
+   resolve(await res.json());
+  })
+ },
+ 
+ delete(path) {
+  return new Promise(async resolve => {
+   const sha = (await this.get(path)).sha;
+   const url = this.url +path;
+   const body = {
+    message: 'Delete file via API',
+    sha,
+   };
+ 
+   const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+     Authorization: `Bearer ${this.token}`,
+     Accept: 'application/vnd.github.v3+json',
+    },
+    
+    body: JSON.stringify(body),
+   });
+   
+   if (!res.ok)
+   {
+    const error = await res.json();
+    throw `Failed to delete: ${error.message}`;
+   }
+   
+   resolve(await res.json());
+  })
+ },
+})
