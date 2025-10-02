@@ -2639,7 +2639,10 @@ $.struct('GitHub: static', {
    });
    
    if (!response.ok) throw `Failed to read: ${response.status}`;
-   resolve(JSON.parse(await response.text()));
+   const data = JSON.parse(await response.text());
+   data.content = decodeURIComponent(escape(atob(data.content)));
+   
+   resolve(data);
   })
  },
  
