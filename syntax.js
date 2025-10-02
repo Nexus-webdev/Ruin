@@ -1313,23 +1313,21 @@ $.foxx = new $.Interpreter(e => {
   
   '-db': name => {
    return new Promise(async resolve => {
-    if (!directory)
+    if (!self.githubProgram && !directory)
     {
      throw `no directory set;`;
-     reject(`no directory set;`);
+     resolve(`no directory set;`);
     }
     
     name = await get(name);
     const i = Date.now();
     
     const filename = name +(!name.endsWith('.data') ? '.data' : '');
-    const file = await directory.getFileHandle(filename.trim(), { create: true });
+    const file = !self.githubProgram ? await directory.getFileHandle(filename.trim(), { create: true }) : null;
     
     scope[name.trim()] = {
      async TABLE(statement) {
-      (new $.ROBJ(filename +i, await (await file.getFile()).text()));
-      const table = await $.$.rdn(filename +i);
-      
+      const table = await read();
       const name = await get(statement.trim().split(' ')[0]);
       const func = findBlock(statement);
       if (table[name]) return;
@@ -1348,9 +1346,7 @@ $.foxx = new $.Interpreter(e => {
      },
      
      async ENTRY(statement) {
-      (new $.ROBJ(filename +i, await (await file.getFile()).text()));
-      const table = await $.$.rdn(filename +i);
-      
+      const table = await read();
       const name = await get(statement.trim().split(' ')[0]);
       const func = findBlock(statement);
       
@@ -1368,9 +1364,7 @@ $.foxx = new $.Interpreter(e => {
      },
      
      async REMOVE(statement) {
-      (new $.ROBJ(filename +i, await (await file.getFile()).text()));
-      const table = await $.$.rdn(filename +i);
-      
+      const table = await read();
       const og = scope;
       scope = { ...table, ...og, origin: og };
       
@@ -1386,18 +1380,33 @@ $.foxx = new $.Interpreter(e => {
      },
      
      async GET(statement) {
-      (new $.ROBJ(filename +i, await (await file.getFile()).text()));
-      const table = await $.$.rdn(filename +i);
-      
+      const table = await read();
       const value = await get(statement, { ...table, ...scope, origin: scope });
       returns.push(value);
      },
     };
     
+    function read() {
+     return new Promise(async resolve => {
+      if (self.githubProgram)
+      {
+       const data = await $.GitHub.read(filename);
+       return resolve(data.content);
+      }
+      
+      (new $.ROBJ(filename +i, await (await file.getFile()).text()));
+      resolve($.$.rdn(filename +i));
+     })
+    }
+    
     async function save(table) {
      delete table.parse;
+     const data = $.$.stringify.obj(table);
+     if (self.githubProgram)
+     return $.GitHub.write(filename, data);
+     
      const writableStream = await file.createWritable();
-     await writableStream.write($.$.stringify.obj(table));
+     await writableStream.write(data);
      await writableStream.close();
     }
     
