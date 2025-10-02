@@ -2116,7 +2116,7 @@ description: "${description};
   return statements;
  }
   
- return { run, other: { executeable, exec, scope() { return scope; }, setScope(obj) { return scope = obj; }, runs, scopes, returns, get, getStatements, directory() { return directory } }, syntax };
+ return { run, breakOn: ';', other: { executeable, exec, scope() { return scope; }, setScope(obj) { return scope = obj; }, runs, scopes, returns, get, getStatements, directory() { return directory } }, syntax };
 });
 
 $.struct('Database', {
