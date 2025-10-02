@@ -2646,14 +2646,14 @@ $.struct('GitHub: static', {
   })
  },
  
- write(path, content) {
+ write(path, content, create = false) {
   return new Promise(async resolve => {
-   const sha = (await this.get(path)).sha;
+   const sha = create ? null : (await this.get(path)).sha;
    const url = this.url +path;
    const body = {
     message: 'Update file via API',
     content: btoa(unescape(encodeURIComponent(content))),
-    ...(sha && { sha }),
+    ...(sha ? (sha && { sha }) : {}),
    };
  
    const res = await fetch(url, {
