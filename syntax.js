@@ -361,7 +361,7 @@ ${fix(txt)}
     }
    });
 
-   if (args[0] != '⌀' && proxy.construct) proxy.construct(...args);
+   if (args[0] != '⌀' && this.construct) this.construct(...args);
    return proxy;
   };
   
