@@ -231,11 +231,18 @@ ${fix(txt)}
   function CONSTRUCTOR(...args) {
    const t = this;
    const types = {};
-   const privates = new WeakMap();
+   
+   this.set = (obj, override = true) => {
+    for (let key in obj)
+    if (override || !this[key])
+    this[key] = obj[key];
+   };
 
-   const _private = {
+   this.set(prototype);
+   this.set({
     $relationships: relationships,
     $constructor: constructor,
+    priv: x => x(),
     $args: args,
     
     $extension(type) {
@@ -262,37 +269,10 @@ ${fix(txt)}
      
      this.set(structs);
     },
-   };
+   });
    
-   this.set = (obj, override = true) => {
-    for (let key in obj)
-    if (override || !this[key])
-    this[key] = obj[key];
-   };
-
-   for (let key in prototype)
-   {
-    const value = prototype[key];
-    const _obj = key.startsWith('$') ? _private : this;
-_obj[key] = value;
-   }
-   
-   function privatize(t) {
-    for (let key in t)
-    {
-     if (key.startsWith('$'))
-     {
-      const value = t[key];
-      delete t[key];
-      
-      _private[key] = value;
-     }
-    };
-   }
-   
-   this.priv = x => x();
    const structs = {};
-   const contractExists = _private.$contract && _private.$contract.length > 0;
+   const contractExists = this.$contract && this.$contract.length > 0;
    
    const options = {
     default: x => x,
@@ -303,12 +283,12 @@ _obj[key] = value;
 
      const _parent = new Obj[name]('⌀');
      structs.parent = _parent;
-     _private.$uper = (...args) => {
+     this.$uper = (...args) => {
       delete this.$uper;
       return _parent.construct.bind(t)(...args);
      };
      
-     const contract = (contractExists ? _private.$contract : Object.keys(_parent)).filter(key => !(['construct', 'constructor']).includes(key));
+     const contract = (contractExists ? t.$contract : Object.keys(_parent)).filter(key => !(['construct', 'constructor']).includes(key));
      
      for (let key of contract)
      {
@@ -360,19 +340,17 @@ _obj[key] = value;
    for (let member of relationships) $.$.opt(prep(1, true, member), options)(prep(0, false, member), obj, structs);
    this.set(structs);
    this.name = arg;
-
-   privates.set(this, _private);
+   
    const proxy = new Proxy(this, {
     get(target, prop, receiver) {
-     const p = privates.get(target);
-     if (prop in p) return receiver == t ? p[prop] : undefined;
+     if (prop.startsWith('$'))
+     return receiver == t ? p[prop] : undefined;
      
      return Reflect.get(target, prop, receiver);
     },
     
     set(target, prop, value, receiver) {
-     const p = privates.get(target);
-     if (prop in p)
+     if (prop.startsWith('$'))
      {
       if (receiver == t)
       p[prop] = value;
@@ -409,7 +387,7 @@ _obj[key] = value;
   if (obj[prep(0)]) return;
 
   obj[arg] = constructor;
-  if ($.$) $.$.opt(prep(1, true), {
+  $.$.opt(prep(1, true), {
    default: x => x,
    static() {
     obj[arg] = new constructor();
