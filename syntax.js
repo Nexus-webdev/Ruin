@@ -341,10 +341,13 @@ ${fix(txt)}
    this.set(structs);
    this.name = arg;
    
-   const proxy = new Proxy(this, {
+   if (args[0] != '⌀' && this.construct)
+   this.construct(...args); $.log(args);
+   
+   return new Proxy(this, {
     get(target, prop, receiver) {
      if (prop.startsWith('$'))
-     return receiver == t ? target[prop] : undefined;
+     return receiver == target ? target[prop] : undefined;
      
      return target[prop];
     },
@@ -352,7 +355,7 @@ ${fix(txt)}
     set(target, prop, value, receiver) {
      if (prop.startsWith('$'))
      {
-      if (receiver == t)
+      if (receiver == target)
       target[prop] = value;
       return true;
      };
@@ -360,9 +363,6 @@ ${fix(txt)}
      return target[prop] = value;
     }
    });
-
-   if (args[0] != '⌀' && this.construct) this.construct(...args);
-   return proxy;
   };
   
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
