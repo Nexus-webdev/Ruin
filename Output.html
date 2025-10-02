@@ -1015,38 +1015,21 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
      e.preventDefault();
      
      let content = document.documentElement.innerHTML;
-     content = `${content.slice(0, content.indexOf('// eof;'))}
-   window.onload = x => {
-    $.$.htmlTarget = document.body;
-    $.ruin(\`${modify(code)}\`);
-   }
-  <${'/'}script>
+     content = `<!DOCTYPE html>
+<html lang='en'>
+ <head>
+  <meta charset='UTF-8' content-type='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <script>
+   localStorage['${document.title}'] = (\`${modify(code)}\`);
+   location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${document.title}';
+  <\/script>
  </head>
- 
- <body></body>
 </html>`;
     
      const directory = foxx.directory() ?? await window.showDirectoryPicker();
-     const syntax = await directory.getFileHandle('syntax.js', { create: true });
      const page = await directory.getFileHandle(document.title +'.html', { create: true });
-     
-     const [picker] = await window.showOpenFilePicker({
-      types: [{
-       description: 'Select the syntax.js file (or a custom syntax file that meets the requirements)',
-       accept: { 'application/javascript': ['.js'] }
-      }],
-      
-      excludeAcceptAllOption: true,
-      multiple: false,
-     })
-     
-     const syntaxFile = await picker.getFile();
      const pageBlob = new Blob([content], { type: 'text/html' });
-     const syntaxBlob = new Blob([await syntaxFile.text()], { type: 'application/javascript' });
-     
-     const syntaxStream = await syntax.createWritable();
-     await syntaxStream.write(syntaxBlob);
-     await syntaxStream.close();
      
      const pageStream = await page.createWritable();
      await pageStream.write(pageBlob);

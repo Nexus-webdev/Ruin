@@ -344,20 +344,20 @@ ${fix(txt)}
    const proxy = new Proxy(this, {
     get(target, prop, receiver) {
      if (prop.startsWith('$'))
-     return receiver == t ? p[prop] : undefined;
+     return receiver == t ? target[prop] : undefined;
      
-     return Reflect.get(target, prop, receiver);
+     return target[prop];
     },
     
     set(target, prop, value, receiver) {
      if (prop.startsWith('$'))
      {
       if (receiver == t)
-      p[prop] = value;
+      target[prop] = value;
       return true;
      };
      
-     return Reflect.set(target, prop, value, receiver);
+     return target[prop] = value;
     }
    });
 
