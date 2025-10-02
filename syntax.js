@@ -340,6 +340,29 @@ ${fix(txt)}
    for (let member of relationships) $.$.opt(prep(1, true, member), options)(prep(0, false, member), obj, structs);
    this.set(structs);
    this.name = arg;
+   
+   const proxy = new Proxy(this, {
+    get(target, prop, receiver) {
+     if (prop.startsWith('$'))
+     return receiver == t ? p[prop] : undefined;
+     
+     return Reflect.get(target, prop, receiver);
+    },
+    
+    set(target, prop, value, receiver) {
+     if (prop.startsWith('$'))
+     {
+      if (receiver == t)
+      p[prop] = value;
+      return true;
+     };
+     
+     return Reflect.set(target, prop, value, receiver);
+    }
+   });
+
+   if (args[0] != '⌀' && proxy.construct) proxy.construct(...args);
+   return proxy;
   };
   
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
@@ -364,19 +387,11 @@ ${fix(txt)}
   
   $.$.opt(prep(1, true), {
    default: x => {
-    obj[arg] = (...args) => {
-     const struct = new constructor();
-     if (args[0] != '⌀' && struct.construct)
-     struct.construct(...args);
-     
-     return struct;
-    };
+    obj[arg] = constructor();
    },
    
    static() {
     obj[arg] = new constructor();
-    if (args[0] != '⌀' && obj[arg].construct)
-    obj[arg].construct(...args);
    },
   })();
  },
