@@ -365,14 +365,19 @@ _obj[key] = value;
    const proxy = new Proxy(this, {
     get(target, prop, receiver) {
      const p = privates.get(target);
-     if (prop in p) return p[prop];
+     if (prop in p) return receiver == t ? p[prop] : undefined;
      
      return Reflect.get(target, prop, receiver);
     },
     
     set(target, prop, value, receiver) {
      const p = privates.get(target);
-     if (prop in p) { p[prop] = value; return true; };
+     if (prop in p)
+     {
+      if (receiver == t)
+      p[prop] = value;
+      return true;
+     };
      
      return Reflect.set(target, prop, value, receiver);
     }
