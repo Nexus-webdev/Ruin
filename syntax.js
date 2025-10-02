@@ -348,14 +348,14 @@ ${fix(txt)}
    
    return new Proxy(this, {
     get(target, prop, receiver) {
-     if (prop.startsWith('$'))
+     if (typeof prop == 'string' && prop.startsWith('$'))
      return receiver[SYMBOL] == true ? target[prop] : undefined;
      
      return target[prop];
     },
     
     set(target, prop, value, receiver) {
-     if (prop.startsWith('$'))
+     if (typeof prop == 'string' && prop.startsWith('$'))
      {
       if (receiver[SYMBOL] == true)
       target[prop] = value;
