@@ -1021,8 +1021,8 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
   <meta charset='UTF-8' content-type='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <script>
-   localStorage['${document.title}'] = (\`${modify(code)}\`);
-   location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${document.title}';
+   localStorage['${urlData().project}'] = (\`${modify(code)}\`);
+   location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData().project}';
   <\/script>
  </head>
 </html>`;
