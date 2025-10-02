@@ -342,7 +342,7 @@ ${fix(txt)}
    this.name = arg;
    
    if (args[0] != '⌀' && this.construct)
-   this.construct(...args); $.log(args);
+   this.construct(...args);
    
    return new Proxy(this, {
     get(target, prop, receiver) {
@@ -387,7 +387,7 @@ ${fix(txt)}
   
   $.$.opt(prep(1, true), {
    default: x => {
-    obj[arg] = constructor();
+    obj[arg] = constructor;
    },
    
    static() {
