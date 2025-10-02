@@ -2592,8 +2592,8 @@ $.struct('Template', {
 
 $.struct('GitHub: static', {
  construct() {
-  this.tokens = {};
-  this.token = '';
+  this.$tokens = {};
+  this.$token = '';
   this.url = '';
  },
  
@@ -2603,7 +2603,7 @@ $.struct('GitHub: static', {
  },
  
  token(token, id) {
-  this.tokens[id] = id ? (this.token = token) : null;
+  this.$tokens[id] = id ? (this.$token = token) : null;
  },
  
  get(path) {
@@ -2633,7 +2633,7 @@ $.struct('GitHub: static', {
    const url = this.url +path;
    const response = await fetch(url, {
     headers: {
-     Authorization: `Bearer ${this.token}`,
+     Authorization: `Bearer ${this.$token}`,
      Accept: 'application/vnd.github.v3.raw',
     },
    });
@@ -2656,7 +2656,7 @@ $.struct('GitHub: static', {
    const res = await fetch(url, {
     method: 'PUT',
     headers: {
-     Authorization: `Bearer ${this.token}`,
+     Authorization: `Bearer ${this.$token}`,
      Accept: 'application/vnd.github.v3+json',
     },
     
@@ -2680,7 +2680,7 @@ $.struct('GitHub: static', {
    const res = await fetch(url, {
     method: 'DELETE',
     headers: {
-     Authorization: `Bearer ${this.token}`,
+     Authorization: `Bearer ${this.$token}`,
      Accept: 'application/vnd.github.v3+json',
     },
     
