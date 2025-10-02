@@ -55,11 +55,10 @@
   </div>
   
   <script src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'></script>
-  <script>
-   document.write(`<script src='syntax.js?nocache=${Date.now()}'><\/script>`);
-  </script>
+  <script>document.write(`<script src='syntax.js?nocache=${Date.now()}'><\/script>`)</script>
   
   <script>
+   window.githubProgram = location.href.includes('.github.io');
    function urlData() {
     const Params = new URLSearchParams(window.location.search).entries();
     const data = {};

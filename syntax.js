@@ -1409,8 +1409,14 @@ $.foxx = new $.Interpreter(e => {
   '-cd': dirName => { 
    return new Promise(async resolve => {
     const directoryName = await get(dirName);
-    const id = `DIRECTORY - ${directoryName.trim()}`;
+    if (self.githubProgram)
+    {
+     const [owner, name] = directoryName.split('/');
+     $.GitHub.repo(owner.trim(), name.trim());
+     return resolve(1);
+    }
     
+    const id = `DIRECTORY - ${directoryName.trim()}`;
     const handle = scope[id] ?? $.$.modChildren[directoryName.trim()] ?? (await $.get(id)) ??
                    (await showDirectoryPicker());
     
@@ -1429,15 +1435,21 @@ $.foxx = new $.Interpreter(e => {
   
   '-mkdir': dirName => { 
    return new Promise(async resolve => {
+    const directoryName = await get(dirName);
+    if (self.githubProgram)
+    {
+     await $.GitHub.write(`${directoryName.trim()}/init.txt`,
+                          `This is the initializer file for '${directoryName.trim()}'.`);
+     return resolve(1);
+    }
+    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
     
-    const directoryName = await get(dirName);
     const id = `DIRECTORY - ${directoryName.trim()}`;
-    
     const handle = await directory.getDirectoryHandle(directoryName.trim(), { create: true });
     if (handle)
     {
@@ -1453,8 +1465,13 @@ $.foxx = new $.Interpreter(e => {
   '-rmdir': dirName => { 
    return new Promise(async resolve => {
     const directoryName = await get(dirName);
-    const id = `DIRECTORY - ${directoryName.trim()}`;
+    if (self.githubProgram)
+    {
+     $.GitHub.delete(directoryName.trim());
+     return resolve(1);
+    }
     
+    const id = `DIRECTORY - ${directoryName.trim()}`;
     const handle = scope[id] ?? $.$.modChildren[directoryName.trim()] ?? (await $.get(id)) ??
                    ((await showDirectoryPicker()));
     
@@ -1473,21 +1490,27 @@ $.foxx = new $.Interpreter(e => {
   
   '-write': statement => {
    return new Promise(async resolve => {
+    const date = Date.now();
+    const [name, txt] = statement.replace('>>', date).split(date);
+    const value = (await get(txt)).trim();
+    const filename = await get(name);
+    
+    if (self.githubProgram)
+    {
+     $.GitHub.write(filename, value);
+     return resolve(1);
+    }
+    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
     
-    const date = Date.now();
-    const [name, txt] = statement.replace('>>', date).split(date);
-    const filename = await get(name);
-    
-    let file = await directory.getFileHandle(filename.trim(), { create: true });
-    const value = (await get(txt)).trim();
-    
+    const file = await directory.getFileHandle(filename.trim(), { create: true });
     const writableStream = await file.createWritable();
-    await writableStream.write(value.startsWith('#') ? value.slice(1).trim() : value);
+    
+    await writableStream.write(value);
     await writableStream.close();
     resolve(1);
    })
@@ -1495,13 +1518,20 @@ $.foxx = new $.Interpreter(e => {
   
   '-read': name => {
    return new Promise(async resolve => {
+    const filename = await get(name);
+    if (self.githubProgram)
+    {
+     const data = await $.GitHib.read(filename);
+     returns.push(data.content);
+     return resolve(1);
+    }
+    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
     
-    const filename = await get(name);
     let file = await directory.getFileHandle(filename.trim());
     file = await file.getFile();
     
@@ -1512,15 +1542,20 @@ $.foxx = new $.Interpreter(e => {
   
   '-rm': name => {
    return new Promise(async resolve => {
+    const filename = await get(name);
+    if (self.githubProgram)
+    {
+     $.GitHub.delete(filename);
+     return resolve(1);
+    }
+    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
     
-    const filename = await get(name);
-    let file = await directory.getFileHandle(filename.trim());
-    
+    const file = await directory.getFileHandle(filename.trim());
     file.remove();
     resolve(1);
    });
@@ -2430,7 +2465,7 @@ $.struct('Visualizer: static', {
    ctx.beginPath();
    ctx.arc(x, bottom, nodeRadius *.6, 0, $.math.pi *2);
    ctx.fillStyle = $.getRGBA(inputs[i]);
-   ctx.fill()
+   ctx.fill();
   }
   
   for (let i = 0; i < outputs.length; i ++)
