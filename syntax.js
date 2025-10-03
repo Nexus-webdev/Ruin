@@ -2671,6 +2671,7 @@ $.struct('GitHub: static', {
     name: data.name,
     path: data.path,
     type: data.type,
+    url: data.url,
     download_url: data.download_url,
    });
   })
