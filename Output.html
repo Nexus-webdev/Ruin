@@ -677,14 +677,16 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
     },
    };
    
-   $.foxx.syntax['-git-']['-install'] = statement => {
+   $.foxx.syntax['-git-']['install'] = statement => {
     return new Promise(async resolve => {
-     const [name, file] = statement.split(':');
+     const [name, path] = statement.split(':');
+     const [owner, repo, ...file] = path.split('/');
      const entry = {
       name: name.trim(),
-      file: file ? file.trim() : undefined,
+      file: file.length == 0 ? '' : file.join('/').trim(),
      };
      
+     $.GitHub.repo(owner, repo);
      const value = await $.$.mod([entry], { useGit: true });
      foxx.scope()[name] = value;
      
