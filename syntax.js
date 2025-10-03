@@ -2644,7 +2644,7 @@ $.struct('GitHub: static', {
   this.$token = '';
   
   this.url = '';
-  this.repo = '';
+  this.repository = '';
   this.owner = '';
  },
  
@@ -2652,7 +2652,7 @@ $.struct('GitHub: static', {
   const path = subdirectory ? subdirectory +'/' : '';
   this.url = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
   
-  this.repo = repo;
+  this.repository = repo;
   this.owner = owner;
  },
  
@@ -2693,7 +2693,7 @@ $.struct('GitHub: static', {
    {
     if (item.type == 'file')
     files[item.name] = await (new Promise(async resolve => {
-     const res = await fetch(`https://${this.owner}.github.io/${this.repo}/${item.path}`, {
+     const res = await fetch(`https://${this.owner}.github.io/${this.repository}/${item.path}`, {
       headers: { Authorization: `Bearer ${this.$token}` },
      });
      
