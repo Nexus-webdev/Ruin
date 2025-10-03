@@ -2662,25 +2662,11 @@ $.struct('GitHub: static', {
  
  get(path) {
   return new Promise(async resolve => {
-   const response = await fetch(this.url +path);
+   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${token}` } });
    if (!response.ok) throw `Failed to fetch: ${response.status}`;
    const data = await response.json();
  
-   resolve(Array.isArray(data) ? data.map(item => ({
-    sha: item.sha,
-    name: item.name,
-    path: item.path,
-    type: item.type,
-    url: data.url,
-    download_url: item.download_url,
-   })) : {
-    sha: data.sha,
-    name: data.name,
-    path: data.path,
-    type: data.type,
-    url: data.url,
-    download_url: data.download_url,
-   });
+   resolve(data);
   })
  },
  
@@ -2689,7 +2675,11 @@ $.struct('GitHub: static', {
    const directories = {};
    const files = {};
    
-   for (let item of (await this.get(path)))
+   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${token}` } });
+   if (!response.ok) throw `Failed to fetch: ${response.status}`;
+   const data = await response.json();
+   
+   for (let item of data)
    {
     if (item.type == 'file')
     files[item.name] = await item.text();
