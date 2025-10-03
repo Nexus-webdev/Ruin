@@ -2652,7 +2652,7 @@ $.struct('GitHub: static', {
   const path = subdirectory ? subdirectory +'/' : '';
   this.url = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
   
-  this.repository = repo;
+  this.repository = name;
   this.owner = owner;
  },
  
