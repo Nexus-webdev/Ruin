@@ -686,7 +686,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
       file: file.length == 0 ? '' : file.join('/').trim(),
      };
      
-     $.GitHub.repo(owner, repo);
+     $.GitHub.repo(owner.trim(), repo.trim());
      const value = await $.$.mod([entry], { useGit: true });
      foxx.scope()[name] = value;
      
