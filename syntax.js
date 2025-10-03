@@ -1374,7 +1374,7 @@ $.foxx = new $.Interpreter(e => {
     
     function read() {
      return new Promise(async resolve => {
-      if (self.githubProgram)
+      if (scope[name.trim()].useGit)
       {
        const data = await $.GitHub.read(filename);
        return resolve(data.content);
@@ -1388,7 +1388,7 @@ $.foxx = new $.Interpreter(e => {
     async function save(table) {
      delete table.parse;
      const data = $.$.stringify.obj(table);
-     if (self.githubProgram)
+     if (scope[name.trim()].useGit)
      return $.GitHub.write(filename, data);
      
      const writableStream = await file.createWritable();
@@ -1401,16 +1401,70 @@ $.foxx = new $.Interpreter(e => {
    });
   },
   
+  '-git-': {
+   'cd': dirName => { 
+    return new Promise(async resolve => {
+     const directoryName = await get(dirName);
+     const [owner, name] = directoryName.split('/');
+     $.GitHub.repo(owner.trim(), name.trim());
+     
+     resolve(1);
+    })
+   },
+   
+   'mkdir': dirName => { 
+    return new Promise(async resolve => {
+     const directoryName = await get(dirName);
+     await $.GitHub.write(`${directoryName.trim()}/init.txt`,
+                          `This is the initializer file for '${directoryName.trim()}'.`);
+     resolve(1);
+    })
+   },
+   
+   'rmdir': dirName => { 
+    return new Promise(async resolve => {
+     const directoryName = await get(dirName);
+     $.GitHub.delete(directoryName.trim());
+     
+     resolve(1);
+    })
+   },
+   
+   'write': statement => {
+    return new Promise(async resolve => {
+     const date = Date.now();
+     const [name, txt] = statement.replace('>>', date).split(date);
+     const value = (await get(txt)).trim();
+     const filename = await get(name);
+     
+     $.GitHub.write(filename, value);
+     resolve(1);
+    })
+   },
+   
+   '-read': name => {
+    return new Promise(async resolve => {
+     const filename = await get(name);
+     const data = await $.GitHib.read(filename);
+     returns.push(data.content);
+     
+     resolve(1);
+    });
+   },
+   
+   '-rm': name => {
+    return new Promise(async resolve => {
+     const filename = await get(name);
+     $.GitHub.delete(filename);
+     
+     resolve(1);
+    });
+   },
+  },
+  
   '-cd': dirName => { 
    return new Promise(async resolve => {
     const directoryName = await get(dirName);
-    if (self.githubProgram)
-    {
-     const [owner, name] = directoryName.split('/');
-     $.GitHub.repo(owner.trim(), name.trim());
-     return resolve(1);
-    }
-    
     const id = `DIRECTORY - ${directoryName.trim()}`;
     const handle = scope[id] ?? $.$.modChildren[directoryName.trim()] ?? (await $.get(id)) ??
                    (await showDirectoryPicker());
@@ -1430,20 +1484,13 @@ $.foxx = new $.Interpreter(e => {
   
   '-mkdir': dirName => { 
    return new Promise(async resolve => {
-    const directoryName = await get(dirName);
-    if (self.githubProgram)
-    {
-     await $.GitHub.write(`${directoryName.trim()}/init.txt`,
-                          `This is the initializer file for '${directoryName.trim()}'.`);
-     return resolve(1);
-    }
-    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
     
+    const directoryName = await get(dirName);
     const id = `DIRECTORY - ${directoryName.trim()}`;
     const handle = await directory.getDirectoryHandle(directoryName.trim(), { create: true });
     if (handle)
@@ -1460,12 +1507,6 @@ $.foxx = new $.Interpreter(e => {
   '-rmdir': dirName => { 
    return new Promise(async resolve => {
     const directoryName = await get(dirName);
-    if (self.githubProgram)
-    {
-     $.GitHub.delete(directoryName.trim());
-     return resolve(1);
-    }
-    
     const id = `DIRECTORY - ${directoryName.trim()}`;
     const handle = scope[id] ?? $.$.modChildren[directoryName.trim()] ?? (await $.get(id)) ??
                    ((await showDirectoryPicker()));
@@ -1485,22 +1526,16 @@ $.foxx = new $.Interpreter(e => {
   
   '-write': statement => {
    return new Promise(async resolve => {
-    const date = Date.now();
-    const [name, txt] = statement.replace('>>', date).split(date);
-    const value = (await get(txt)).trim();
-    const filename = await get(name);
-    
-    if (self.githubProgram)
-    {
-     $.GitHub.write(filename, value);
-     return resolve(1);
-    }
-    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
+    
+    const date = Date.now();
+    const [name, txt] = statement.replace('>>', date).split(date);
+    const value = (await get(txt)).trim();
+    const filename = await get(name);
     
     const file = await directory.getFileHandle(filename.trim(), { create: true });
     const writableStream = await file.createWritable();
@@ -1513,20 +1548,13 @@ $.foxx = new $.Interpreter(e => {
   
   '-read': name => {
    return new Promise(async resolve => {
-    const filename = await get(name);
-    if (self.githubProgram)
-    {
-     const data = await $.GitHib.read(filename);
-     returns.push(data.content);
-     return resolve(1);
-    }
-    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
     
+    const filename = await get(name);
     let file = await directory.getFileHandle(filename.trim());
     file = await file.getFile();
     
@@ -1537,19 +1565,13 @@ $.foxx = new $.Interpreter(e => {
   
   '-rm': name => {
    return new Promise(async resolve => {
-    const filename = await get(name);
-    if (self.githubProgram)
-    {
-     $.GitHub.delete(filename);
-     return resolve(1);
-    }
-    
     if (!directory)
     {
      throw `no directory set;`;
      reject(`no directory set;`);
     }
     
+    const filename = await get(name);
     const file = await directory.getFileHandle(filename.trim());
     file.remove();
     resolve(1);
@@ -1567,26 +1589,22 @@ $.foxx = new $.Interpreter(e => {
      if (data.includes('{'))
      {
       code = findBlock(data +' ');
+     } else if (code.trim().startsWith('-git-'))
+     {
+      code = await $.GitHub.read(code.replace('-git-', '').trim());
      } else if (!directory)
      {
       throw `no directory set;`;
       reject(`no directory set;`);
      } else {
-      const entries = directory.values();
-      for await (let entry of entries)
-      { 
-       if (entry.name == code.trim())
-       {
-        const file = await entry.getFile();
-        code = await file.text();
-        break;
-       }
-      }
+      const handle = directory.getFileHandle(code);
+      const file = await entry.getFile();
+      code = await file.text();
      }
     }
     
     const arg = await get(argument);
-    if (typeof code == 'function') code(arg);
+    if (typeof code == 'function') returns.push(code(arg));
     else $.ruin(code);
     resolve(1);
    })
