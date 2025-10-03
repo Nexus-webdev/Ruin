@@ -2683,7 +2683,21 @@ $.struct('GitHub: static', {
    
    for (let item of (await this.get(path)))
    {
-    if (item.type == 'file') files[item.name] = await this.read(item.path);
+    if (item.type == 'file')
+    files[item.name] = await (new Promise(async resolve => {
+     const url = this.url +item.path;
+     const response = await fetch(url, {
+      headers: {
+       Authorization: `Bearer ${this.$token}`,
+       Accept: 'application/vnd.github.v3.raw',
+      },
+     });
+     
+     if (!response.ok) throw `Failed to read: ${response.status}`;
+     const data = await response;
+     resolve(data);
+    }));
+    
     else directories[item.name] = this.dir(item.path);
    };
    
@@ -2702,13 +2716,8 @@ $.struct('GitHub: static', {
    });
    
    if (!response.ok) throw `Failed to read: ${response.status}`;
-   let data;
-   try {
-    data = JSON.parse(await response.text());
-    data.content = decodeURIComponent(escape(atob(data.content)));
-   } catch(e) {
-    data = await response.text();
-   }
+   const data = JSON.parse(await response.text());
+   data.content = decodeURIComponent(escape(atob(data.content)));
    
    resolve(data);
   })
