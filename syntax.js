@@ -2676,6 +2676,21 @@ $.struct('GitHub: static', {
   })
  },
  
+ dir(path) {
+  return new Promise(async resolve => {
+   const directories = {};
+   const files = {};
+   
+   for (let item of (await this.get(path)))
+   {
+    if (item.type == 'file') files[item.name] = await this.read(item.path);
+    else directories[item.name] = this.dir(item.path);
+   };
+   
+   resolve({ directories, files });
+  })
+ },
+ 
  read(path) {
   return new Promise(async resolve => {
    const url = this.url +path;
