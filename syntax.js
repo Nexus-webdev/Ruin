@@ -2702,8 +2702,13 @@ $.struct('GitHub: static', {
    });
    
    if (!response.ok) throw `Failed to read: ${response.status}`;
-   const data = JSON.parse(await response.text());
-   data.content = decodeURIComponent(escape(atob(data.content)));
+   let data;
+   try {
+    data = JSON.parse(await response.text());
+    data.content = decodeURIComponent(escape(atob(data.content)));
+   } catch(e) {
+    data = await response.text();
+   }
    
    resolve(data);
   })
