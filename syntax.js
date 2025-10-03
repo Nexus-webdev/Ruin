@@ -2685,7 +2685,7 @@ $.struct('GitHub: static', {
    {
     if (item.type == 'file')
     files[item.name] = await (new Promise(async resolve => {
-     const res = await fetch(this.url +item.path, {
+     const res = await fetch(item.url, {
       headers: { Authorization: `Bearer ${this.$token}` },
      });
      
