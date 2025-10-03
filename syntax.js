@@ -2662,7 +2662,7 @@ $.struct('GitHub: static', {
  
  get(path) {
   return new Promise(async resolve => {
-   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${token}` } });
+   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${this.token}` } });
    if (!response.ok) throw `Failed to fetch: ${response.status}`;
    const data = await response.json();
  
@@ -2675,7 +2675,7 @@ $.struct('GitHub: static', {
    const directories = {};
    const files = {};
    
-   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${token}` } });
+   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${this.token}` } });
    if (!response.ok) throw `Failed to fetch: ${response.status}`;
    const data = await response.json();
    
