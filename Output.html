@@ -677,21 +677,39 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
     },
    };
    
+   $.foxx.syntax['-git-']['-install'] = statement => {
+    return new Promise(async resolve => {
+     const [name, file] = statement.split(':');
+     const entry = {
+      name: name.trim(),
+      file: file ? file.trim() : undefined,
+     };
+     
+     const value = await $.$.mod([entry], { useGit: true });
+     foxx.scope()[name] = value;
+     
+     for (let scope of foxx.scopes)
+     scope[name] = value;
+     resolve(1);
+    })
+   }
+   
    for (let key in foxxModifications)
    $.foxx.syntax[key] = foxxModifications[key];
    
-   async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 'Sprout - Game Engine' }], { namespace = '', extensions = {}, userMessage = 'Please press any key or click the mousepad to proceed.', order = [], dir } = { }) {
+   window.module = {};
+   async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 'Sprout - Game Engine' }], { namespace = '', extensions = {}, userMessage = 'Please press any key or click the mousepad to proceed.', order = [], dir, useGit } = { }) {
     const specified = typeof namespace == 'string';
-    const Module = {};
     const _files = {};
+    let Module = {};
     
-    const handleID = `Module - ${id}`;
+    const handleID = `Module - ${id.name || id}`;
     const c = {};
     
     const event = new CustomEvent('Module Loaded', {
      detail: {
-      message: `Module/Library '${id}' has loaded.`,
-      libraryId: id,
+      message: `Module/Library '${id.name || id}' has loaded.`,
+      libraryId: id.name || id,
       namespace,
       
       Module,
@@ -752,6 +770,31 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
       } catch(error) {
        tryAbort(`We have encountered an issue while evaluating the '${entry.name.trim()}' component. Restart?`, 1); 
       }
+     }
+     
+     document.dispatchEvent(event);
+    };
+    
+    async function git_execute() {
+     if (c.status != 0) return;
+     
+     if (userMessage != 'none') UserMessage.remove();
+     if ($.$.inModule == false) $.$.htmlTarget.appendChild(loadingBar);
+     c.status = 1;
+ 
+     $.listener('keydown', async e => {
+      if (e.ctrlKey && e.altKey && e.key == 'a') tryAbort('Are you sure you want to abort?');
+     }, window);
+ 
+     let i = 0;
+     const { files, directories } = await $.GitHub.dir(id.file);
+     Module = await createComponent(files, { name: id.name });
+     loadingBar.value += progresser;
+     
+     for (let key in directories)
+     {
+      const { files, directories } = directories[key];
+      Module[key] = await createComponent(files, { name: key });
      }
      
      document.dispatchEvent(event);
@@ -875,10 +918,8 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
       },
  
       css: async x => await $.css(x),
+      js: async x => $.js(x),
       default: x => x,
-      js: async x => {
-       if (namespace != 'syntax') $.js(x);
-      },
      }
      
      return $.$.opt(extension, evaulationObject)(file, { name, key, extension, filename: namespace, dp, Module });
@@ -889,12 +930,12 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
       namespace,
       exports: {},
       import(dependency = dpName, file) {
-       const dep = Module[dependency] ?? dp;
+       const dep = module[dependency] ?? dp;
        return file ? dep[file]: dep;
       },
       
       import_([dependency]) {
-       const dep = $.assess(dependency, [Module, { lib: dp, library: dp }]);
+       const dep = $.assess(dependency, [module, { lib: dp, library: dp }]);
        return dep;
       },
  
@@ -970,8 +1011,12 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
       $.log('No immediate issues detected. <css> color:lightgreen; font-family: Courier New'); 
       loadingBar.remove();
       
-      if (!entries.length) resolve(Object.values(Module)[0]);
-      else resolve(Module);
+      const result = entries.length ? Module : Object.values(Module)[0];
+      if (useGit) module[id.name] = Module;
+      else for (let key in Module)
+      module[key] = Module[key];
+      
+      resolve(result);
      })
     })
    }
