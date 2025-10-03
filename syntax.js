@@ -2692,15 +2692,7 @@ $.struct('GitHub: static', {
    for (let item of (await this.get(path)))
    {
     if (item.type == 'file')
-    files[item.name] = await (new Promise(async resolve => {
-     const res = await fetch(`https://${this.owner}.github.io/${this.repository}/${item.path}`, {
-      headers: { Authorization: `Bearer ${this.$token}` },
-     });
-     
-     const data = await res.json();
-     resolve(decodeURIComponent(escape(atob(data.content))));
-    }));
-    
+    files[item.name] = await item.text();
     else directories[item.name] = this.dir(item.path);
    };
    
