@@ -2665,6 +2665,7 @@ $.struct('GitHub: static', {
     name: item.name,
     path: item.path,
     type: item.type,
+    url: data.url,
     download_url: item.download_url,
    })) : {
     sha: data.sha,
