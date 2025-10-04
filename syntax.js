@@ -1445,7 +1445,7 @@ $.foxx = new $.Interpreter(e => {
    'read': name => {
     return new Promise(async resolve => {
      const filename = await get(name);
-     const data = await $.GitHib.read(filename);
+     const data = await $.GitHub.read(filename);
      returns.push(data.content);
      
      resolve(1);
