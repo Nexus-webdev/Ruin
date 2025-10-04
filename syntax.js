@@ -1405,7 +1405,7 @@ $.foxx = new $.Interpreter(e => {
    'cd': dirName => { 
     return new Promise(async resolve => {
      const directoryName = await get(dirName);
-     const [owner, name] = directoryName.split('/');
+     const [owner, name = ''] = directoryName.split('/');
      $.GitHub.repo(owner.trim(), name.trim());
      
      resolve(1);
@@ -1442,7 +1442,7 @@ $.foxx = new $.Interpreter(e => {
     })
    },
    
-   '-read': name => {
+   'read': name => {
     return new Promise(async resolve => {
      const filename = await get(name);
      const data = await $.GitHib.read(filename);
@@ -1452,7 +1452,7 @@ $.foxx = new $.Interpreter(e => {
     });
    },
    
-   '-rm': name => {
+   'rm': name => {
     return new Promise(async resolve => {
      const filename = await get(name);
      $.GitHub.delete(filename);
