@@ -790,13 +790,13 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
  
      let i = 0;
      const { files, directories } = await $.GitHub.dir(id.file);
-     Module = await createComponent(files, { name: id.name });
+     Module = await createComponent(files, { name: id.name }, 1);
      loadingBar.value += progresser;
      
      for (let key in directories)
      {
       const { files, directories } = directories[key];
-      Module[key] = await createComponent(files, { name: key });
+      Module[key] = await createComponent(files, { name: key }, 1);
      }
      
      document.dispatchEvent(event);
@@ -1014,7 +1014,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
       $.log('No immediate issues detected. <css> color:lightgreen; font-family: Courier New'); 
       loadingBar.remove();
       
-      const result = entries.length ? Module : Object.values(Module)[0];
+      const result = entries.length || useGit ? Module : Object.values(Module)[0];
       if (useGit) module[id.name] = Module;
       else for (let key in Module)
       module[key] = Module[key];
