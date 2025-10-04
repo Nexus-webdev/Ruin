@@ -74,7 +74,7 @@ function clear(db = getDB()) {
 }
 
 let $ = {
- RuinLibraryToken: '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',
+ RuinLibraryToken: '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',
  fixSyntax(code) {
   "Replace special keywords with js syntax";
   let fixedCode = code.replace(/def /g, 'this.')
