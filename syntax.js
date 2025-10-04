@@ -1430,6 +1430,15 @@ $.foxx = new $.Interpreter(e => {
     })
    },
    
+   'rm': name => {
+    return new Promise(async resolve => {
+     const filename = await get(name);
+     $.GitHub.delete(filename);
+     
+     resolve(1);
+    });
+   },
+   
    'write': statement => {
     return new Promise(async resolve => {
      const date = Date.now();
@@ -1447,15 +1456,6 @@ $.foxx = new $.Interpreter(e => {
      const filename = await get(name);
      const data = await $.GitHub.read(filename);
      returns.push(data.content);
-     
-     resolve(1);
-    });
-   },
-   
-   'rm': name => {
-    return new Promise(async resolve => {
-     const filename = await get(name);
-     $.GitHub.delete(filename);
      
      resolve(1);
     });
