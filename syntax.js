@@ -2705,11 +2705,24 @@ $.struct('GitHub: static', {
    });
    
    if (!response.ok) throw `Failed to read: ${response.status}`;
-   const data = JSON.parse(await response.text());
-   data.content = decodeURIComponent(escape(atob(data.content)));
+   const data = JSON.parse(await response.text()); $.log(data.content);
+   if (this.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
    
    resolve(data);
   })
+ },
+ 
+ isBase64(str) {
+  if (typeof str !== 'string') return false;
+  const notBase64 = /[^A-Z0-9+\/=]/i;
+  
+  if (!str || str.length % 4 != 0 || notBase64.test(str)) return false;
+  try {
+   atob(str);
+   return true;
+  } catch {
+   return false;
+  }
  },
  
  write(path, content, create = false) {
