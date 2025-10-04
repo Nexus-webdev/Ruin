@@ -2301,7 +2301,10 @@ $.struct('NeuralNetwork', {
   if (levels)
   {
    for (let lvl of levels)
-   this.levels.push(typeof lvl == 'string' ? $.Level.parse(lvl) : lvl.copy ? lvl.copy() : $.Level.parse($.Level.stringify(lvl)));
+   {
+    this.levels.push(typeof lvl == 'string' ? $.Level.parse(lvl) : lvl.copy ? lvl.copy() : $.Level.parse($.Level.stringify(lvl)));
+    if (typeof lvl != 'string' && !lvl.copy) $.log($.Level.stringify(lvl), $.Level.parse($.Level.stringify(lvl)));
+   }
    
    return;
   }
