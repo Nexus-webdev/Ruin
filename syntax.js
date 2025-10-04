@@ -2305,7 +2305,7 @@ $.struct('NeuralNetwork', {
     if (typeof lvl == 'string') lvl = $.Level.parse(lvl);
     else if (lvl.copy) lvl = lvl.copy();
     else if (lvl.inputs && lvl.outputs)
-    lvl = $.Level.parse($.Level.stringify(lvl));
+    lvl = new $.Level(lvl.inputs, lvl.outputs, lvl.biases, lvl.weights);
     else lvl = null;
     
     if (lvl && lvl.inputs && lvl.outputs) this.levels.push(lvl);
