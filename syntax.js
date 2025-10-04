@@ -2269,12 +2269,12 @@ $.struct('RLN', {
  
  static: {
   stringifyBest(rln) {
-   const binaryData = $.NeuralNetwork.stringify(rln.nets[0]);
-   return binaryData;
+   const Data = $.NeuralNetwork.stringify(rln.nets[0]);
+   return Data;
   },
   
-  parseBest(binaryData) {
-   const net = $.NeuralNetwork.parse(binaryData);
+  parseBest(Data) {
+   const net = $.NeuralNetwork.parse(Data);
    return net;
   },
  },
@@ -2348,11 +2348,11 @@ $.struct('NeuralNetwork', {
  static: {  
   stringify({ levelData, levels }, binary = true) {
    const net = { levelData, levels: levels.map(lvl => $.Level.stringify(lvl)) };
-   return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(net));
+   return $.$.stringify.obj(net);
   },
   
-  parse(binaryData) {
-   const data = $.$.parse.obj($.$.parse.binary(binaryData));
+  parse(Data) {
+   const data = $.$.parse.obj(Data);
    const network = new $.NeuralNetwork([]);
    network.setData(data.levelData, data.levels);
    
@@ -2404,13 +2404,13 @@ $.struct('Level', {
  },
  
  static: {
-  stringify({ inputs, outputs, biases, weights }, binary = true) {
+  stringify({ inputs, outputs, biases, weights }) {
    const lvl = { inputs: inputs.length, outputs: outputs.length, biases, weights };
-   return (binary ? $.$.stringify.ToBinary : x => x)($.$.stringify.obj(lvl));
+   return $.$.stringify.obj(lvl);
   },
   
-  parse(binaryData) {
-   const data = $.$.parse.obj($.$.parse.binary(binaryData));
+  parse(Data) {
+   const data = $.$.parse.obj(Data);
    const lvl = new $.Level(data.inputs, data.outputs, data.biases, data.weights);
    return lvl;
   },
