@@ -2712,7 +2712,7 @@ $.struct('GitHub: static', {
     url: response.url,
     path: response.path,
     content: txt,
-   }; $.log(data.content);
+   };
    
    if (this.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
    resolve(data);
