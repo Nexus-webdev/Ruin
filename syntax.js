@@ -2705,9 +2705,16 @@ $.struct('GitHub: static', {
    });
    
    if (!response.ok) throw `Failed to read: ${response.status}`;
-   const data = JSON.parse(await response.text()); $.log(data.content);
-   if (this.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
+   const txt = await response.text();
+   const data = txt.trim().startsWith('{') && txt.trim().endsWith('}') ? JSON.parse(txt) : {
+    name: response.name,
+    type: response.type,
+    url: response.url,
+    path: response.path,
+    content: txt,
+   }; $.log(data.content);
    
+   if (this.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
    resolve(data);
   })
  },
