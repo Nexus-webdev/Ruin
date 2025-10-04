@@ -1574,6 +1574,7 @@ $.foxx = new $.Interpreter(e => {
     const filename = await get(name);
     const file = await directory.getFileHandle(filename.trim());
     file.remove();
+    
     resolve(1);
    });
   },
@@ -1598,7 +1599,7 @@ $.foxx = new $.Interpreter(e => {
       reject(`no directory set;`);
      } else {
       const handle = directory.getFileHandle(code);
-      const file = await entry.getFile();
+      const file = await handle.getFile();
       code = await file.text();
      }
     }
