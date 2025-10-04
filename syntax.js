@@ -2681,9 +2681,11 @@ $.struct('GitHub: static', {
    
    for (let item of data)
    {
+    $.log(item);
+    
     if (item.type == 'file')
     files[item.name] = await item.text();
-    else directories[item.name] = this.dir(item.path);
+    else directories[item.name] = await this.dir(item.path);
    };
    
    resolve({ directories, files });
