@@ -2672,20 +2672,21 @@ $.struct('GitHub: static', {
  
  dir(path) {
   return new Promise(async resolve => {
+   const config = { headers: { Authorization: `Bearer ${this.$token}` } };
    const directories = {};
    const files = {};
    
-   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${this.$token}` } });
+   const response = await fetch(this.url +path, config);
    if (!response.ok) throw `Failed to fetch: ${response.status}`;
    const data = await response.json();
    
    for (let item of data)
    {
-    $.log(item);
-    
     if (item.type == 'file')
-    files[item.name] = await item.text();
-    else directories[item.name] = await this.dir(item.path);
+    {
+     const data = await (await fetch(item.url, config)).json();
+     files[item.name] = decodeURIComponent(escape(atob(data.content)));
+    } else directories[item.name] = await this.dir(item.path);
    };
    
    resolve({ directories, files });
