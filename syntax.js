@@ -2381,7 +2381,7 @@ $.struct('NeuralNetwork', {
   },
   
   parse(Data) {
-   const data = $.$.parse.obj(Data);
+   const data = typeof Data == 'object' ? Data : $.$.parse.obj(Data);
    const network = new $.NeuralNetwork([]);
    network.setData(data.levelData, data.levels);
    
@@ -2439,7 +2439,7 @@ $.struct('Level', {
   },
   
   parse(Data) {
-   const data = $.$.parse.obj(Data);
+   const data = typeof Data == 'object' ? Data : $.$.parse.obj(Data);
    const lvl = new $.Level(data.inputs, data.outputs, data.biases, data.weights);
    return lvl;
   },
