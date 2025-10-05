@@ -2277,16 +2277,28 @@ $.struct('RLN', {
  },
  
  static: {
-  stringifyBest(net) {
-   const Data = $.NeuralNetwork.stringify(net);
-   return Data;
+  stringify(nets) {
+   const array = [];
+   for (let net of nets)
+   {
+    const data = $.NeuralNetwork.stringify(net);
+    array.push(data);
+   }
+   
+   return $.$.stringify.obj(array);
   },
   
-  parseBest(Data) {
-   const net = $.NeuralNetwork.parse(Data);
-   return net;
+  parse(arrayString) {
+   const nets = [];
+   for (let data of $.$.parse.obj(arrayString))
+   {
+    const net = $.NeuralNetwork.parse(data);
+    nets.push(net);
+   }
+   
+   return nets;
   },
- },
+ }, 
 })
 
 $.struct('NeuralNetwork', {
