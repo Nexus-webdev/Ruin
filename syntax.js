@@ -2268,8 +2268,8 @@ $.struct('RLN', {
  },
  
  static: {
-  stringifyBest(rln) {
-   const Data = $.NeuralNetwork.stringify(rln.nets[0]);
+  stringifyBest(net) {
+   const Data = $.NeuralNetwork.stringify(net);
    return Data;
   },
   
