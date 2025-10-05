@@ -2232,18 +2232,27 @@ $.struct('RLN', {
   }
  },
  
- setData(net, t = .2) {
-  net.id = 0;
+ setData(nets, t = .2) {
   this.nets.length = 0;
   this.nets.push(net);
   
+  const children = $.math.floor(this.learningRate /nets.length);
+  const diff = this.learningRate -children;
   const n = typeof t == 'number';
-  for (let i = 1; i < this.learningRate; i ++)
+  
+  for (net of nets)
   {
-   const child = net.mutate(n ? t : t[i -1], true);
-   child.id = i;
+   net.id = 0;
+   const birthright = (net == nets[0] ? diff : 0);
    
-   this.nets.push(child);
+   for (let i = 1; i < children +birthright; i ++)
+   {
+    const j = this.nets.length +1;
+    const child = net.mutate(n ? t : t[j -1], true);
+    child.id = j;
+    
+    this.nets.push(child);
+   }
   }
  },
  
