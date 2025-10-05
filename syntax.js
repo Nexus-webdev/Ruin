@@ -2234,10 +2234,10 @@ $.struct('RLN', {
  
  setData(nets, t = .2) {
   this.nets.length = 0;
-  this.nets.push(net);
+  this.nets.push(...nets);
   
-  const children = $.math.floor(this.learningRate /nets.length);
-  const diff = this.learningRate -children;
+  const children = $.math.floor(this.learningRate /nets.length) -1;
+  const diff = this.learningRate -((children +1) *nets.length);
   const n = typeof t == 'number';
   
   for (net of nets)
