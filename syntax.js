@@ -2471,7 +2471,7 @@ $.struct('NeuralNetwork', {
    lvl.biases[i] += learningRate *d[i];
   }
   
-  outputs.mse = this.mse({ inputs: givenInputs, targets });
+  outputs.mse = this.mse([{ inputs: givenInputs, targets }]);
   return outputs;
  },
  
