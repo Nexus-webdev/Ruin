@@ -2392,13 +2392,33 @@ $.struct('NeuralNetwork', {
  train({ data = [], learningRate = .01, epochs = 30 } = {}) {
   const trainingData = [];
   for (let epoch = 0; epoch < epochs; epoch ++)
-  for (let { input, target } of data)
   {
-   const output = this.backpropagate(input, target, learningRate);
-   trainingData.push({ input, target, output });
+   for (let { input, target } of data)
+   this.backpropagate(input, target, learningRate);
+   
+   trainingData.push(this.mse(data));
   }
   
   return trainingData;
+ },
+ 
+ mse(net, data) {
+  let totalError = 0;
+  for (const { input, target } of data)
+  {
+   let sampleError = 0;
+   const outputs = net.feedForward(input);
+   for (let i = 0; i < outputs.length; i ++)
+   {
+    const diff = outputs[i] -target[i];
+    sampleError += diff **2;
+   }
+   
+   sampleError /= outputs.length;
+   totalError += sampleError;
+  }
+  
+  return totalError /data.length;
  },
  
  backpropagate(givenInputs, targets, learningRate = .01) {
@@ -2419,8 +2439,8 @@ $.struct('NeuralNetwork', {
   for (let l = this.levels.length -2; l >= 0; -- l)
   {
    const lvl = this.levels[l];
-   const next = this.levels[l + 1];
-   const nextD = deltas[l + 1];
+   const next = this.levels[l +1];
+   const nextD = deltas[l +1];
 
    const d = new Array(lvl.outputs.length);
    for (let i = 0; i < lvl.outputs.length; i ++)
@@ -2537,6 +2557,41 @@ $.struct('Level', {
 })
 
 $.struct('Visualizer: static', {
+ drawLossGraph(ctx, losses, { color = '#e63946', pointColor = '#1d3557', pad = 20 } = {}) {
+  const board = ctx.canvas ?? ctx.board;
+  const width = board.width;
+  const height = board.height;
+  
+  const maxLoss = $.math.max(...losses);
+  const minLoss = $.math.min(...losses);
+  const scaleX = i => pad +(i /(losses.length -1)) *(width -2 *pad);
+  const scaleY = val => height -pad -((val -minLoss) /(maxLoss -minLoss)) *(height -2 *pad);
+
+  ctx.beginPath();
+  ctx.strokeStyle = '#444';
+  
+  ctx.moveTo(pad, pad);
+  ctx.lineTo(pad, height -pad);
+  ctx.lineTo(width -pad, height -pad);
+  ctx.stroke();
+  
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  
+  ctx.moveTo(scaleX(0), scaleY(losses[0]));
+  for (let i = 1; i < losses.length; i ++)
+  ctx.lineTo(scaleX(i), scaleY(losses[i]));
+  
+  ctx.stroke();
+  ctx.fillStyle = pointColor;
+  for (let i = 0; i < losses.length; i ++)
+  {
+   ctx.beginPath();
+   ctx.arc(scaleX(i), scaleY(losses[i]), 2, 0, $.math.pi *2);
+   ctx.fill();
+  }
+ },
+ 
  drawNetwork(ctx, network, { margin = 50, outputLabels = x => ([]) } = {}) {
   const board = ctx.canvas ?? ctx.board;
   const left = margin;
