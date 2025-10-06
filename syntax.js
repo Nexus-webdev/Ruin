@@ -2392,8 +2392,8 @@ $.struct('NeuralNetwork', {
   const trainingData = [];
   for (let epoch = 0; epoch < epochs; epoch ++)
   {
-   for (let { input, target } of data)
-   this.backpropagate(input, target, learningRate);
+   for (let { inputs, targets } of data)
+   this.backpropagate(inputs, targets, learningRate);
    
    trainingData.push(this.mse(data));
   }
@@ -2403,13 +2403,13 @@ $.struct('NeuralNetwork', {
  
  mse(data) {
   let totalError = 0;
-  for (const { input, target } of data)
+  for (const { inputs, targets } of data)
   {
    let sampleError = 0;
-   const outputs = this.feedForward(input);
+   const outputs = this.feedForward(inputs);
    for (let i = 0; i < outputs.length; i ++)
    {
-    const diff = outputs[i] -target[i];
+    const diff = outputs[i] -targets[i];
     sampleError += diff **2;
    }
    
@@ -2470,7 +2470,8 @@ $.struct('NeuralNetwork', {
    for (let i = 0; i < lvl.biases.length; i ++)
    lvl.biases[i] += learningRate *d[i];
   }
-
+  
+  outputs.mse = this.mse({ inputs: givenInputs, targets });
   return outputs;
  },
  
