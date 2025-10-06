@@ -677,6 +677,10 @@ ${fix(txt)}
  $: new Proxy({
   inModule: false,
   stringify: {
+   ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+   },
+   
    ToHex(r, g, b, a) {
     const toHex = value => {
      const hex = Math.round(value).toString(16);
@@ -711,6 +715,10 @@ ${fix(txt)}
   },
 
   parse: {
+   base64(base64) {
+    return decodeURIComponent(escape(atob(base64)));
+   },
+   
    hex(hex) {
     hex = hex.slice(1, 8);
     let r, g, b, a = 1;
@@ -818,15 +826,6 @@ ${fix(txt)}
    return target[property];
   }
  }),
- 
- getRGBA(value) {
-  const alpha = Math.abs(value);
-  const R = value < 0 ? 0 : 255;
-  const G = R;
-  const B = value > 0 ? 0 : 255;
-  
-  return `rgba(${R}, ${G}, ${B}, ${alpha})`;
- },
  
  when(condition, checkDelay = 100) {
   return new Promise(resolve => {
@@ -2556,6 +2555,23 @@ $.struct('Level', {
  },
 })
 
+function BlackToWhite(value) {
+ value = Math.max(-1, Math.min(1, value));
+ const c = value >= 0 ? Math.round(255 *value) : Math.round(255 *(1 +value));
+ return `rgb(${c}, ${c}, ${c})`;
+}
+
+function BlueToRed(value) {
+ value = Math.max(-1, Math.min(1, value));
+ if (value >= 0) {
+  const r = Math.round(255 *value);
+  return `rgb(${r}, 0, 0)`;
+ }
+  
+ const b = Math.round(255 * -value);
+ return `rgb(0, 0, ${b})`;
+}
+
 $.struct('Visualizer: static', {
  drawLossGraph(ctx, losses, { color = '#FFA500', pointColor = '#FFB347', pad = 20 } = {}) {
   const board = ctx.canvas ?? ctx.board;
@@ -2622,7 +2638,7 @@ $.struct('Visualizer: static', {
   {
    ctx.beginPath();
    ctx.lineWidth = 2;
-   ctx.strokeStyle = $.getRGBA(weights[i][j]);
+   ctx.strokeStyle = BlueToRed(weights[i][j]);
    
    ctx.moveTo($.Visualizer.getNodeX(inputs, i, left, right), bottom);
    ctx.lineTo($.Visualizer.getNodeX(outputs, j, left, right), top);
@@ -2643,7 +2659,7 @@ $.struct('Visualizer: static', {
    
    ctx.beginPath();
    ctx.arc(x, bottom, nodeRadius *.6, 0, $.math.pi *2);
-   ctx.fillStyle = $.getRGBA(inputs[i]);
+   ctx.fillStyle = BlackToWhite(inputs[i]);
    ctx.fill();
   }
   
@@ -2658,13 +2674,13 @@ $.struct('Visualizer: static', {
    
    ctx.beginPath();
    ctx.arc(x, top, nodeRadius *.6, 0, $.math.pi *2);
-   ctx.fillStyle = $.getRGBA(outputs[i]);
+   ctx.fillStyle = BlackToWhite(outputs[i]);
    ctx.fill();
    
    ctx.beginPath();
    ctx.lineWidth = 2;;
    ctx.arc(x, top, nodeRadius *.8, 0, $.math.pi *2);
-   ctx.strokeStyle = $.getRGBA(biases[i])
+   ctx.strokeStyle = BlueToRed(biases[i])
    ctx.setLineDash([3, 3]);
    
    ctx.stroke();
