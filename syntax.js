@@ -436,6 +436,21 @@ ${fix(txt)}
   lerp(a, b, scale = .2) {
    return a +(b -a) *scale;
   },
+  
+  sigmoid(x) {
+   return 1 /(1 +Math.exp(-x));
+  },
+  
+  stableSigmoid(x) {
+   if (x >= 0)
+   {
+    const z = Math.exp(-x);
+    return 1 /(1 +z);
+   }
+   
+   const z = Math.exp(x);
+   return z /(1 +z);
+  },
 
   getIntersection(a, b, c, d) {
    const tTop = (d.x -c.x) *(a.y -c.y) -(d.y -c.y) *(a.x -c.x);
@@ -2425,7 +2440,7 @@ $.struct('Level', {
    for (let j = 0; j < this.inputs.length; j ++)
    sum += this.inputs[j] *this.weights[j][i];
    
-   outputs[i] = useDefault ? (sum > this.biases[i] ? 1 : 0) :
+   outputs[i] = useDefault ? $.math.stableSigmoid(sum -this.biases[i]) :
    { sum, bias: this.biases[i] };
   }
   
