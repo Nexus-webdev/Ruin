@@ -2389,7 +2389,19 @@ $.struct('NeuralNetwork', {
   return outputs;
  },
  
- backpropagate(givenInputs, targets, learningRate = 0.01) {
+ train({ data = [], learningRate = .01, epochs = 30 } = {}) {
+  const trainingData = [];
+  for (let epoch = 0; epoch < epochs; epoch ++)
+  for (let { input, target } of data)
+  {
+   const output = this.backpropagate(input, target, learningRate);
+   trainingData.push({ input, target, output });
+  }
+  
+  return trainingData;
+ },
+ 
+ backpropagate(givenInputs, targets, learningRate = .01) {
   const outputs = this.feedForward(givenInputs);
   const deltas = new Array(this.levels.length);
   const last = this.levels[this.levels.length -1];
