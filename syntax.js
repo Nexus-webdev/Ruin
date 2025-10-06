@@ -2402,12 +2402,12 @@ $.struct('NeuralNetwork', {
   return trainingData;
  },
  
- mse(net, data) {
+ mse(data) {
   let totalError = 0;
   for (const { input, target } of data)
   {
    let sampleError = 0;
-   const outputs = net.feedForward(input);
+   const outputs = this.feedForward(input);
    for (let i = 0; i < outputs.length; i ++)
    {
     const diff = outputs[i] -target[i];
