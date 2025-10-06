@@ -2557,7 +2557,7 @@ $.struct('Level', {
 })
 
 $.struct('Visualizer: static', {
- drawLossGraph(ctx, losses, { color = '#e63946', pointColor = '#1d3557', pad = 20 } = {}) {
+ drawLossGraph(ctx, losses, { color = '#FFA500', pointColor = '#FFB347', pad = 20 } = {}) {
   const board = ctx.canvas ?? ctx.board;
   const width = board.width;
   const height = board.height;
