@@ -452,9 +452,7 @@ prefix: null,
    filehandle[id] = filehandle[id] && !override ? filehandle[id] : value && !override ? value : await window.showSaveFilePicker({
     suggestedName: (suggestion.slice(suggestion.indexOf('-') +2)).split('.txt')[0].trim(),
     types: [{
-     accept: {
-      'text/plain': ['.html', '.css', '.js', '.txt', '.rdn', '.mthd', '.fx', '.exec', '.debug', '.py'],
-     },
+     description: '.$, .html, .css, .js, .txt, .rdn, .mthd, .fx, .exec, .debug, .py',
     }],
    });
    
