@@ -2234,11 +2234,11 @@ $.struct('Database', {
 });
 
 $.struct('RLN', {
- construct(levelData, learningRate = 5) {
+ construct(levelData, population = 5) {
   this.nets = [];
-  this.learningRate = learningRate;
+  this.population = population;
   
-  for (let i = 0; i < this.learningRate; i ++)
+  for (let i = 0; i < this.population; i ++)
   {
    const net = new $.NeuralNetwork(levelData);
    net.id = i;
@@ -2251,8 +2251,8 @@ $.struct('RLN', {
   this.nets.length = 0;
   this.nets.push(...nets);
   
-  const children = $.math.floor(this.learningRate /nets.length) -1;
-  const diff = this.learningRate -((children +1) *nets.length);
+  const children = $.math.floor(this.population /nets.length) -1;
+  const diff = this.population -((children +1) *nets.length);
   const n = typeof t == 'number';
   
   for (net of nets)
@@ -2287,7 +2287,7 @@ $.struct('RLN', {
  },
  
  push(net) {
-  net.id = this.learningRate ++;
+  net.id = this.population ++;
   this.nets.push(net);
  },
  
@@ -2386,6 +2386,60 @@ $.struct('NeuralNetwork', {
    outputs = inputs;
   }
   
+  return outputs;
+ },
+ 
+ backpropagate(givenInputs, targets, learningRate = 0.01) {
+  const outputs = this.feedForward(givenInputs);
+  const deltas = new Array(this.levels.length);
+  const last = this.levels[this.levels.length -1];
+  const d = new Array(last.outputs.length);
+  
+  for (let i = 0; i < last.outputs.length; i ++)
+  {
+   const y = last.outputs[i];
+   const t = targets[i];
+   
+   d[i] = (y -t) *y *(1 -y);
+  }
+  
+  deltas[this.levels.length -1] = d;
+  for (let l = this.levels.length -2; l >= 0; -- l)
+  {
+   const lvl = this.levels[l];
+   const next = this.levels[l + 1];
+   const nextD = deltas[l + 1];
+
+   const d = new Array(lvl.outputs.length);
+   for (let i = 0; i < lvl.outputs.length; i ++)
+   {
+    let sum = 0;
+    for (let k = 0; k < next.outputs.length; k ++)
+    sum += nextD[k] *next.weights[i][k];
+    
+    const y = lvl.outputs[i];
+    d[i] = sum *y *(1 -y);
+   }
+   
+   deltas[l] = d;
+  }
+  
+  for (let l = 0; l < this.levels.length; l ++)
+  {
+   const lvl = this.levels[l];
+   const d = deltas[l];
+   
+   for (let j = 0; j < lvl.inputs.length; j ++)
+   {
+    const xj = lvl.inputs[j];
+    for (let i = 0; i < lvl.outputs.length; i ++)
+    lvl.weights[j][i] -= learningRate *(d[i] *xj);
+   }
+   
+   for (let i = 0; i < lvl.biases.length; i ++)
+   lvl.biases[i] += learningRate *d[i];
+  }
+
   return outputs;
  },
  
