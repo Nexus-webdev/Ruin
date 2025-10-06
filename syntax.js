@@ -2422,6 +2422,8 @@ $.struct('NeuralNetwork', {
  
  backpropagate(givenInputs, targets, learningRate = .01) {
   const outputs = this.feedForward(givenInputs);
+  outputs.mse = this.mse([{ inputs: givenInputs, targets }]);
+  
   const deltas = new Array(this.levels.length);
   const last = this.levels[this.levels.length -1];
   const d = new Array(last.outputs.length);
@@ -2471,7 +2473,6 @@ $.struct('NeuralNetwork', {
    lvl.biases[i] += learningRate *d[i];
   }
   
-  outputs.mse = this.mse([{ inputs: givenInputs, targets }]);
   return outputs;
  },
  
