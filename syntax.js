@@ -256,12 +256,8 @@ ${fix(txt)}
       return _struct.construct.bind(this)(...args);
      };
      
-     for (let key of Object.keys(_struct))
-     {
-      if (this[key] == undefined)
-      this[key] = _struct[key];
-     }
-     
+     $.log([_struct, types]);
+     t.set(_struct, false);
      delete this.$extension;
     },
     
