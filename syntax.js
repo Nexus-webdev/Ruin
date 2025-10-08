@@ -2879,7 +2879,7 @@ $.struct('GitHub: static', {
      if (item.type == 'file')
      {
       const data = await (await fetch(item.url, config)).json();
-      if (data.content && ) files[item.name] = decodeURIComponent(escape(atob(data.content)));
+      if (data.content) files[item.name] = decodeURIComponent(escape(atob(data.content)));
      } else directories[item.name] = await this.dir(item.path);
     }
    };
