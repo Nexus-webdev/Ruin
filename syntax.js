@@ -218,7 +218,7 @@ ${fix(txt)}
    destinationObject = _this;
   }
   
-  const ruinContext = this;
+  const ruinContext = { ...this };
   const obj = this.module && !overrideModule ? this.module.exports : destinationObject;
   const staticValues = {};
   const arg = prep(0);
@@ -256,7 +256,6 @@ ${fix(txt)}
       return _struct.construct.bind(this)(...args);
      };
      
-     $.log([_struct, types]);
      t.set(_struct, false);
      delete this.$extension;
     },
