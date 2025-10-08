@@ -1056,7 +1056,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
    }
    
    setInterval(() => checkForChange(), 30); 
-   const code = localStorage[program.name];
+   const code = localStorage[program.name] ?? sessionStorage[program.name];
    
    window.onload = async() => {
     document.addEventListener('keydown', async e => {
@@ -1070,7 +1070,7 @@ $.ruin(\`func(event, data => self.postMessage(data))\`, {
   <meta charset='UTF-8' content-type='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <script>
-   localStorage['${urlData().name}'] = (\`${modify(code)}\`);
+   sessionStorage['${urlData().name}'] = (\`${modify(code)}\`);
    location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData().name}';
   <\/script>
  </head>

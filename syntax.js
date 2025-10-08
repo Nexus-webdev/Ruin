@@ -451,6 +451,13 @@ ${fix(txt)}
    const z = Math.exp(x);
    return z /(1 +z);
   },
+  
+  pointAtAngle(origin, angle, magnitude = 1) {
+   return {
+    x: origin.x +Math.cos(angle) *magnitude,
+    y: origin.y +Math.sin(angle) *magnitude,
+   };
+  },
 
   getIntersection(a, b, c, d) {
    const tTop = (d.x -c.x) *(a.y -c.y) -(d.y -c.y) *(a.x -c.x);
