@@ -2873,11 +2873,15 @@ $.struct('GitHub: static', {
    
    for (let item of data)
    {
-    if (item.type == 'file')
+    const exclude = (['.git', '.png', '.jpeg', '.jpg']).find(exclude => item.name.includes(exclude));
+    if (!exclude)
     {
-     const data = await (await fetch(item.url, config)).json(); $.log(data);
-     if (data.content) files[item.name] = decodeURIComponent(escape(atob(data.content)));
-    } else if (item.name != '.git') directories[item.name] = await this.dir(item.path);
+     if (item.type == 'file')
+     {
+      const data = await (await fetch(item.url, config)).json();
+      if (data.content && ) files[item.name] = decodeURIComponent(escape(atob(data.content)));
+     } else directories[item.name] = await this.dir(item.path);
+    }
    };
    
    resolve({ directories, files });
