@@ -2875,8 +2875,8 @@ $.struct('GitHub: static', {
    {
     if (item.type == 'file')
     {
-     const data = await (await fetch(item.url, config)).json();
-     files[item.name] = decodeURIComponent(escape(atob(data.content)));
+     const data = await (await fetch(item.url, config)).json(); $.log(data);
+     if (data.content) files[item.name] = decodeURIComponent(escape(atob(data.content)));
     } else if (item.name != '.git') directories[item.name] = await this.dir(item.path);
    };
    
