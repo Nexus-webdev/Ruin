@@ -203,22 +203,14 @@ let $ = {
    }
    
    function decode(txt) {
-    let code = shift(txt, -$.TxtToNum(repair(key)));
+    let code = $.shift(txt, -$.TxtToNum(repair(key)));
+    $.log({ key: repair(key), code })
     return code;
    }
    
    function repair(key) {
-    const repairedKey = shift(key, -Math.ceil(key.length /2));
+    const repairedKey = $.shift(key, -Math.ceil(key.length /2));
     return repairedKey;
-   }
-   
-   function shift(txt, shift, ignore = ['$']) {
-    const regex = new RegExp(`[a-zA-Z](?![${ignore.map(symbol => `\\${symbol}`).join('|')}])`, 'g');
-  
-    return txt.replace(regex, c => {
-     const base = c < 'a' ? 65 : 97;
-     return String.fromCharCode(((c.charCodeAt(0) -base +((shift %26) +26) %26) %26) +base);
-    });
    }
    
    resolve(result);
