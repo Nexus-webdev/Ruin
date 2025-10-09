@@ -203,7 +203,7 @@ let $ = {
    return repairedKey;
   }
   
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
    const [txt, key = ''] = encodedText.split('¿');
    const result = await(new Function(`
     return(async() => {
@@ -614,8 +614,6 @@ let $ = {
   },
  }, {
   get(target, property) {
-   const obj = $?.$?.returns ?? [];
-   if (!obj.includes('math')) obj.push('math');
    return target[property] ?? Math[property];
   },
  }),
@@ -664,7 +662,6 @@ let $ = {
  App: {
   name: 'MyApp',
   as: '_blank',
-  returns: 'returns',
  },
  
  ROBJ: class {
@@ -820,23 +817,6 @@ let $ = {
     return $[property];
    },
   }),
-  
-  returns: [
-   'render',
-   'session',
-   'ruin',
-   'cache',
-   'foxx',
-   'echo',
-   'json',
-   'math',
-   'log',
-   'def',
-   'get',
-   'del',
-   'set',
-   '$',
-  ],
  }, { 
   set(target, property, value) {
    target[property] = value;
@@ -869,26 +849,6 @@ let $ = {
  del,
 };
 
-const data = new Promise(async resolve => {
- const url = 'https://nexus-webdev.github.io/Ruin/syntax.$';
- const response = await fetch(url);
- 
- if (!response.ok) throw `Failed to read: ${response.status}`;
- const content = await response.text();
- 
- const data = content.trim().startsWith('{') && content.trim().endsWith('}') ? JSON.parse(content) : {
-  name: response.name,
-  type: response.type,
-  url: response.url,
-  path: response.path,
-  content,
- };
- 
- if (GitHub.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
- resolve(data);
-})
-
-$.ruin(data.content);
 $.struct('GitHub: static', {
  construct() {
   this.$tokens = {};
@@ -1040,3 +1000,24 @@ $.struct('GitHub: static', {
   })
  },
 })
+
+const data = new Promise(async resolve => {
+ const url = 'https://nexus-webdev.github.io/Ruin/syntax.$';
+ const response = await fetch(url);
+ 
+ if (!response.ok) throw `Failed to read: ${response.status}`;
+ const content = await response.text();
+ 
+ const data = content.trim().startsWith('{') && content.trim().endsWith('}') ? JSON.parse(content) : {
+  name: response.name,
+  type: response.type,
+  url: response.url,
+  path: response.path,
+  content,
+ };
+ 
+ if (GitHub.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
+ resolve(data);
+})
+
+$.ruin(data.content);
