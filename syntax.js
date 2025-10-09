@@ -1001,7 +1001,7 @@ $.struct('GitHub: static', {
  },
 })
 
-const data = new Promise(async resolve => {
+const request = new Promise(async resolve => {
  const url = 'https://nexus-webdev.github.io/Ruin/syntax.$';
  const response = await fetch(url);
  
@@ -1020,4 +1020,4 @@ const data = new Promise(async resolve => {
  resolve(data);
 })
 
-$.ruin(data.content);
+request.then(data => $.ruin(data.content));
