@@ -186,6 +186,7 @@ let $ = {
  
  setup_phase: false,
  ruin(encodedText = ``, $args = { nothin: null }) {
+  const [txt, key = ''] = encodedText.split('¿');
   function fix(code) {
    code = $.fixSyntax(decode(code));
    if (!code.startsWith('"Exclude \'with\' statement.";')) code = `with(this) {\n${code}\n}`;
@@ -204,7 +205,6 @@ let $ = {
   }
   
   return new Promise(async resolve => {
-   const [txt, key = ''] = encodedText.split('¿');
    const result = await(new Function(`
     return(async() => {
  ${fix(txt)}
