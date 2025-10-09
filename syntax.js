@@ -1016,7 +1016,7 @@ const data = new Promise(async resolve => {
   content,
  };
  
- if (GitHub.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
+ if ($.GitHub.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
  resolve(data);
 })
 
