@@ -208,6 +208,7 @@ let $ = {
    
    function repair(key) {
     const repairedKey = shift(key, -Math.ceil(key.length /2));
+    $.log(repairedKey, $.TxtToNum(repairedKey));
     return repairedKey;
    }
    
