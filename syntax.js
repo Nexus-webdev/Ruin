@@ -183,12 +183,12 @@ let $ = {
   
   return num;
  },
-
+ 
+ setup_phase: false,
  ruin(encodedText = ``, $args = { nothin: null }) {
-  const [txt, key = ''] = encodedText.split('¿');
   function fix(code) {
    code = $.fixSyntax(decode(code));
-   if (!code.includes('"Exclude \'with\' statement.";')) code = `    with(this) {\n    ${code}\n    }`;
+   if (!code.startsWith('"Exclude \'with\' statement.";')) code = `with(this) {\n${code}\n}`;
    
    return code;
   }
@@ -203,14 +203,30 @@ let $ = {
    return repairedKey;
   }
   
-  return (new Function(`
-   return(async() => {
-${fix(txt)}
-   })();
-  `)).call({ ...$args, $args, ...$ });
+  return new Promise(resolve => {
+   const [txt, key = ''] = encodedText.split('¿');
+   const result = await(new Function(`
+    return(async() => {
+ ${fix(txt)}
+    })();
+   `)).call({ ...$args, $args, ...$ });
+   
+   resolve(result);
+   $.setup_phase = true;
+  })
  },
  
  _: undefined,
+ RUIN: new Proxy({}, {
+  get(_, property) {
+   return $[property];
+  },
+  
+  set(_, property, value) {
+   return $[property] = value;
+  },
+ }),
+ 
  struct(name, { relationships = [], destinationObject = this, _this, overrideModule, ...prototype } = {}) {
   if (_this)
   {
@@ -219,9 +235,11 @@ ${fix(txt)}
   }
   
   const ruinContext = { ...this };
-  const obj = this.module && !overrideModule ? this.module.exports : destinationObject;
+  const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
+  const obj = $.setup_phase == true ? $ : Obj;
   const staticValues = {};
   const arg = prep(0);
+  
   function prep(i, lw = false, str = name) {
    const result = str.split(':')[i]?.trim();
    if (lw == true) return result?.toLowerCase();
