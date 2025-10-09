@@ -187,7 +187,8 @@ let $ = {
  setup_phase: false,
  ruin(encodedText = ``, $args = { nothin: null }) {
   return new Promise(async resolve => {
-   const [txt, key = ''] = encodedText.split('¿');
+   const i = encodedText.lastIndexOf('¿');
+   const [txt, key = ''] = [encodedText.slice(0, i), encodedText.slice(i)];
    const result = await (new Function(`return(async() => {\n${fix(txt)}\n})()`)).call({
     ...$args,
     $args,
@@ -208,7 +209,6 @@ let $ = {
    
    function repair(key) {
     const repairedKey = shift(key, -Math.ceil(key.length /2));
-    $.log(repairedKey, $.TxtToNum(repairedKey));
     return repairedKey;
    }
    
