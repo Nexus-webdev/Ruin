@@ -186,30 +186,39 @@ let $ = {
  
  setup_phase: false,
  ruin(encodedText = ``, $args = { nothin: null }) {
-  const [txt, key = ''] = encodedText.split('¿');
-  function fix(code) {
-   code = $.fixSyntax(decode(code));
-   if (!code.startsWith('"Exclude \'with\' statement.";')) code = `with(this) {\n${code}\n}`;
-   
-   return code;
-  }
-  
-  function decode(txt) {
-   let code = $.shift(txt, -$.TxtToNum(repair(key)));
-   return code;
-  }
-  
-  function repair(key) {
-   const repairedKey = $.shift(key, -Math.ceil(key.length /2));
-   return repairedKey;
-  }
-  
   return new Promise(async resolve => {
-   const result = await(new Function(`
-    return(async() => {
- ${fix(txt)}
-    })();
-   `)).call({ ...$args, $args, ...$ });
+   const [txt, key = ''] = encodedText.split('¿');
+   const result = await (new Function(`return(async() => {\n${fix(txt)}\n})()`)).call({
+    ...$args,
+    $args,
+    ...$,
+   });
+   
+   function fix(code) {
+    code = $.fixSyntax(decode(code));
+    if (!code.startsWith('"Exclude \'with\' statement.";')) code = `with(this) {\n${code}\n}`;
+    
+    return code;
+   }
+   
+   function decode(txt) {
+    let code = shift(txt, -$.TxtToNum(repair(key)));
+    return code;
+   }
+   
+   function repair(key) {
+    const repairedKey = shift(key, -Math.ceil(key.length /2));
+    return repairedKey;
+   }
+   
+   function shift(txt, shift, ignore = ['$']) {
+    const regex = new RegExp(`[a-zA-Z](?![${ignore.map(symbol => `\\${symbol}`).join('|')}])`, 'g');
+  
+    return txt.replace(regex, c => {
+     const base = c < 'a' ? 65 : 97;
+     return String.fromCharCode(((c.charCodeAt(0) -base +((shift %26) +26) %26) %26) +base);
+    });
+   }
    
    resolve(result);
    $.setup_phase = true;
@@ -1001,23 +1010,16 @@ $.struct('GitHub: static', {
  },
 })
 
-const request = new Promise(async resolve => {
+const bootstrapping = new Promise(async resolve => {
  const url = 'https://nexus-webdev.github.io/Ruin/syntax.$';
  const response = await fetch(url);
  
  if (!response.ok) throw `Failed to read: ${response.status}`;
- const content = await response.text();
+ let code = await response.text();
  
- const data = content.trim().startsWith('{') && content.trim().endsWith('}') ? JSON.parse(content) : {
-  name: response.name,
-  type: response.type,
-  url: response.url,
-  path: response.path,
-  content,
- };
+ if ($.GitHub.isBase64(code))
+ code = decodeURIComponent(escape(atob(code)));
  
- if ($.GitHub.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
- resolve(data);
+ const result = await $.ruin(code);
+ resolve(result);
 })
-
-request.then(data => $.ruin(data.content));
