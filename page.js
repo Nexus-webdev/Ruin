@@ -179,18 +179,20 @@ $ = {
 
 $.struct('Thread', {
  construct(callback, name) {
-  const code = `importScripts('${location.href.slice(0, location.href.lastIndexOf('/') +1) +'syntax.js'}');
-self.post = (data, type) => self.postMessage([data, callId], type);
-let callId;
-
-self.on = (event, callback) => {
-self['on' +event.trim()] = e => {
-if (event.trim() == 'message') callId = e.data[1] ?? callId;
-if (typeof callback == 'function') callback(e);
-};
-};
-
-$.ruin(\`(async ${callback.toString()})()\`, { self });`;
+  const code = `importScripts('syntax.js');
+bootstrapping.then(_ => {
+ self.post = (data, type) => self.postMessage([data, callId], type);
+ let callId;
+ 
+ self.on = (event, callback) => {
+  self['on' +event.trim()] = e => {
+   if (event.trim() == 'message') callId = e.data[1] ?? callId;
+   if (typeof callback == 'function') callback(e);
+  };
+ };
+ 
+ $.ruin(\`(async ${callback.toString()})()\`, { self });
+})`;
 
   const blob = URL.createObjectURL(new Blob([code], { type: 'application/javascript' }));
   this.worker = new Worker(blob, { name: name ?? Date.now() });
@@ -1027,4 +1029,3 @@ location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData(
  
  $.$.htmlTarget = document.body;
  $.ruin(code).then(result => watch.push(...$.projects));
-}
