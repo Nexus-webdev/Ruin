@@ -83,8 +83,8 @@ function wrap(value) {
     return target[prop];
    },
    
-   apply(target, thisArg, args) {
-    return target.call(thisArgs, args);
+   apply(target, _, args) {
+    return target(args);
    },
   });
  }
