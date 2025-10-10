@@ -308,7 +308,7 @@ const $ = wrap({
     
     $addRelationship({ name, object = obj, type = 'parent' } = {}) {
      const structs = {};
-     if (typeof name == 'string' && $.$) $.$.opt(type.trim().toLowerCase(), options)(this, name, object, structs);
+     if (typeof name == 'string' && $.$) $.$.opt(type?.trim()?.toLowerCase(), options)(this, name, object, structs);
      
      this.set(structs);
     },
@@ -353,7 +353,7 @@ const $ = wrap({
      const INSTANCE = Obj[name];
      structs[`_${name}_`] = (...args) => {
       const instance = new INSTANCE('⌀');
-      instance[arg.toLowerCase()] = t;
+      instance[arg?.toLowerCase()] = t;
       
       const construct = instance.construct;
       if (typeof construct == 'function') construct(...args);
@@ -380,7 +380,7 @@ const $ = wrap({
     },
    };
   
-   for (let member of relationships) $.$.opt(data(1, member).toLowerCase(), options)(data(0, member), obj, structs);
+   for (let member of relationships) $.$.opt(data(1, member)?.toLowerCase(), options)(data(0, member), obj, structs);
    this.set(structs);
    this.name = arg;
    
@@ -428,7 +428,7 @@ const $ = wrap({
   if (name == '⌁' || name == '$^$') return constructor;
   if (obj[data(0)]) return;
   
-  $.$.opt(data(1).toLowerCase(), {
+  $.$.opt(data(1)?.toLowerCase(), {
    default: x => {
     obj[arg] = constructor;
    },
