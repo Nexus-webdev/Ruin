@@ -47,10 +47,16 @@
   </style>
   
   <script src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'></script>
-  <script>document.write(`<script src='syntax.js?nocache=${Date.now() **.5}'><\/script>`)</script>
+  <script>
+   const range = document.createRange();
+   const fragment = range.createContextualFragment(`<script src='syntax.js?nocache=${Date.now() **.5}'><\/script>`);
+   document.head.appendChild(fragment);
+  </script>
   <script>
    bootstrapping.then(_ => {
-    document.write(`<script src='page.js?nocache=${Date.now() **.5}'><\/script>`);
+    const range = document.createRange();
+    const fragment = range.createContextualFragment(`<script src='page.js?nocache=${Date.now() **.5}'><\/script>`);
+    document.head.appendChild(fragment);
    })
   </script>
  </head>
