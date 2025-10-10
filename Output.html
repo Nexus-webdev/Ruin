@@ -56,13 +56,14 @@
   
   <script src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'></script>
   <script>document.write(`<script src='syntax.js?nocache=${Date.now() **.5}'><\/script>`)</script>
+ </head>
+ 
+ <body>
   <script>
    bootstrapping.then(_ => {
     document.write(`<script src='page.js?nocache=${Date.now() **.5}'><\/script>`);
    })
   </script>
- </head>
- 
- <body></body>
+ </body>
 </html>
 
