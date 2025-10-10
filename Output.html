@@ -46,6 +46,16 @@
    }
   </style>
   
+  <script src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'></script>
+  <script>document.write(`<script src='syntax.js?nocache=${Date.now() **.5}'><\/script>`)</script>
+  <script>
+   bootstrapping.then(_ => {
+    document.write(`<script src='page.js?nocache=${Date.now() **.5}'><\/script>`);
+   })
+  </script>
+ </head>
+ 
+ <body>
   <div id='popup' class='popup'>
    <div class='popup-content'>
     <span class='close' onclick="document.getElementById('popup').style.display = 'none';">&times;</span>
@@ -53,17 +63,6 @@
     <button id='popup-ok' onclick="document.getElementById('popup').style.display = 'none';">OK</button>
    </div>
   </div>
-  
-  <script src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'></script>
-  <script>document.write(`<script src='syntax.js?nocache=${Date.now() **.5}'><\/script>`)</script>
- </head>
- 
- <body>
-  <script>
-   bootstrapping.then(_ => {
-    document.write(`<script src='page.js?nocache=${Date.now() **.5}'><\/script>`);
-   })
-  </script>
  </body>
 </html>
 
