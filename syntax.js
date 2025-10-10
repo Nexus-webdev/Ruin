@@ -184,7 +184,7 @@ let $ = {
   return num;
  },
  
- setup_phase: false,
+ setup_phase: true,
  ruin(encodedText = ``, $args = { nothin: null }) {
   return new Promise(async resolve => {
    const i = encodedText.lastIndexOf('¿');
@@ -213,7 +213,7 @@ let $ = {
    }
    
    resolve(result);
-   $.setup_phase = true;
+   $.setup_phase = false;
   })
  },
  
