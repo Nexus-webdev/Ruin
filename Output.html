@@ -64,10 +64,6 @@
      scriptTag.onerror = _ => reject(new Error(`Failed to load ${src}`));
      document.head.appendChild(scriptTag);
     });
-    
-    const range = document.createRange();
-    const fragment = range.createContextualFragment(`<script src='${src}?nocache=${Date.now() **.5}'><\/script>`);
-    document.head.appendChild(fragment);
    }
   </script>
  </head>

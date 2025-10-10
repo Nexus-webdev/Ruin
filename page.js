@@ -540,7 +540,7 @@ $.foxx.syntax['-git-']['install'] = statement => {
   };
   
   $.GitHub.repo(owner.trim(), repo.trim());
-  const value = await $.$.mod([entry], { useGit: true });
+  const value = await createModule([entry], { useGit: true });
   foxx.scope()[name] = value;
   
   for (let scope of foxx.scopes)
@@ -879,9 +879,8 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
 
 $.$.mod = createModule;
 $.createElement('ruin-c', {
- async construct() {
+ construct() {
   const shadow = this.attachShadow({ mode: 'open' });
-  
   if (!this.textContent.startsWith('^')) 
   {
    this.result = $.ruin(this.textContent);
@@ -894,7 +893,6 @@ $.createElement('ruin-c', {
  },
 });
 
-// eof;
 const program = urlData();
 const watch = [program.name];
 const prev = {};
@@ -938,4 +936,4 @@ document.addEventListener('keydown', async e => {
 })
 
 $.$.htmlTarget = document.body;
-$.ruin(code);
+$.html(`<ruin-c>${code}<\/ruin-c>`);
