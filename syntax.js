@@ -223,8 +223,8 @@ let $ = {
    return $[property];
   },
   
-  set(target, property, value) {
-   target[property] = value;
+  set(_, property, value) {
+   _[property] = value;
    return $[property] = value;
   },
  }),
@@ -238,7 +238,7 @@ let $ = {
   
   const ruinContext = { ...this };
   const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
-  const obj = $.setup_phase == true ? $ : Obj;
+  const obj = $.setup_phase == true ? $.RUIN : Obj;
   const staticValues = {};
   const arg = prep(0);
   
