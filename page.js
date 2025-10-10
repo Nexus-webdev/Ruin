@@ -933,3 +933,5 @@ location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData(
  
  $.$.htmlTarget = document.body;
  $.ruin(code).then(result => watch.push(...$.projects))
+};
+

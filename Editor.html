@@ -445,7 +445,7 @@ ${indentation}${value.substring(end)}`;
     const i = encodedText.lastIndexOf('¿');
     const [txt, _ = ''] = [encodedText.slice(0, i), encodedText.slice(i)];
     
-    if (_.length > 20 || _.length == 0) return encodedText;
+    if (i == -1 || _.length > 20 || _.length == 0) return encodedText;
     const key = urlData.encoding ?? '';
     
     function decode(txt) {
