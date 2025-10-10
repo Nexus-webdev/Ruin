@@ -270,8 +270,7 @@ const $ = wrap({
   const arg = data(0);
   
   function data(i, str = name) {
-   $.log([str.split(':'), i, str.split(':')[i]])
-   const result = str.split(':')[i].trim();
+   const result = str.split(':')[i]?.trim();
    return result;
   }
 
