@@ -75,7 +75,7 @@ function clear(db = getDB()) {
 
 function wrap(value) {
  const flags = ['toJSON', 'toString'];
- if (typeof value == 'function')
+ if (value && typeof value == 'function')
  {
   return new Proxy(value, {
    get(target, prop, receiver) {
@@ -270,6 +270,7 @@ const $ = wrap({
   const arg = data(0);
   
   function data(i, str = name) {
+   $.log([str.split(':'), i, str.split(':')[i]])
    const result = str.split(':')[i].trim();
    return result;
   }
