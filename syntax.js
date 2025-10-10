@@ -267,15 +267,15 @@ const $ = wrap({
    destinationObject = _this;
   }
   
+  $.log(name);
   const ruinContext = { ...this };
   const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
   const obj = $.setup_phase == true ? $.RUIN : Obj;
   const staticValues = {};
-  const arg = prep(0);
+  const arg = data(0);
   
-  function prep(i, lw = false, str = name) {
-   const result = str.split(':')[i]?.trim();
-   if (lw == true) return result?.toLowerCase();
+  function data(i, str = name) {
+   const result = str.split(':')[i].trim();
    return result;
   }
 
@@ -385,7 +385,7 @@ const $ = wrap({
     },
    };
   
-   for (let member of relationships) $.$.opt(prep(1, true, member), options)(prep(0, false, member), obj, structs);
+   for (let member of relationships) $.$.opt(data(1, member).toLowerCase(), options)(data(0, member), obj, structs);
    this.set(structs);
    this.name = arg;
    
@@ -416,7 +416,7 @@ const $ = wrap({
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
    relationships, arg,
    destinationObject,
-   _this, prep, obj,
+   _this, data, obj,
    
    overrideModule,
    ruinContext,
@@ -431,9 +431,9 @@ const $ = wrap({
   }
   
   if (name == '⌁' || name == '$^$') return constructor;
-  if (obj[prep(0)]) return;
+  if (obj[data(0)]) return;
   
-  $.$.opt(prep(1, true), {
+  $.$.opt(data(1).toLowerCase(), {
    default: x => {
     obj[arg] = constructor;
    },
