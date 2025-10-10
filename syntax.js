@@ -218,12 +218,13 @@ let $ = {
  },
  
  _: undefined,
- RUIN: new Proxy({}, {
+ RUIN: new Proxy(this, {
   get(_, property) {
    return $[property];
   },
   
-  set(_, property, value) {
+  set(target, property, value) {
+   target[property] = value;
    return $[property] = value;
   },
  }),
