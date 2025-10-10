@@ -80,11 +80,11 @@ function wrap(value) {
   return new Proxy(value, {
    get(target, prop, receiver) {
     if (flags.includes(prop)) return() => '[Native Code]';
-    return Reflect.get(target, prop, receiver);
+    return target[prop];
    },
    
    apply(target, thisArg, args) {
-    return Reflect.apply(target, thisArg, args);
+    return target.call(args, thisArg);
    },
   });
  }
