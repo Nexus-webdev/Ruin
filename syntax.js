@@ -229,7 +229,7 @@ let $ = {
   },
  }),
  
- struct(name, { relationships = [], destinationObject = this, _this, overrideModule, ...prototype } = {}) {
+ struct(name, { relationships = [], destinationObject = $.RUIN, _this, overrideModule, ...prototype } = {}) {
   if (_this)
   {
    overrideModule = true;

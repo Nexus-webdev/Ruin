@@ -903,23 +903,22 @@ function checkForChange() {
 
 setInterval(() => checkForChange(), 30); 
 const code = localStorage[program.name] ?? sessionStorage[program.name];
-
-window.onload = async() => {
- document.addEventListener('keydown', async e => {
-  if (!e.ctrlKey || e.key != 's') return;
+document.addEventListener('keydown', async e => {
+ if (e.ctrlKey && e.key == 's')
+ {
   e.preventDefault();
   
   let content = document.documentElement.innerHTML;
   content = `<!DOCTYPE html>
 <html lang='en'>
-<head>
-<meta charset='UTF-8' content-type='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-<script>
-sessionStorage['${urlData().name}'] = (\`${modify(code)}\`);
-location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData().name}';
-<\/script>
-</head>
+ <head>
+  <meta charset='UTF-8' content-type='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <script>
+   sessionStorage['${urlData().name}'] = (\`${modify(code)}\`);
+   location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData().name}';
+  <\/script>
+ </head>
 </html>`;
  
   const directory = foxx.directory() ?? await window.showDirectoryPicker();
@@ -929,9 +928,8 @@ location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData(
   const pageStream = await page.createWritable();
   await pageStream.write(pageBlob);
   await pageStream.close();
- })
- 
- $.$.htmlTarget = document.body;
- $.ruin(code).then(result => watch.push(...$.projects))
-};
+ }
+})
 
+$.$.htmlTarget = document.body;
+$.ruin(code);
