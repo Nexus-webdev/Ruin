@@ -188,7 +188,7 @@ let $ = {
  ruin(encodedText = ``, $args = { nothin: null }) {
   return new Promise(async resolve => {
    const i = encodedText.lastIndexOf('¿');
-   const [txt, key = ''] = [encodedText.slice(0, i), encodedText.slice(i)];
+   const [txt, key = ''] = [encodedText.slice(0, i), encodedText.slice(i +1)];
    const result = await (new Function(`return(async() => {\n${fix(txt)}\n})()`)).call({
     ...$args,
     $args,
@@ -204,7 +204,6 @@ let $ = {
    
    function decode(txt) {
     let code = $.shift(txt, -$.TxtToNum(repair(key)));
-    $.log({ key: repair(key), code })
     return code;
    }
    
