@@ -14,21 +14,6 @@ function modify(string) {
  return modifiedStr;
 };
 
-if (!navigator.onLine)
-{
- window.Peer = class {
-  constructor(id, config) {
-   console.log('No Internet Connection!');
-  }
-  
-  on(type, fn) {  }
-  
-  connect(id) {
-   return { on: this.on, send(mess) { } }
-  }
- };
-}
-
 function log({ value, to = document }) {
  const echo = new CustomEvent('echo', { detail: { value, type: typeof value } });
  to.dispatchEvent(echo);
@@ -176,87 +161,6 @@ $ = {
  cache: localStorage,
  parent: window.parent,
 };
-
-$.struct('Thread', {
- construct(callback, name) {
-  const code = `importScripts('syntax.js');
-bootstrapping.then(_ => {
- self.post = (data, type) => self.postMessage([data, callId], type);
- let callId;
- 
- self.on = (event, callback) => {
-  self['on' +event.trim()] = e => {
-   if (event.trim() == 'message') callId = e.data[1] ?? callId;
-   if (typeof callback == 'function') callback(e);
-  };
- };
- 
- $.ruin(\`(async ${callback.toString()})()\`, { self });
-})`;
-
-  const blob = URL.createObjectURL(new Blob([code], { type: 'application/javascript' }));
-  this.worker = new Worker(blob, { name: name ?? Date.now() });
-  this.process = code;
-  this.queue = {};
-  this.src = blob;
- },
- 
- call(id) {
-  return this.queue[id].promise;
- },
- 
- on(event, callback) {
-  this.worker['on' +event.trim()] = e => {
-   const callId = e.data[1];
-   if (event.trim() == 'message' && callId)
-   {
-    const call = this.queue[callId];
-    return call.resolve({ ...e, data: e.data, call });
-   }
-   
-   if (typeof callback == 'function') callback(e);
-  }
- },
- 
- post(data, callId) {
-  let resolve, promise = new Promise(_resolve => { resolve = _resolve });
-  if (callId) this.queue[callId] = { promise, resolved: false, result: null, resolve };
-  this.worker.postMessage([data, callId]);
- },
- 
- terminate() {
-  this.worker.terminate();
- },
-})
-
-$.struct('Manager', {
- construct() {
-  this.workers = {};
- },
- 
- hire(id, callback, ctx = {}) {
-  const code = `importScripts('${location.href.slice(0, location.href.lastIndexOf('/') +1) +'syntax.js'}');
-self.onmessage = event => {
-$.ruin(\`func(event, data => self.postMessage(data))\`, {
-event, self, func: ${callback.toString()}
-})
-}`;
-
-  const blob = URL.createObjectURL(new Blob([code], { type: 'application/javascript' }));
-  this.workers[id] = new Worker(blob, { name: id });
-  this.workers[id].process = code;
-  this.workers[id].src = blob;
-  this.workers[id].ctx = ctx;
- },
- 
- handle(id, callback) {
-  this.workers[id].onmessage = e => callback(e, this.workers[id]);
- },
- 
- post(id, data) {
-  this.workers[id].postMessage([data, this.workers[id].ctx]);
- },
-})
 
 $.rdnFiles = new $.Manager();
 window.Images = {};
@@ -1028,4 +932,4 @@ location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData(
  })
  
  $.$.htmlTarget = document.body;
- $.ruin(code).then(result => watch.push(...$.projects));
+ $.ruin(code).then(result => watch.push(...$.projects))
