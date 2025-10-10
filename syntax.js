@@ -1003,7 +1003,7 @@ $.struct('GitHub: static', {
  },
 })
 
-const bootstrapping = new Promise(async resolve => {
+window.bootstrapping = new Promise(async resolve => {
  const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
  const response = await fetch(url);
  
