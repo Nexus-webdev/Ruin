@@ -100,7 +100,7 @@ function wrap(value) {
  return value;
 }
 
-const $ = wrap({
+const $ = ({
  fixSyntax(code) {
   "Replace special keywords with js syntax";
   let fixedCode = code.replace(/def /g, 'this.')
