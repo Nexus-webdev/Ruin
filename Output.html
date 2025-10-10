@@ -57,7 +57,7 @@
    function script(src) {
     return new Promise((resolve, reject) => {
      const scriptTag = document.createElement('script');
-     scriptTag.src = `${src}?nocache=${Math.floor(Math.sqrt(Date.now()))}`;
+     scriptTag.src = `${src}?nocache=${Date.now()}`;
      scriptTag.async = true;
  
      scriptTag.onload = _ => resolve(scriptTag);
