@@ -19,8 +19,7 @@ function log({ value, to = document }) {
  to.dispatchEvent(echo);
 }
 
-$ = {
- ...$,
+const mods = {
  Img: Image,
  js(code, type = 'text/javascript') {
   const script = document.createElement('script');
@@ -161,6 +160,13 @@ $ = {
  cache: localStorage,
  parent: window.parent,
 };
+
+for (let key in mods)
+{
+ if (typeof mods[key] == 'function')
+ $.RUIN[key] = mods[key].bind($.RUIN);
+ else $.RUIN[key] = mods[key];
+}
 
 $.rdnFiles = new $.Manager();
 window.Images = {};

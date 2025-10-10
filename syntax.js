@@ -73,7 +73,38 @@ function clear(db = getDB()) {
  });
 }
 
-let $ = {
+function wrap(value) {
+ const flags = ['toJSON', 'toString'];
+ if (typeof value == 'function')
+ {
+  return new Proxy(value, {
+   get(target, prop, receiver) {
+    if (flags.includes(prop)) return() => '[Native Code]';
+    return Reflect.get(target, prop, receiver);
+   },
+   
+   apply(target, thisArg, args) {
+    return Reflect.apply(target, thisArg, args);
+   },
+  });
+ }
+ 
+ if (value && typeof value == 'object')
+ {
+  return new Proxy(value, {
+   get(target, prop, receiver) {
+    if (flags.includes(prop)) return() => '[Native Code]';
+    const v = Reflect.get(target, prop, receiver);
+    
+    return wrap(v);
+   },
+  });
+ }
+ 
+ return value;
+}
+
+const $ = wrap({
  fixSyntax(code) {
   "Replace special keywords with js syntax";
   let fixedCode = code.replace(/def /g, 'this.')
@@ -849,7 +880,7 @@ let $ = {
  get,
  set,
  del,
-};
+});
 
 $.struct('GitHub: static', {
  construct() {
