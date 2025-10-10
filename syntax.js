@@ -82,10 +82,6 @@ function wrap(value) {
     if (flags.includes(prop)) return() => '[Native Code]';
     return target[prop];
    },
-   
-   apply(target, _, args) {
-    return target(args);
-   },
   });
  }
  
