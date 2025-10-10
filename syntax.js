@@ -84,7 +84,7 @@ function wrap(value) {
    },
    
    apply(target, thisArg, args) {
-    return target.call(args, thisArg);
+    return target.call(thisArgs, args);
    },
   });
  }
@@ -267,7 +267,6 @@ const $ = wrap({
    destinationObject = _this;
   }
   
-  $.log(name);
   const ruinContext = { ...this };
   const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
   const obj = $.setup_phase == true ? $.RUIN : Obj;
