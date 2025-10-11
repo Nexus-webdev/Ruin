@@ -263,6 +263,10 @@ const $ = ({
    destinationObject = _this;
   }
   
+  function opt(value, options = {}) {
+   return options[value] ?? options.default;
+  };
+  
   const ruinContext = { ...this };
   const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
   const obj = $.setup_phase == true ? $.RUIN : Obj;
@@ -308,7 +312,7 @@ const $ = ({
     
     $addRelationship({ name, object = obj, type = 'parent' } = {}) {
      const structs = {};
-     if (typeof name == 'string' && $.$) $.$.opt(type?.trim()?.toLowerCase(), options)(this, name, object, structs);
+     if (typeof name == 'string') opt(type?.trim()?.toLowerCase(), options)(this, name, object, structs);
      
      this.set(structs);
     },
@@ -380,7 +384,7 @@ const $ = ({
     },
    };
   
-   for (let member of relationships) $.$.opt(data(1, member)?.toLowerCase(), options)(data(0, member), obj, structs);
+   for (let member of relationships) opt(data(1, member)?.toLowerCase(), options)(data(0, member), obj, structs);
    this.set(structs);
    this.name = arg;
    
@@ -428,7 +432,7 @@ const $ = ({
   if (name == '⌁' || name == '$^$') return constructor;
   if (obj[data(0)]) return;
   
-  $.$.opt(data(1)?.toLowerCase(), {
+  opt(data(1)?.toLowerCase(), {
    default: x => {
     obj[arg] = constructor;
    },
@@ -649,34 +653,6 @@ const $ = ({
  terminal: console,
  def: {},
  dp: {},
- 
- service(callback) {
-  self.onmessage = e => callback(e);
- },
- 
- for_([string]) {
-  let unitOfTime = '';
-  let number = '';
-  
-  const units = {
-   ms: 1,
-   s: 1000,
-   mins: 60000,
-   hrs: 3600000,
-   
-   default: 1,
-  }
-  
-  string.split('').map(char => {
-   if (char == '.' || char == ',' || char == '0' || Number(char)) number += char;
-   else if (char != '-') unitOfTime += char;
-  })
-  
-  const time = Number(number) *$.$.opt(unitOfTime, units);
-  return new Promise(resolve => {
-   setTimeout(x => resolve(time), time);
-  });
- },
 
  enable: {
   auto: {
