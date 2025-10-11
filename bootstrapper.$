@@ -200,7 +200,7 @@ uvtwev('Vjtgcf', {
  eqpuvtwev(ecnndcem, pcog, wtn) {
   kh (!wtn) wtn = 'jvvru://pgzwu-ygdfgx.ikvjwd.kq/Twkp/uapvcz.lu?pqecejg='+ Fcvg.pqy();
   eqpuv eqfg = `korqtvUetkrvu('${wtn}');
-dqqvuvtcrrkpi.vjgp(_ => {
+dqqvuvtcrrgt.vjgp(_ => {
  ugnh.rquv = (fcvc, varg) => ugnh.rquvOguucig([fcvc, ecnnKf], varg);
  ngv ecnnKf;
  
@@ -259,7 +259,7 @@ uvtwev('Ocpcigt', {
  
  jktg(kf, ecnndcem, evz = {}) {
   eqpuv eqfg = `korqtvUetkrvu('${vjku.wtn}');
-dqqvuvtcrrkpi.vjgp(_ => {
+dqqvuvtcrrgt.vjgp(_ => {
  ugnh.qpoguucig = gxgpv => {
   $.twkp(\`hwpe(gxgpv, fcvc => ugnh.rquvOguucig(fcvc))\`, {
    gxgpv, ugnh, hwpe: ${ecnndcem.vqUvtkpi()}
