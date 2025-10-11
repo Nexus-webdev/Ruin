@@ -156,16 +156,6 @@ eqpuv oqfu = {
   cuape fgnOqfwngu(pcogu = ['ockp']) {
    hqt (ngv pcog qh pcogu) cyckv fgn(`Oqfwng - ${pcog}`);
   },
-
-  ugnh: pgy Rtqza({}, {
-   ugv(vctigv, rtqrgtva, xcnwg) {
-    $[rtqrgtva] = xcnwg;
-   },
-
-   igv(vctigv, rtqrgtva) {
-    tgvwtp $[rtqrgtva];
-   },
-  }),
  }, { 
   ugv(vctigv, rtqrgtva, xcnwg) {
    vctigv[rtqrgtva] = xcnwg;
