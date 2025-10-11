@@ -198,7 +198,7 @@ uvtwev('TQDL', {
 
 uvtwev('Vjtgcf', {
  eqpuvtwev(ecnndcem, pcog, wtn) {
-  kh (!wtn) wtn = 'jvvru://pgzwu-ygdfgx.ikvjwd.kq/Twkp/uapvcz.lu';
+  kh (!wtn) wtn = 'jvvru://pgzwu-ygdfgx.ikvjwd.kq/Twkp/uapvcz.lu?pqecejg='+ Fcvg.pqy();
   eqpuv eqfg = `korqtvUetkrvu('${wtn}');
 dqqvuvtcrrkpi.vjgp(_ => {
  ugnh.rquv = (fcvc, varg) => ugnh.rquvOguucig([fcvc, ecnnKf], varg);
@@ -254,7 +254,7 @@ dqqvuvtcrrkpi.vjgp(_ => {
 uvtwev('Ocpcigt', {
  eqpuvtwev(wtn) {
   fgh yqtmgtu = {};
-  fgh wtn = wtn ?? 'jvvru://pgzwu-ygdfgx.ikvjwd.kq/Twkp/uapvcz.lu';
+  fgh wtn = wtn ?? 'jvvru://pgzwu-ygdfgx.ikvjwd.kq/Twkp/uapvcz.lu?pqecejg='+ Fcvg.pqy();
  },
  
  jktg(kf, ecnndcem, evz = {}) {

@@ -842,7 +842,7 @@ $.struct('GitHub: static', {
  },
 })
 
-self.bootstrapping = new Promise(async resolve => {
+self.bootstrapper = new Promise(async resolve => {
  const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
  const response = await fetch(url);
  
