@@ -646,8 +646,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    
    if (config)
    {
-    $.ROBJ.create(entry.name +' - configuration', config);
-    const configObject = await $.$.rdn(entry.name +' - configuration');
+    const configObject = $.$.parse.obj(config);
     if (configObject.order) order = configObject.order;
     
     const ext = configObject.extensions;
@@ -736,8 +735,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
 
    async rdn(x) {
     if (namespace.includes('config')) return;
-    $.ROBJ.create(name+ namespace, x);
-    const rdn = await $.$.rdn(name +namespace);
+    const rdn = $.$.parse.obj(x);
 
     dp[rdn.namespace ?? namespace] = { ...rdn };
    },
