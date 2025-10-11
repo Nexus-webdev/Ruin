@@ -26,7 +26,7 @@ const mods = {
   script.type = type;
   script.text = code;
   
-  $.$.htmlTarget.appendChild(script);
+  $.meta.htmlTarget.appendChild(script);
  },
  
  html(code) {
@@ -34,7 +34,7 @@ const mods = {
   
   const range = document.createRange();
   const fragment = range.createContextualFragment(code);
-  $.$.htmlTarget.appendChild(fragment);
+  $.meta.htmlTarget.appendChild(fragment);
  },
 
  css(code) {
@@ -50,7 +50,7 @@ const mods = {
  },
 
  Q(query, { type = '', searchEngine = 'https://duckduckgo.com/?q=', win = window } = {}) {
-  return $.$.opt(type, {
+  return $.meta.opt(type, {
    search: x => `${searchEngine}${encodeURIComponent(query)}`,
    url: x => encodeURIComponent(query),
    params: x => { 
@@ -63,7 +63,7 @@ const mods = {
     return params;
    },
 
-   default: x => $.$.htmlTarget.querySelector(query),
+   default: x => $.meta.htmlTarget.querySelector(query),
   })();
  },
  
@@ -72,7 +72,7 @@ const mods = {
    const elem = document.createElement('audio');
    elem.id = id;
    elem.src = src;
-   $.$.htmlTarget.appendChild(elem);
+   $.meta.htmlTarget.appendChild(elem);
   },
 
   play(id) {
@@ -202,7 +202,7 @@ $.struct('Image', {
    
    this.onload(this.img, result);
    this.saveInterval = setInterval(x => {
-    $.$.opt(this.autosave.trim().toLowerCase(), {
+    $.meta.opt(this.autosave.trim().toLowerCase(), {
      default: x => x,
      'never': x => clearInterval(this.saveInterval),
      'yes': x => this.save(),
@@ -357,12 +357,12 @@ const foxxModifications = {
  doc: {
   icon(x) {
    return new Promise(async resolve => {
-    const t = $.$.htmlTarget;
+    const t = $.meta.htmlTarget;
     const data = await foxx.get(x);
-    $.$.htmlTarget = document.head;
+    $.meta.htmlTarget = document.head;
     
     $.html(`<link rel='icon' ${data}>`);
-    $.$.htmlTarget = t;
+    $.meta.htmlTarget = t;
     
     resolve(1);
    })
@@ -502,7 +502,7 @@ const foxxModifications = {
     };
    })
    
-   const value = await $.$.mod([library.trim(), ...entryArray], { namespace, dir: await get(library) });
+   const value = await $.meta.mod([library.trim(), ...entryArray], { namespace, dir: await get(library) });
    foxx.scope()[namespace ? namespace.trim() : library.trim()] = value;
    
    for (let scope of foxx.scopes)
@@ -558,8 +558,8 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
  UserMessage.textContent = userMessage;
  UserMessage.style['font-family'] = 'Courier New';
  
- if ($.$.inModule == false && userMessage != 'none')
- $.$.htmlTarget.appendChild(UserMessage);
+ if ($.meta.inModule == false && userMessage != 'none')
+ $.meta.htmlTarget.appendChild(UserMessage);
  
  const progresser = 100 /(entries.length +1);
  const loadingBar = document.createElement('input');
@@ -573,7 +573,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
   if (c.status != 0) return;
   
   if (userMessage != 'none') UserMessage.remove();
-  if ($.$.inModule == false) $.$.htmlTarget.appendChild(loadingBar);
+  if ($.meta.inModule == false) $.meta.htmlTarget.appendChild(loadingBar);
   c.status = 1;
 
   $.listener('keydown', async e => {
@@ -602,7 +602,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    try {
     const filename = typeof entry.file == 'string' ? entry.file : entry.name;
     Module[entry.name] = await createComponent(directories[filename], entry, 1);
-    $.$.pkg.push(entry.name);
+    $.meta.pkg.push(entry.name);
     i ++;
    } catch(error) {
     tryAbort(`We have encountered an issue while evaluating the '${entry.name.trim()}' component. Restart?`, 1); 
@@ -616,7 +616,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
   if (c.status != 0) return;
   
   if (userMessage != 'none') UserMessage.remove();
-  if ($.$.inModule == false) $.$.htmlTarget.appendChild(loadingBar);
+  if ($.meta.inModule == false) $.meta.htmlTarget.appendChild(loadingBar);
   c.status = 1;
 
   $.listener('keydown', async e => {
@@ -757,7 +757,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    default: x => x,
   }
   
-  return $.$.opt(extension, evaulationObject)(file, { name, key, extension, filename: namespace, dp, Module });
+  return $.meta.opt(extension, evaulationObject)(file, { name, key, extension, filename: namespace, dp, Module });
  }
  
  function newModuleHandle({ dpName, namespace, dp } = {}) {
@@ -800,7 +800,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    const data = {};
    const directories = {};
    
-   $.$.modChildren[name ?? handle.name] = handle;
+   $.meta.modChildren[name ?? handle.name] = handle;
    for await (const entry of handle.values())
    {
     if (entry.kind == 'file') {
@@ -811,7 +811,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
     else if (entry.kind == 'directory')
     {
      [directories[entry.name]] = await getEntriesFrom(entry, 0, 1);
-     $.$.modChildren[`${nested ? handle.name +' - ' : ''}${entry.name}`] = entry;
+     $.meta.modChildren[`${nested ? handle.name +' - ' : ''}${entry.name}`] = entry;
     }
    }
    
@@ -829,12 +829,12 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    return false;
   }
   
-  await $.$.delModules([id]);
+  await $.meta.delModules([id]);
   location.reload();
  }
  
  if (useGit) git_execute();
- else if ($.$.inModule == false)
+ else if ($.meta.inModule == false)
  {
   document.addEventListener('mousedown', execute);
   document.addEventListener('keydown', e => {
@@ -857,7 +857,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
  })
 }
 
-$.$.mod = createModule;
+$.meta.mod = createModule;
 const program = urlData();
 const watch = [program.name];
 const prev = {};
@@ -900,5 +900,5 @@ document.addEventListener('keydown', async e => {
  }
 })
 
-$.$.htmlTarget = document.body;
+$.meta.htmlTarget = document.body;
 $.ruin(code);

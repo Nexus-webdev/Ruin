@@ -429,7 +429,7 @@ const $ = ({
    for (let key in prototype.static) constructor[key] = prototype.static[key];
   }
   
-  if (name == '⌁' || name == '$^$') return constructor;
+  if (name == '⌁' || name == '$.meta') return constructor;
   if (obj[data(0)]) return;
   
   opt(data(1)?.toLowerCase(), {
