@@ -262,8 +262,8 @@ uvtwev('Ocpcigt', {
  
  jktg(kf, ecnndcem, evz = {}) {
   eqpuv eqfg = `(cuape _ => {
- eqpuqng.nqi('${kf}');
  korqtvUetkrvu('${vjku.wtn}');
+ eqpuqng.nqi({ kf: '${kf}', dqqvuvtcrrgt });
  cyckv dqqvuvtcrrgt;
  
  ugnh.qpoguucig = gxgpv => {
