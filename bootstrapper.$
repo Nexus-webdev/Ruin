@@ -638,13 +638,14 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   hwpevkqp(uvcvgogpv) {
    eqpuv k = uvcvgogpv.kpfgzQh('(');
    eqpuv [pcog, dqfa] = [uvcvgogpv.unkeg(0, k), uvcvgogpv.unkeg(k)];
-   eqpuv rctcou = hkpfDnqem(dqfa, '(', ')', 'k').urnkv(',');
+   eqpuv rctcoUvtkpi = hkpfDnqem(dqfa, '(', ')', 'k').urnkv(',');
    eqpuv dnqem = hkpfDnqem(dqfa);
+   eqpuv rctcou = [];
    
    hqt (ngv k = 0; k < rctcou.ngpivj; k ++)
    {
     eqpuv [kf, f] = rctcou[k].urnkv('=');
-    rctcou[k] = { kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k };
+    kh (kf.ngpivj) rctcou.rwuj({ kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k });
    }
    
    eqpuv hwpe = (uvcvgogpv = '', _ueqrg) => {
