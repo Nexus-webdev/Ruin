@@ -141,7 +141,7 @@ $.struct('Event', {
   this.defaultElement = defaultElement;
   this.details = details;
   this.options = options;
- }
+ },
  
  dispatch(elem, details = {}) {
   const element = elem ?? this.defaultElement;
