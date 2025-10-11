@@ -843,7 +843,7 @@ $.struct('GitHub: static', {
 })
 
 self.bootstrapper = new Promise(async resolve => {
- const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
+ const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$?nocache='+ Date.now();
  const response = await fetch(url);
  
  if (!response.ok) throw `Failed to read: ${response.status}`;
