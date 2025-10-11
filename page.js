@@ -892,23 +892,6 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
 }
 
 $.$.mod = createModule;
-foxx.syntax.doc.createElement(`{
- let name = 'ruin-c';
- function construct() {
-  let shadow = element.attachShadow({ mode: 'open' });
-  if !element.textContent.startsWith('^') ? {
-   -execute element.textContent;
-   element.textContent = '^' +element.textContent;
-  } else {
-   element.textContent = element.textContent.slice(1);
-  };
- };
- 
- function attributeChangedCallback(attr, oldVal, newVal) {
-  print [attr, oldVal, newVal];
- };
-}`);
-
 const program = urlData();
 const watch = [program.name];
 const prev = {};
@@ -952,4 +935,23 @@ document.addEventListener('keydown', async e => {
 })
 
 $.$.htmlTarget = document.body;
-$.html(`<ruin-c>${code}<\/ruin-c>`);
+foxx.run(`
+doc:createElement {
+ let name = 'ruin-c';
+ function construct() {
+  let shadow = element.attachShadow({ mode: 'open' });
+  if !element.textContent.startsWith('^') ? {
+   -execute element.textContent;
+   element.textContent = '^' +element.textContent;
+  } else {
+   element.textContent = element.textContent.slice(1);
+  };
+ };
+ 
+ function attributeChangedCallback(attr, oldVal, newVal) {
+  print [attr, oldVal, newVal];
+ };
+};
+
+doc:write <ruin-c>${code}<\/ruin-c>;
+`);
