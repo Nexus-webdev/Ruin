@@ -131,8 +131,8 @@ const mods = {
 for (let key in mods)
 {
  if (typeof mods[key] == 'function')
- $.RUIN[key] = mods[key].bind($.RUIN);
- else $.RUIN[key] = mods[key];
+ $[key] = mods[key].bind($);
+ else $[key] = mods[key];
 }
 
 $.struct('Event', {
@@ -678,7 +678,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    
    if (config)
    {
-    (new $.ROBJ(entry.name +' - configuration', config));
+    $.ROBJ.create(entry.name +' - configuration', config);
     const configObject = await $.$.rdn(entry.name +' - configuration');
     if (configObject.order) order = configObject.order;
     
@@ -768,7 +768,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
 
    async rdn(x) {
     if (namespace.includes('config')) return;
-    (new $.ROBJ(name+ namespace, x));
+    $.ROBJ.create(name+ namespace, x);
     const rdn = await $.$.rdn(name +namespace);
 
     dp[rdn.namespace ?? namespace] = { ...rdn };

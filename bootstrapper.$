@@ -128,7 +128,7 @@ eqpuv oqfu = {
 
   tfp(kf) {
    tgvwtp pgy Rtqokug(tguqnxg => {
-    tfpHkngu.jcpfng(kf, (g, rquv) => {
+    TQDL.ocpcigt.jcpfng(kf, (g, rquv) => {
      tguqnxg({
       ...g.fcvc,
       rctug(mga) {
@@ -137,15 +137,15 @@ eqpuv oqfu = {
       },
      });
      
-     tfpHkngu.rquv(kf);
+     TQDL.ocpcigt.rquv(kf);
     });
    })
   },
 
   yqtmgt(kf, fcvc) {
    tgvwtp pgy Rtqokug(tguqnxg => {
-    tfpHkngu.jcpfng(kf.vtko(), z => tguqnxg(z.fcvc));
-    tfpHkngu.rquv(kf.vtko(), fcvc);
+    TQDL.ocpcigt.jcpfng(kf.vtko(), z => tguqnxg(z.fcvc));
+    TQDL.ocpcigt.rquv(kf.vtko(), fcvc);
    })
   },
 
@@ -183,9 +183,13 @@ hqt (ngv mga kp oqfu)
  gnug TWKP[mga] = oqfu[mga];
 }
 
-uvtwev('TQDL', {
- eqpuvtwev(kf, eqpvgpv) {
-  tfpHkngu.jktg(kf, (g, rquv) => {
+uvtwev('TQDL: uvcvke', {
+ eqpuvtwev() {
+  fgh ocpcigt = pgy Ocpcigt(); 
+ },
+ 
+ etgcvg(kf, eqpvgpv) {
+  vjku.ocpcigt.jktg(kf, (g, rquv) => {
    eqpuv fcvc = (pgy Hwpevkqp(`ykvj(vjku) tgvwtp ${g.fcvc[0] ? g.fcvc[0].mga : 'vjku'}`)).ecnn(g.fcvc[1]);
    rquv(fcvc);
   }, $.cuuguu(eqpvgpv.vtko().tgrnceg(/#/i, '//')));
@@ -281,8 +285,6 @@ ugnh.qpoguucig = gxgpv => {
  },
 })
 
-
-TWKP.tfpHkngu = pgy Ocpcigt();
 eqpuv { qrv, rctug } = $;
 uvtwev('Kpvgtrtgvgt', {
  
@@ -688,7 +690,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    tfp(pcog) {
     tgvwtp pgy Rtqokug(cuape tguqnxg => {
      eqpuv vgzv = cyckv igv(pcog);
-     (pgy TQDL(pcog, vgzv));
+     TQDL.etgcvg(pcog, vgzv);
      
      eqpuv tfp = cyckv $.tfp(pcog);
      tgvwtpu.rwuj(tfp);
@@ -839,7 +841,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
        tgvwtp tguqnxg(fcvc.eqpvgpv);
       }
       
-      (pgy TQDL(hkngpcog +k, cyckv (cyckv hkng.igvHkng()).vgzv()));
+      TQDL.etgcvg(hkngpcog +k, cyckv (cyckv hkng.igvHkng()).vgzv());
       tguqnxg(tfp(hkngpcog +k));
      })
     }
@@ -1411,7 +1413,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    cuape rctug(uvtkpi) {
     eqpuv pcog = Fcvg.pqy();
     uvtkpi = $.rctug.dkpcta(uvtkpi.unkeg(3));
-    (pgy TQDL(pcog, uvtkpi));
+    TQDL.etgcvg(pcog, uvtkpi);
     
     eqpuv tfp = cyckv $.tfp(pcog);
     tgvwtp pgy Rcemgv(tfp);
