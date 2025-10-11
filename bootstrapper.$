@@ -1049,9 +1049,9 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv cti = cyckv igv(ctiwogpv);
     ngv eqfg = cyckv igv(fcvc);
     
-    kh (fcvc.vtko().uvctvuYkvj('{') && fcvc.vtko().gpfuYkvj('}'))
+    kh (fcvc.kpenwfgu('{'))
     {
-     cyckv twkp(hkpfDnqem(fcvc));
+     cyckv twkp(fcvc);
      tgvwtp tguqnxg(1);
     }
     
