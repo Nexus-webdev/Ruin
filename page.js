@@ -355,38 +355,6 @@ foxx.scopes[0].cache = localStorage;
 
 const foxxModifications = {
  doc: {
-  createElement(statement) {
-   return new Promise(async resolve => {
-    const { name, ...proto } = await foxx.get(statement);
-    customElements.define(name, class extends HTMLElement {
-     connectedCallback() {
-      for (let key in proto)
-      this[key] = args => {
-       foxx.scope().element = this;
-       const params = proto[key].params;
-       $.log(params);
-       
-       for (let param of params)
-       {
-        const id = param.identifier;
-        foxx.scope()[id] = args[param.index] ?? param.default;
-       }
-       
-       proto[key]().then(_ => {
-        delete foxx.scope().element;
-        
-        for (let param of params)
-        delete foxx.scope()[param.identifier];
-       })
-      };
-      
-      if (typeof this.construct == 'function')
-      this.construct();
-     }
-    });
-   })
-  },
-  
   icon(x) {
    return new Promise(async resolve => {
     const t = $.$.htmlTarget;
@@ -935,24 +903,4 @@ document.addEventListener('keydown', async e => {
 })
 
 $.$.htmlTarget = document.body;
-/* foxx.run(`
-doc:createElement {
- let name = 'ruin-c';
- function construct() {
-  let shadow = element.attachShadow({ mode: 'open' });
-  if !element.textContent.startsWith('^') ? {
-   -execute element.textContent;
-   element.textContent = '^' +element.textContent;
-  } else {
-   element.textContent = element.textContent.slice(1);
-  };
- };
- 
- function attributeChangedCallback(attr, oldVal, newVal) {
-  print [attr, oldVal, newVal];
- };
-};
-
-doc:write <ruin-c>${code}<\/ruin-c>;
-`); */
 $.ruin(code);
