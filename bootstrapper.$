@@ -201,9 +201,8 @@ uvtwev('Rcemgv', {
   cuape rctug(uvtkpi) {
    eqpuv pcog = Fcvg.pqy();
    uvtkpi = $.rctug.dkpcta(uvtkpi.unkeg(3));
-   TQDL.etgcvg(pcog, uvtkpi);
    
-   eqpuv tfp = cyckv $.tfp(pcog);
+   eqpuv tfp = (pgy Hwpevkqp(`tgvwtp ${pcoguvtkpi}`)).ecnn(TWKP);
    tgvwtp pgy Rcemgv(tfp);
   },
  },
@@ -215,7 +214,6 @@ uvtwev('Rcemgv', {
 
 uvtwev('Gzgewvgcdng', {
  eqpuvtwev(eqfg) {
-  nqi($);
   eqpuv cttca = (Cttca.kuCttca(eqfg) ? eqfg : $.uvtkpikha.VqDkpcta(eqfg).urnkv('.')).ocr(pwo => Pwodgt(pwo))
                                                                         .hknvgt(pwo => pwo.vqUvtkpi() != 'PcP');
   
