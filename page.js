@@ -370,11 +370,12 @@ const foxxModifications = {
         foxx.scope()[id] = args[param.index] ?? param.default;
        }
        
-       await proto[key]();
-       delete foxx.scope().element;
-       
-       for (let param of params)
-       delete foxx.scope()[param.identifier];
+       proto[key]().then(_ => {
+        delete foxx.scope().element;
+        
+        for (let param of params)
+        delete foxx.scope()[param.identifier];
+       })
       };
       
       if (typeof this.construct == 'function')
