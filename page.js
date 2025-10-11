@@ -935,7 +935,7 @@ document.addEventListener('keydown', async e => {
 })
 
 $.$.htmlTarget = document.body;
-foxx.run(`
+/* foxx.run(`
 doc:createElement {
  let name = 'ruin-c';
  function construct() {
@@ -954,4 +954,5 @@ doc:createElement {
 };
 
 doc:write <ruin-c>${code}<\/ruin-c>;
-`);
+`); */
+$.ruin(code);
