@@ -122,39 +122,6 @@ const mods = {
  onecho(callback = x => x) {
   $.listener('echo', ({ detail: echo }) => callback(echo), window);
  },
-
- Event: class {
-  constructor(id, { details = {}, defaultElement = document, options = {} } = {}) {
-   this.id = id;
-   this.defaultElement = defaultElement;
-   this.details = details;
-   this.options = options;
-  }
-  
-  dispatch(elem, details = {}) {
-   const element = elem ?? this.defaultElement;
-   const detail = { ...this.details, ...details };
-   
-   const event = new CustomEvent(this.id +(details.type ?? ''), { detail, ...this.options });
-   element.dispatchEvent(event);
-  }
- },
- 
- createElement(name, { construct, ...prototype } = {}) {
-  customElements.define(name, class extends HTMLElement {
-   connectedCallback() {
-    for (let key in prototype)
-     this[key] = prototype[key].bind(this);
-    
-    if (typeof construct == 'function')
-     construct.bind(this)();
-   }
-   
-   attributeChangedCallback(attr, oldVal, newVal) {
-    $.log(attr, oldVal, newVal);
-   }
-  });
- },
  
  session: sessionStorage,
  cache: localStorage,
@@ -168,9 +135,24 @@ for (let key in mods)
  else $.RUIN[key] = mods[key];
 }
 
-$.rdnFiles = new $.Manager();
-window.Images = {};
+$.struct('Event', {
+ construct(id, { details = {}, defaultElement = document, options = {} } = {}) {
+  this.id = id;
+  this.defaultElement = defaultElement;
+  this.details = details;
+  this.options = options;
+ }
+ 
+ dispatch(elem, details = {}) {
+  const element = elem ?? this.defaultElement;
+  const detail = { ...this.details, ...details };
+  
+  const event = new CustomEvent(this.id +(details.type ?? ''), { detail, ...this.options });
+  element.dispatchEvent(event);
+ }
+})
 
+window.Images = {};
 function getImq(src, resolve, forceload) {
  if (window.Images[src] && !forceload)
  return resolve(window.Images[src]);
@@ -373,6 +355,35 @@ foxx.scopes[0].cache = localStorage;
 
 const foxxModifications = {
  doc: {
+  createElement(statement) {
+   return new Promise(async resolve => {
+    const { name, ...proto } = await foxx.get(statement);
+    customElements.define(name, class extends HTMLElement {
+     connectedCallback() {
+      for (let key in proto)
+      this[key] = args => {
+       foxx.scope().element = this;
+       const params = proto[key].params;
+       for (let param of params)
+       {
+        const id = param.identifier;
+        foxx.scope()[id] = args[param.index] ?? param.default;
+       }
+       
+       await proto[key]();
+       delete foxx.scope().element;
+       
+       for (let param of params)
+       delete foxx.scope()[param.identifier];
+      };
+      
+      if (typeof this.construct == 'function')
+      this.construct();
+     }
+    });
+   })
+  },
+  
   icon(x) {
    return new Promise(async resolve => {
     const t = $.$.htmlTarget;
@@ -878,20 +889,22 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
 }
 
 $.$.mod = createModule;
-$.createElement('ruin-c', {
- construct() {
-  const shadow = this.attachShadow({ mode: 'open' });
-  if (!this.textContent.startsWith('^')) 
-  {
-   this.result = $.ruin(this.textContent);
-   this.textContent = '^' +this.textContent;
-  } else this.textContent = this.textContent.slice(1);
- },
+foxx.syntax.doc.createElement(`{
+ let name = 'ruin-c';
+ function construct() {
+  let shadow = element.attachShadow({ mode: 'open' });
+  if !element.textContent.startsWith('^') ? {
+   -execute element.textContent;
+   element.textContent = '^' +element.textContent;
+  } else {
+   element.textContent = element.textContent.slice(1);
+  };
+ };
  
- attributeChangedCallback(attr, oldVal, newVal) {
-  $.log(attr, oldVal, newVal);
- },
-});
+ function attributeChangedCallback(attr, oldVal, newVal) {
+  print [attr, oldVal, newVal];
+ };
+}`);
 
 const program = urlData();
 const watch = [program.name];
