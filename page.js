@@ -646,7 +646,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    
    if (config)
    {
-    const configObject = $.$.parse.obj(config);
+    const configObject = (new Function(`return ${config}`)).call($);
     if (configObject.order) order = configObject.order;
     
     const ext = configObject.extensions;
@@ -735,7 +735,7 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
 
    async rdn(x) {
     if (namespace.includes('config')) return;
-    const rdn = $.$.parse.obj(x);
+    const rdn = (new Function(`return ${x}`)).call($);
 
     dp[rdn.namespace ?? namespace] = { ...rdn };
    },
