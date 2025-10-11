@@ -358,14 +358,14 @@ const foxxModifications = {
   createElement(statement) {
    return new Promise(async resolve => {
     const { name, ...proto } = await foxx.get(statement);
-    $.log({ name, proto, statement });
-    
     customElements.define(name, class extends HTMLElement {
      connectedCallback() {
       for (let key in proto)
       this[key] = args => {
        foxx.scope().element = this;
        const params = proto[key].params;
+       $.log(params);
+       
        for (let param of params)
        {
         const id = param.identifier;

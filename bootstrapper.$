@@ -653,11 +653,11 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
      eqpuv ctiu = cyckv igv(`[${uvcvgogpv}]`);
      eqpuv pgyUeqrg = { ...qtkikp, varg: 'hwpevkqp', pcog, qtkikp };
      
-     hqt (ngv k = 0; k < rctcou.ngpivj; k ++)
+     hqt (ngv rctco qh rctcou)
      {
-      eqpuv { kfgpvkhkgt, fghcwnv: f } = rctcou[k];
+      eqpuv { kfgpvkhkgt, fghcwnv: f, kpfgz } = rctco;
       
-      eqpuv cti = ctiu[k];
+      eqpuv cti = ctiu[kpfgz];
       pgyUeqrg[kfgpvkhkgt] = cti != wpfghkpgf ? cti : f ? cyckv igv(f, { ...qtkikp, ...pgyUeqrg, qtkikp }) : wpfghkpgf;
      }
      
