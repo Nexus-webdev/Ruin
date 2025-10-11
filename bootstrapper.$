@@ -1057,17 +1057,22 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     
     kh (vargqh eqfg == 'uvtkpi')
     {
-     kh (eqfg.vtko().uvctvuYkvj('-ikv-'))
-     {
-      eqfg = cyckv IkvJwd.tgcf(eqfg.tgrnceg('-ikv-', '').vtko());
-     } gnug kh (!fktgevqta)
-     {
-      vjtqy `pq fktgevqta ugv;`;
-      tglgev(`pq fktgevqta ugv;`);
-     } gnug {
-      eqpuv jcpfng = fktgevqta.igvHkngJcpfng(eqfg);
-      eqpuv hkng = cyckv jcpfng.igvHkng();
-      eqfg = cyckv hkng.vgzv();
+     vta {
+      twkp(eqfg);
+      tgvwtp tguqnxg(1);
+     } ecvej(g) {
+      kh (eqfg.vtko().uvctvuYkvj('-ikv-'))
+      {
+       eqfg = cyckv IkvJwd.tgcf(eqfg.tgrnceg('-ikv-', '').vtko());
+      } gnug kh (!fktgevqta)
+      {
+       vjtqy `pq fktgevqta ugv;`;
+       tglgev(`pq fktgevqta ugv;`);
+      } gnug {
+       eqpuv jcpfng = fktgevqta.igvHkngJcpfng(eqfg);
+       eqpuv hkng = cyckv jcpfng.igvHkng();
+       eqfg = cyckv hkng.vgzv();
+      }
      }
     }
     
