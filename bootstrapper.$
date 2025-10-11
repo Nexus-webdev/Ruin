@@ -257,16 +257,12 @@ uvtwev('Ocpcigt', {
  },
  
  jktg(kf, ecnndcem, evz = {}) {
-  eqpuv eqfg = `(cuape _ => {
- korqtvUetkrvu('${vjku.wtn}');
- cyckv dqqvuvtcrrgt;
- 
- ugnh.qpoguucig = gxgpv => {
-  $.twkp(\`hwpe(gxgpv, fcvc => ugnh.rquvOguucig(fcvc))\`, {
-   gxgpv, ugnh, hwpe: ${ecnndcem.vqUvtkpi()}
-  })
- }
-})()`;
+  eqpuv eqfg = `korqtvUetkrvu('${vjku.wtn}');
+ugnh.qpoguucig = gxgpv => {
+ $.twkp(\`hwpe(gxgpv, fcvc => ugnh.rquvOguucig(fcvc))\`, {
+  gxgpv, ugnh, hwpe: ${ecnndcem.vqUvtkpi()}
+ })
+}`;
 
   eqpuv dnqd = WTN.etgcvgQdlgevWTN(pgy Dnqd([eqfg], { varg: 'crrnkecvkqp/lcxcuetkrv' }));
   eqpuv fcvg = Fcvg.pqy();
