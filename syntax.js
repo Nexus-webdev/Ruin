@@ -215,7 +215,13 @@ const $ = ({
  ruin(encodedText = ``, $args = { nothin: null }) {
   return new Promise(async resolve => {
    const i = encodedText.lastIndexOf('¿');
-   const [txt, key = ''] = [encodedText.slice(0, i), encodedText.slice(i +1)];
+   let [txt, key] = [encodedText.slice(0, i), encodedText.slice(i +1)];
+   if (i == -1)
+   {
+    txt = encodedText;
+    key = null;
+   }
+   
    const result = await (new Function(`return(async() => {\n${fix(txt)}\n})()`)).call({
     ...$args,
     $args,
@@ -223,7 +229,7 @@ const $ = ({
    });
    
    function fix(code) {
-    code = $.fixSyntax(decode(code));
+    code = $.fixSyntax(key ? decode(code) : code);
     if (!code.startsWith('"Exclude \'with\' statement.";')) code = `with(this) {\n${code}\n}`;
     
     return code;
