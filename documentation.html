@@ -4,49 +4,51 @@
   <meta charset='UTF-8' content-type='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <script>
-   sessionStorage['${urlData().name}'] = `
-    ## doc:write <style>
-                  body {
-                   background-color: black;
-                   color: white;
-                   font-family: sans-serif;
-                   padding: 20px;
-                  }
-                  
-                  input, textarea, button {
-                   background-color: #222;
-                   color: white;
-                   border: 1px solid #555;
-                   padding: 8px;
-                   margin-top: 10px;
-                   width: 100%;
-                   box-sizing: border-box;
-                  }
-                  
-                  textarea {
-                   height: 120px;
-                   resize: vertical;
-                  }
-                </style>
-                
-                <h1>Object Property Lookup</h1>
-                <label for='propInput'>Enter property name:</label>
-                <input id='propInput' type='text' placeholder='e.g. math'>
-                <button id='lookupBtn'>Lookup</button>
-                <textarea id='output' readonly></textarea> !;
+   sessionStorage['DOCUMENTATION-PAGE'] = `
+    ## doc:write 
+      <style>
+       body {
+        background-color: black;
+        padding: 20px;
+        color: white;
+       }
+       
+       input, textarea, button {
+        background-color: #222;
+        border: 1px solid #555;
+        color: white;
+        
+        padding: 8px;
+        margin-top: 10px;
+        width: 100%;
+        box-sizing: border-box;
+       }
+       
+       textarea {
+        height: 120px;
+        resize: vertical;
+       }
+      </style>
+      
+      <h1>Documentation</h1>
+      <label for='path'>Enter Documentation Path:</label>
+      <input id='path' type='text' placeholder='e.g. foxx/basics'>
+      <button id='Find'>Find</button>
+      <textarea id='output' readonly></textarea>
+     !;
      
-     const input = Q('#propInput');
-     const button = Q('#lookupBtn');
+     const input = Q('#path');
+     const button = Q('#Find');
      const output = Q('#output');
- 
+     
      GitHub.repo('nexus-webdev', 'Ruin');
      listener('click', async e => {
-      const key = input.value.trim();
-      output.value = await GitHub.read('docs/' +key);
+      const path = input.value.trim();
+      output.value = await GitHub.read('docs/' +path +'.txt');
      }, button);
    `;
    
-   location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData().name}';
+   location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=DOCUMENTATION-PAGE';
   <\/script>
  </head>
 </html>

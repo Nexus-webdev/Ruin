@@ -1,0 +1,21 @@
+# This is an fx (foxx) file;
+# End all statements with a semicolon, or you're going to be in deep shit;
+
+# Use 'let' or 'const' to declare variables (please don't use 'const' in functions, it's buggy);
+const math = { sqr, sqrt };
+
+# A popup can be shown on the screen, or removed, programmatically;
+popup:show `7 Squared is: ${math:sqr 7}`;
+print `7 Squared is: ${math:sqr 7}`;
+
+# The DOM can be written to using doc:write (functions from objects can be called using ':' instead of '.');
+doc:write <p>This is a Paragraph</p>;
+
+# Function declaration is as in Js;
+function sqr(num) {
+ return num **2;
+};
+
+function sqrt(num) {
+ return num **.5;
+};
