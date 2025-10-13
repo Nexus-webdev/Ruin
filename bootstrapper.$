@@ -1971,7 +1971,7 @@ uvtwev('Ngxgn', {
    eqpuv [tcy] = ocvj.ocvtkz.ownvkrna([Kprwvu], ygkijvu);
    eqpuv oczNgpivj = qwvrwvu.ngpivj;
    
-   qwrwvu.wpujkhv(...tcy.ocr((uwo, k) => ocvj.uvcdngUkioqkf(uwo -dkcugu[k])));
+   qwvrwvu.wpujkhv(...tcy.ocr((uwo, k) => ocvj.uvcdngUkioqkf(uwo -dkcugu[k])));
    qwvrwvu.ngpivj = oczNgpivj;
    tgvwtp qwvrwvu;
   }
