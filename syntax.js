@@ -456,14 +456,15 @@ const $ = ({
  weigh(weights) {
   const pool = [];
   for (let [value, weight] of weights)
-   for (let i = 0; i < weight; i++)
-    pool.push([value, weight]);
-  const item = pool[Math.floor (Math.random () * pool.length)];
-  return [
-   item [0],
-   item [1],
+  for (let i = 0; i < weight; i++)
+  pool.push([value, weight]);
+  
+  const item = pool[Math.floor (Math.random () *pool.length)];
+  return {
+   value: item[0],
+   weight: item[1],
    pool,
-  ];
+  };
  },
 
  shift(txt, shift, ignore = ['$']) {
@@ -476,200 +477,6 @@ const $ = ({
  },
 
  console: undefined,
- Math: undefined,
- 
- math: new Proxy({
-  pi: Math.PI,
-  fade(t) {
-   return t *t *t *(t *(t *6 -15) +10);
-  },
-  
-  lerp(a, b, scale = .2) {
-   return a +(b -a) *scale;
-  },
-  
-  sigmoid(x) {
-   return 1 /(1 +Math.exp(-x));
-  },
-  
-  stableSigmoid(x) {
-   if (x >= 0)
-   {
-    const z = Math.exp(-x);
-    return 1 /(1 +z);
-   }
-   
-   const z = Math.exp(x);
-   return z /(1 +z);
-  },
-  
-  pointAtAngle(origin, angle, magnitude = 1) {
-   return {
-    x: origin.x +Math.cos(angle) *magnitude,
-    y: origin.y +Math.sin(angle) *magnitude,
-   };
-  },
-  
-  dotProduct: (a, b) => a.reduce((sum, val, i) => sum +val *b[i], 0),
-  matrix: {
-   add: (A, B) => A.map((row, i) => row.map((val, j) => val +B[i][j])),
-   subtract: (A, B) => A.map((row, i) => row.map((val, j) => val -B[i][j])),
-   divide: (A, B) => A.map((row, i) => row.map((val, j) => val /B[i][j])),
-   multiply: (A, B) => A.map(row => B[0].map((_, j) => row.reduce((sum, val, i) => sum +val *B[i][j], 0))),
-   scalar: {
-    add: (A, scalar) => A.map(row => row.map(val => val +scalar)),
-    subtract: (A, scalar) => A.map(row => row.map(val => val -scalar)),
-    multiply: (A, scalar) => A.map(row => row.map(val => val *scalar)),
-    divide: (A, scalar) => A.map(row => row.map(val => val /scalar)),
-   },
-  },
-
-  getIntersection(a, b, c, d) {
-   const tTop = (d.x -c.x) *(a.y -c.y) -(d.y -c.y) *(a.x -c.x);
-   const uTop = (c.y -a.y) *(a.x -b.x) -(c.x -a.x) *(a.y -b.y);
-   const bottom = (d.y -c.y) *(b.x -a.x) -(d.x -c.x) *(b.y -a.y);
- 
-   if (bottom != 0)
-   {
-    const t = tTop /bottom;
-    const u = uTop /bottom;
-  
-    if (t >= 0 && t <= 1 && u >= 0 && u <= 1) return {
-     x: this.lerp(a.x, b.x, t),
-     y: this.lerp(a.y, b.y, t),
-     offset: t,
-    };
-   }
- 
-   return;
-  },
-
-  polysIntersect(a, b) {
-   for (let i = 0; i < a.length; i ++)
-   {
-    for (let j = 0; j < b.length; j ++)
-    {
-     const touch = this.getIntersection(a[i], a[(i +1) % a.length], b[j], b[(j +1) % b.length]);
-     if (touch) return true;
-    }
-   }
- 
-   return false;
-  },
-  
-  getRectLines(rect) {
-   return [
-    {
-     start: { x: rect.x, y: rect.y },
-     end: { x: rect.x +rect.width, y: rect.y },
-    },
-    
-    {
-     start: { x: rect.x +rect.width, y: rect.y },
-     end: { x: rect.x +rect.width, y: rect.y +rect.height },
-    },
-    
-    {
-     start: { x: rect.x +rect.width, y: rect.y +rect.height },
-     end: { x: rect.x, y: rect.y +rect.height },
-    },
-    
-    {
-     start: { x: rect.x, y: rect.y +rect.height },
-     end: { x: rect.x, y: rect.y },
-    },
-   ];
-  },
-  
-  direction(p1, p2, p3) {
-   return (p3.y -p1.y) *(p2.x -p1.x) -(p3.x -p1.x) *(p2.y -p1.y);
-  },
-  
-  lineRectCollision(rect, start, end) {
-   const lines = this.getRectLines(rect);
-   return lines.some(line => this.lineLineCollision(start, end, line.start, line.end));
-  },
-  
-  lineLineCollision(p1, p2, p3, p4) {
-   const d1 = this.direction(p3, p4, p1);
-   const d2 = this.direction(p3, p4, p2);
-   const d3 = this.direction(p1, p2, p3);
-   const d4 = this.direction(p1, p2, p4);
-   
-   return (d1 !== d2 && d3 !== d4) || 
-          (d1 === 0 && this.point.onSegment(p1, p3, p4)) || 
-          (d2 === 0 && this.point.onSegment(p2, p3, p4)) || 
-          (d3 === 0 && this.point.onSegment(p3, p1, p2)) || 
-          (d4 === 0 && this.point.onSegment(p4, p1, p2));
-  },
-  
-  within(num, num2, range) {
-   return Math.abs(num -num2) <= range;
-  },
-
-  dist(num, num2) {
-   return Math.abs(num - num2);
-  },
-
-  collision(rect1, rect2) {
-   const { x: x1, y: y1, width: width1, height: height1 } = rect1;
-   const { x: x2, y: y2, width: width2, height: height2 } = rect2;
-
-   return (x1 < x2 +width2 &&
-       x1 +width1 > x2 &&
-       y1 < y2 +height2 &&
-       y1 +height1 > y2);
-  },
-
-  absolute(num) {
-   return Math.abs(num);
-  },
-
-  bitwise: {
-   xor(args) {
-    return args.reduce((accumulator, current) => accumulator ^ current);
-   },
-
-   and(args) {
-    return args.reduce((accumulator, current) => accumulator & current);
-   },
-
-   or(args) {
-    return args.reduce((accumulator, current) => accumulator | current);
-   },
-  },
-
-  binary(num, revert = false) {
-   if (revert) return parseInt(num, 2);
-   return num.toString(2);
-  },
-
-  ran(min, max) {
-   return Math.floor(Math.random() *(max -min +1)) +min;
-  },
-
-  rand(min, max) {
-   return Math.random() *(max -min +1) +min;
-  },
-
-  percent(num, per) {
-   return (num /100) *per;
-  },
-
-  percentOf(part, total) {
-   if (total == 0) return 'Undefined (total cannot be zero)';
-   return (part /total) *100;
-  },
-
-  remainder(num, num2) {
-   return (num -(Math.floor(num /num2) *num2));
-  },
- }, {
-  get(target, property) {
-   return target[property] ?? Math[property];
-  },
- }),
- 
  terminal: console,
  def: {},
  dp: {},
