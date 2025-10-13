@@ -536,16 +536,22 @@ $.struct('GitHub: static', {
  },
  
  token(token, id) {
-  this.$tokens[id] = id ? (this.$token = token) : null;
+  this.$token = token;
+  this.$tokens[id] = id ? token : null;
  },
  
  get(path) {
   return new Promise(async resolve => {
-   const response = await fetch(this.url +path, { headers: { Authorization: `Bearer ${this.$token}` } });
-   if (!response.ok) throw `Failed to fetch: ${response.status}`;
-   const data = await response.json();
- 
-   resolve(data);
+   try {
+    const response = await fetch(this.url +path, { headers: { Authorization: this.auth() } });
+    if (!response.ok) throw `Failed to fetch: ${response.status}`;
+    const data = await response.json();
+  
+    resolve(data);
+   } catch(e) {
+    throw `Failed to fetch: '${path}'`;
+    resolve({});
+   }
   })
  },
  
@@ -568,107 +574,127 @@ $.struct('GitHub: static', {
  
  dir(path) {
   return new Promise(async resolve => {
-   const config = { headers: { Authorization: this.auth() } };
-   const directories = {};
-   const files = {};
-   
-   const response = await fetch(this.url +path, config);
-   if (!response.ok) throw `Failed to fetch: ${response.status}`;
-   const data = await response.json();
-   
-   for (let item of data)
-   {
-    const exclude = (['.git', '.png', '.jpeg', '.jpg']).find(exclude => item.name.includes(exclude));
-    if (!exclude)
+   try {
+    const config = { headers: { Authorization: this.auth() } };
+    const directories = {};
+    const files = {};
+    
+    const response = await fetch(this.url +path, config);
+    if (!response.ok) throw `Failed to fetch: ${response.status}`;
+    const data = await response.json();
+    
+    for (let item of data)
     {
-     if (item.type == 'file')
+     const exclude = (['.git', '.png', '.jpeg', '.jpg']).find(exclude => item.name.includes(exclude));
+     if (!exclude)
      {
-      const data = await (await fetch(item.url, config)).json();
-      if (data.content) files[item.name] = decodeURIComponent(escape(atob(data.content)));
-     } else directories[item.name] = await this.dir(item.path);
-    }
-   };
-   
-   resolve({ directories, files });
+      if (item.type == 'file')
+      {
+       const data = await (await fetch(item.url, config)).json();
+       if (data.content) files[item.name] = decodeURIComponent(escape(atob(data.content)));
+      } else directories[item.name] = await this.dir(item.path);
+     }
+    };
+    
+    resolve({ directories, files });
+   } catch(e) {
+    throw `Failed to fetch: '${path}'`;
+    resolve({});
+   }
   })
  },
  
  read(path) {
   return new Promise(async resolve => {
-   const url = this.url +path;
-   const response = await fetch(url, {
-    headers: {
-     Authorization: this.auth(),
-     Accept: 'application/vnd.github.v3.raw',
-    },
-   });
-   
-   if (!response.ok) throw `Failed to read: ${response.status}`;
-   const txt = await response.text();
-   const data = txt.trim().startsWith('{') && txt.trim().endsWith('}') ? JSON.parse(txt) : {
-    name: response.name,
-    type: response.type,
-    url: response.url,
-    path: response.path,
-    content: txt,
-   };
-   
-   if (this.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
-   resolve(data);
+   try {
+    const url = this.url +path;
+    const response = await fetch(url, {
+     headers: {
+      Authorization: this.auth(),
+      Accept: 'application/vnd.github.v3.raw',
+     },
+    });
+    
+    if (!response.ok) throw `Failed to read: ${response.status}`;
+    const txt = await response.text();
+    const data = txt.trim().startsWith('{') && txt.trim().endsWith('}') ? JSON.parse(txt) : {
+     name: response.name,
+     type: response.type,
+     url: response.url,
+     path: response.path,
+     content: txt,
+    };
+    
+    if (this.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
+    resolve(data);
+   } catch(e) {
+    throw `Failed to read: '${path}'`;
+    resolve({});
+   }
   })
  },
  
  write(path, content, create = false) {
   return new Promise(async resolve => {
-   const sha = create ? null : (await this.get(path)).sha;
-   const url = this.url +path;
-   const body = {
-    message: 'Update file via API',
-    content: btoa(unescape(encodeURIComponent(content))),
-    ...(sha ? (sha && { sha }) : {}),
-   };
- 
-   const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-     Authorization: this.auth(),
-     Accept: 'application/vnd.github.v3+json',
-    },
-    
-    body: JSON.stringify(body),
-   });
- 
-   if (!res.ok) throw `Failed to write: ${res.status}`;
-   resolve(await res.json());
+   try {
+    const sha = create ? null : (await this.get(path)).sha;
+    const url = this.url +path;
+    const body = {
+     message: 'Update file via API',
+     content: btoa(unescape(encodeURIComponent(content))),
+     ...(sha ? (sha && { sha }) : {}),
+    };
+  
+    const res = await fetch(url, {
+     method: 'PUT',
+     headers: {
+      Authorization: this.auth(),
+      Accept: 'application/vnd.github.v3+json',
+     },
+     
+     body: JSON.stringify(body),
+    });
+  
+    if (!res.ok) throw `Failed to write: ${res.status}`;
+    resolve(await res.json());
+   } catch(e) {
+    throw `Failed to write to: '${path}'`;
+    resolve({});
+   }
   })
  },
  
  delete(path) {
   return new Promise(async resolve => {
-   const sha = (await this.get(path)).sha;
-   const url = this.url +path;
-   const body = {
-    message: 'Delete file via API',
-    sha,
-   };
- 
-   const res = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-     Authorization: this.auth(),
-     Accept: 'application/vnd.github.v3+json',
-    },
+   try {
+    const sha = (await this.get(path)).sha;
+    const url = this.url +path;
+    const body = {
+     message: 'Delete file via API',
+     sha,
+    };
+  
+    const res = await fetch(url, {
+     method: 'DELETE',
+     headers: {
+      Authorization: this.auth(),
+      Accept: 'application/vnd.github.v3+json',
+     },
+     
+     body: JSON.stringify(body),
+    });
     
-    body: JSON.stringify(body),
-   });
-   
-   if (!res.ok)
-   {
-    const error = await res.json();
-    throw `Failed to delete: ${error.message}`;
+    if (!res.ok)
+    {
+     const error = await res.json();
+     throw `Failed to delete: ${error.message}`;
+    }
+    
+    resolve(await res.json());
+   } catch(e) {
+    throw `Failed to delete: '${path}'`;
+    resolve({});
    }
-   
-   resolve(await res.json());
   })
  },
 })

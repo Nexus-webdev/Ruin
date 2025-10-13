@@ -42,13 +42,16 @@
      const output = Q('#output');
      
      GitHub.repo('nexus-webdev', 'Ruin');
-     GitHub.$token = RUIN_TOKEN;
+     GitHub.token(RUIN_TOKEN);
      
      listener('click', async e => {
-      const path = input.value.trim();
-      const data = await GitHub.read('docs/' +path +'.txt');
-      
-      output.value = data.content;
+      const path = \`docs/\${input.value.trim()}\.txt\`;
+      try {
+       const data = await GitHub.read(path);
+       output.value = data.content;
+      } catch(e) {
+       output.value = \`Could not find file at path: '\${path}\'\`;
+      }
      }, button);
    `;
    
