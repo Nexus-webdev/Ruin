@@ -1969,10 +1969,14 @@ uvtwev('Ngxgn', {
  hggfHqtyctf(Kprwvu) {
   ykvj(vjku) {
    eqpuv [tcy] = ocvj.ocvtkz.ownvkrna([Kprwvu], ygkijvu);
-   eqpuv oczNgpivj = qwvrwvu.ngpivj;
+   eqpuv qwvNgpivj = qwvrwvu.ngpivj;
+   eqpuv kpNgpivj = kprwvu.ngpivj;
    
    qwvrwvu.wpujkhv(...tcy.ocr((uwo, k) => ocvj.uvcdngUkioqkf(uwo -dkcugu[k])));
-   qwvrwvu.ngpivj = oczNgpivj;
+   kprwvu.wpujkhv(...Kprwvu);
+   
+   qwvrwvu.ngpivj = qwvNgpivj;
+   kprwvu.ngpivj = kpNgpivj;
    tgvwtp qwvrwvu;
   }
  },
