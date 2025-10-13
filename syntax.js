@@ -549,9 +549,26 @@ $.struct('GitHub: static', {
   })
  },
  
+ isBase64(str) {
+  if (typeof str !== 'string') return false;
+  const notBase64 = /[^A-Z0-9+\/=]/i;
+  
+  if (!str || str.length % 4 != 0 || notBase64.test(str)) return false;
+  try {
+   atob(str);
+   return true;
+  } catch {
+   return false;
+  }
+ },
+ 
+ auth() {
+  return this.$token ? `Bearer ${this.$token}` : undefined;
+ },
+ 
  dir(path) {
   return new Promise(async resolve => {
-   const config = { headers: { Authorization: `Bearer ${this.$token}` } };
+   const config = { headers: { Authorization: this.auth() } };
    const directories = {};
    const files = {};
    
@@ -581,7 +598,7 @@ $.struct('GitHub: static', {
    const url = this.url +path;
    const response = await fetch(url, {
     headers: {
-     Authorization: `Bearer ${this.$token}`,
+     Authorization: this.auth(),
      Accept: 'application/vnd.github.v3.raw',
     },
    });
@@ -601,19 +618,6 @@ $.struct('GitHub: static', {
   })
  },
  
- isBase64(str) {
-  if (typeof str !== 'string') return false;
-  const notBase64 = /[^A-Z0-9+\/=]/i;
-  
-  if (!str || str.length % 4 != 0 || notBase64.test(str)) return false;
-  try {
-   atob(str);
-   return true;
-  } catch {
-   return false;
-  }
- },
- 
  write(path, content, create = false) {
   return new Promise(async resolve => {
    const sha = create ? null : (await this.get(path)).sha;
@@ -627,7 +631,7 @@ $.struct('GitHub: static', {
    const res = await fetch(url, {
     method: 'PUT',
     headers: {
-     Authorization: `Bearer ${this.$token}`,
+     Authorization: this.auth(),
      Accept: 'application/vnd.github.v3+json',
     },
     
@@ -651,7 +655,7 @@ $.struct('GitHub: static', {
    const res = await fetch(url, {
     method: 'DELETE',
     headers: {
-     Authorization: `Bearer ${this.$token}`,
+     Authorization: this.auth(),
      Accept: 'application/vnd.github.v3+json',
     },
     
