@@ -46,7 +46,9 @@
      
      listener('click', async e => {
       const path = input.value.trim();
-      output.value = await GitHub.read('docs/' +path +'.txt');
+      const data = await GitHub.read('docs/' +path +'.txt');
+      
+      output.value = data.content;
      }, button);
    `;
    
