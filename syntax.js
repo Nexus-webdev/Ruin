@@ -509,6 +509,20 @@ const $ = ({
     y: origin.y +Math.sin(angle) *magnitude,
    };
   },
+  
+  dotProduct: (a, b) => a.reduce((sum, val, i) => sum +val *b[i], 0),
+  matrix: {
+   add: (A, B) => A.map((row, i) => row.map((val, j) => val +B[i][j])),
+   subtract: (A, B) => A.map((row, i) => row.map((val, j) => val -B[i][j])),
+   divide: (A, B) => A.map((row, i) => row.map((val, j) => val /B[i][j])),
+   multiply: (A, B) => A.map(row => B[0].map((_, j) => row.reduce((sum, val, i) => sum +val *B[i][j], 0))),
+   scalar: {
+    add: (A, scalar) => A.map(row => row.map(val => val +scalar)),
+    subtract: (A, scalar) => A.map(row => row.map(val => val -scalar)),
+    multiply: (A, scalar) => A.map(row => row.map(val => val *scalar)),
+    divide: (A, scalar) => A.map(row => row.map(val => val /scalar)),
+   },
+  },
 
   getIntersection(a, b, c, d) {
    const tTop = (d.x -c.x) *(a.y -c.y) -(d.y -c.y) *(a.x -c.x);
