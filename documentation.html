@@ -42,6 +42,8 @@
      const output = Q('#output');
      
      GitHub.repo('nexus-webdev', 'Ruin');
+     GitHub.$token = RUIN_TOKEN;
+     
      listener('click', async e => {
       const path = input.value.trim();
       output.value = await GitHub.read('docs/' +path +'.txt');
