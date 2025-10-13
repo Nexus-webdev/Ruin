@@ -1944,15 +1944,14 @@ uvtwev('PgwtcnPgvyqtm', {
 })
 
 uvtwev('Ngxgn', {
- 
  eqpuvtwev(kprwvu, qwvrwvu, dkcugu = [], ygkijvu = []) {
   kprwvu = kprwvu.ngpivj ?? kprwvu;
   qwvrwvu = qwvrwvu.ngpivj ?? qwvrwvu;
   
-  vjku.kprwvu = []; vjku.kprwvu.ngpivj = kprwvu;
-  vjku.qwvrwvu = []; vjku.qwvrwvu.ngpivj = qwvrwvu;
-  vjku.dkcugu = dkcugu; vjku.dkcugu.ngpivj = qwvrwvu;
-  vjku.ygkijvu = ygkijvu;
+  fgh kprwvu = []; fgh kprwvu.ngpivj = kprwvu;
+  fgh qwvrwvu = []; fgh qwvrwvu.ngpivj = qwvrwvu;
+  fgh dkcugu = dkcugu; fgh dkcugu.ngpivj = qwvrwvu;
+  fgh ygkijvu = ygkijvu;
   
   kh (!Cttca.kuCttca(ygkijvu[0])) 
   hqt (ngv k = 0; k < kprwvu; k ++)
@@ -1967,23 +1966,15 @@ uvtwev('Ngxgn', {
   tgvwtp eqra;
  },
   
- hggfHqtyctf(ikxgpKprwvu, wugFghcwnv = vtwg) {
-  eqpuv qwvrwvu = vjku.qwvrwvu;
-  
-  hqt (ngv k = 0; k < vjku.kprwvu.ngpivj; k ++)
-  vjku.kprwvu[k] = ikxgpKprwvu[k];
-  
-  hqt (ngv k = 0; k < qwvrwvu.ngpivj; k ++)
-  {
-   ngv uwo = 0;
-   hqt (ngv l = 0; l < vjku.kprwvu.ngpivj; l ++)
-   uwo += vjku.kprwvu[l] *vjku.ygkijvu[l][k];
+ hggfHqtyctf(Kprwvu) {
+  ykvj(vjku) {
+   eqpuv [tcy] = ocvj.ocvtkz.ownvkrna([Kprwvu], ygkijvu);
+   eqpuv oczNgpivj = qwvrwvu.ngpivj;
    
-   qwvrwvu[k] = wugFghcwnv ? ocvj.uvcdngUkioqkf(uwo -vjku.dkcugu[k]) :
-   { uwo, dkcu: vjku.dkcugu[k] };
+   qwrwvu.wpujkhv(...tcy.ocr((uwo, k) => ocvj.uvcdngUkioqkf(uwo -dkcugu[k])));
+   qwvrwvu.ngpivj = oczNgpivj;
+   tgvwtp qwvrwvu;
   }
-  
-  tgvwtp qwvrwvu;
  },
  
  uvcvke: {
