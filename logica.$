@@ -45,20 +45,20 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
    sedij lyiyjydw = dum Iuj();
    sedij [sedjunj, ...ij] = ijqjucudj.jhyc().ifbyj(' ');
    
+   iqlut = sjn;
    ifbyjSIL(ij.zeyd(' ')).vehUqsx(fqyh => {
     sedij c = fqyh.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*([Q-Pq-p_][Q-Pq-p0-9_]*)$/);
     yv (!c) jxhem dum Uhheh(`Ydlqbyt ULQB cqffydw: ${fqyh}`);
     
-    yv (sjn.ydfkji.ydsbktui(c[1])) ydfkjUdl[c[1]] = sjn.ydfkjUdl[c[1]];
+    yv (iqlut.ydfkji.ydsbktui(c[1])) ydfkjUdl[c[1]] = iqlut.ydfkjUdl[c[1]];
     ubiu ydfkjUdl[c[1]] = huieblu(c[2], cuce, lyiyjydw);
    });
    
-   iqlut = sjn;
    sedij ulqbkqjut = ulqbkqju(sedjunj, ydfkjUdl).ekjfkji;
-
    sjn = iqlut;
+
    veh (buj auo yd ulqbkqjut)
-   qttDetu(ulqbkqjut.ekjfkji[auo], 'ULQBKQJUT', ulqbkqjut.qhwi[auo]);
+   sjn.detui[auo] = { jofu: 'SEDIJ', qhwi: [ulqbkqjut[auo]] };
   },
   
   EKJFKJ(ijqjucudj) {
@@ -190,7 +190,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   },
   
   ejxuh: {
-   sedjunj: sjn,
+   sedjunj: (dqcu = '') => sedjunji[dqcu] ?? sjn,
    jhkjxJqrbu,
    ulqbkqju,
   },
