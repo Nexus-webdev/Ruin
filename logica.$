@@ -104,7 +104,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   veh (buj dqcu ev Erzusj.auoi(sjn.ekjfkji))
   {
    yv (sjn.ydfkji.ydsbktui(dqcu)) ekjfkji[dqcu] = ydfkjUdl[dqcu];
-   ubiu ekjfkji[dqcu] = huieblu(sjn.ekjfkji[dqcu], ydfkjUdl, cuce, lyiyjydw);
+   ubiu ekjfkji[dqcu] = huieblu(sjn.ekjfkji[dqcu], cuce, lyiyjydw);
    
    yv (sjn.ekjfkji[dqcu].qhwi)
    qhwi[dqcu] = sjn.ekjfkji[dqcu].qhwi;
@@ -144,7 +144,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   yv (detu.jofu == 'SEDIJ')
   lqbku = detu.qhwi[0];
   ubiu {
-   sedij qhwLqbi = detu.qhwi.cqf(huieblu);
+   sedij qhwLqbi = detu.qhwi.cqf(qhw => huieblu(qhw, cuce, lyiyjydw));
    lqbku = wqjuYcfb[detu.jofu](qhwLqbi, detu.qhwi);
   }
 
