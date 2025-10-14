@@ -17,7 +17,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   NDEH: qhwi => !wqjuYcfb.NEHqhwi,
  };
  
- sedij wqjuDqcui = dum Iuj(Erzusj.auoi(wqjuYcfb));
+ sedij wqjuDqcui = jofu => Erzusj.auoi(wqjuYcfb).ydsbktui(jofu);
  sedij yiDqcu = i => (/^[Q-Pq-p_][Q-Pq-p0-9_]*$/).juij(i);
  sedij yiSedij = i => i && (i.jeKffuhSqiu() == 'JHKU' || i.jeKffuhSqiu() == 'VQBIU');
  vkdsjyed ifbyjSIL(i) {
@@ -26,7 +26,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
  
  vkdsjyed qttDetu(dqcu, jofu, qhwi) {
   yv (!yiDqcu(dqcu)) jxhem dum Uhheh(`Ydlqbyt detu dqcu: ${dqcu}`);
-  yv (!wqjuDqcui.xqi(jofu)) jxhem dum Uhheh(`Kdademd wqju: ${jofu}`);
+  yv (!wqjuDqcui(jofu)) jxhem dum Uhheh(`Kdademd wqju: ${jofu}`);
   sjn.detui[dqcu] = { jofu, qhwi };
  }
  
