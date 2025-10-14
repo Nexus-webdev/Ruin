@@ -46,7 +46,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
     sedij c = fqyh.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*([Q-Pq-p_][Q-Pq-p0-9_]*)$/);
     yv (!c) jxhem dum Uhheh(`Ydlqbyt ULQB cqffydw: ${fqyh}`);
     
-    sjn.ydfkjUdl[c[1]] = c[2];
+    ydfkjUdl[c[1]] = c[2];
    });
    
    iqlut = sjn;
