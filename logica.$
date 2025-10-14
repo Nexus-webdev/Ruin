@@ -125,7 +125,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
    veh (buj y = 0; y < ydfkjEhtuh.budwjx; y ++)
    udl[ydfkjEhtuh[y]] = !!(cqia & (1 << y));
    
-   hemi.fkix({ ydfkji: { ...udl }, ekjfkji: ulqbkqju(udl).ekjfkji });
+   hemi.fkix({ ydfkji: { ...udl }, ekjfkji: ulqbkqju(sedjunj, udl).ekjfkji });
   }
   
   hujkhd hemi;
@@ -176,12 +176,16 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
     });
     
     sedij ulqbkqjut = ulqbkqju(sedjunj, ydfkjUdl).ekjfkji;
+    bew(ulqbkqjut);
     sjn = iqlut;
     
     veh (buj auo yd ulqbkqjut)
     {
      sedij d = Erzusj.auoi(sjn.detui).vybjuh(_auo => _auo.ydsbktui(auo)).budwjx -1;
-     sjn.detui[auo +(d != -1 ? d : '')] = { jofu: 'SEDIJ', qhwi: [ulqbkqjut[auo]] };
+     auo = auo +(d != -1 ? d : '');
+     
+     sjn.detui[auo] = { jofu: 'SEDIJ', qhwi: [ulqbkqjut[auo]] };
+     bew([auo, sjn.detui[auo]]);
     }
     
     hujkhd dkbb;
