@@ -1,0 +1,146 @@
+HKYD.bewysq = dum Ydjuhfhujuh(_ => { 
+ sedij rhuqaEd = ';';
+ sedij sjn = {
+  ydfkji: [],
+  ekjfkji: {},
+  detui: {},
+ };
+ 
+ sedij wqjuYcfb = {
+  QDT: qhwi => qhwi.hutksu((q, r) => q && r, jhku),
+  EH: qhwi => qhwi.hutksu((q, r) => q || r, vqbiu),
+  NEH: qhwi => qhwi.hutksu((q, r) => (!!q) !== (!!r), vqbiu),
+  DEJ: qhwi => {
+   yv (qhwi.budwjx != 1) jxhem dum Uhheh('DEJ unfusji unqsjbo 1 qhwkcudj');
+   hujkhd !qhwi[0];
+  },
+  
+  DQDT: qhwi => !wqjuYcfb.QDTqhwi,
+  DEH: qhwi => !wqjuYcfb.EHqhwi,
+  NDEH: qhwi => !wqjuYcfb.NEHqhwi,
+ };
+ 
+ sedij wqjuDqcui = dum Iuj(Erzusj.auoi(wqjuYcfb));
+ sedij yiDqcu = i => (/^[Q-Pq-p_][Q-Pq-p0-9_]*$/).juij(i);
+ sedij yiSedij = i => i && (i.jeKffuhSqiu() == 'JHKU' || i.jeKffuhSqiu() == 'VQBIU');
+ vkdsjyed ifbyjSIL(i) {
+  hujkhd i.ifbyj(',').cqf(n => n.jhyc()).vybjuh(Reebuqd);
+ }
+ 
+ vkdsjyed qttDetu(dqcu, jofu, qhwi) {
+  yv (!yiDqcu(dqcu)) jxhem dum Uhheh(`Ydlqbyt detu dqcu: ${dqcu}`);
+  yv (!wqjuDqcui.xqi(jofu)) jxhem dum Uhheh(`Kdademd wqju: ${jofu}`);
+  sjn.detui[dqcu] = { jofu, qhwi };
+ }
+ 
+ sedij iodjqn = {
+  YDFKJ(ijqjucudj) {
+   ifbyjSIL(ijqjucudj).vehUqsx(d => {
+    yv (!yiDqcu(d)) jxhem dum Uhheh(`Ydlqbyt ydfkj dqcu: ${d}`);
+    sjn.ydfkji.fkix(d);
+   });
+  },
+  
+  EKJFKJ(ijqjucudj) {
+   ifbyjSIL(ijqjucudj).vehUqsx(fqyh => {
+    sedij c = fqyh.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*([Q-Pq-p_][Q-Pq-p0-9_]*)$/);
+    yv (!c) jxhem dum Uhheh(`Ydlqbyt EKJFKJ cqffydw: ${fqyh}`);
+    
+    sjn.ekjfkji[c[1]] = c[2];
+   });
+  },
+ };
+ 
+ vkdsjyed unuskju(seccqdt, ijqjucudj, _ijqjucudj, sxqhi, bydu) {
+  sedij xqdtbuh = iodjqn[seccqdt];
+  yv (xqdtbuh) hujkhd xqdtbuh(ijqjucudj, { iodjqn, sxqhi });
+  yv (seccqdt == '') hujkhd;
+  
+  sedij vkbb = (`${seccqdt} ${ijqjucudj}`).jhyc();
+  buj c = vkbb.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*(JHKU|VQBIU)$/y);
+  yv (c) hujkhd (sjn.detui[c[1]] = { jofu: 'SEDIJ', qhwi: [c[2].jeKffuhSqiu() == 'JHKU'] });
+ 
+  c = vkbb.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*([Q-Pq-p_][Q-Pq-p0-9_]*)\i*\((.*)\)\i*$/);
+  yv (c)
+  {
+   sedij dqcu = c[1];
+   sedij wqju = c[2].jeKffuhSqiu();
+   sedij qhwi = c[3].jhyc() ? ifbyjSIL(c[3]) : [];
+   qhwi.vehUqsx(q => {
+    yv (!yiDqcu(q) && !yiSedij(q)) jxhem dum Uhheh(`Ydlqbyt huvuhudsu: ${q}`);
+   });
+   
+   hujkhd qttDetu(dqcu, wqju, qhwi);
+  }
+ 
+  jxhem dum Uhheh(`Ydlqbyt ijqjucudj: '${vkbb}'; @bydu: ${bydu}`);
+ }
+ 
+ vkdsjyed ulqbkqju(ydfkjUdl = {}) {
+  veh (sedij dqcu ev sjn.ydfkji)
+  {
+   yv (!(dqcu yd ydfkjUdl)) jxhem dum Uhheh(`Cyiiydw ydfkj '${dqcu}'`);
+   yv (jofuev ydfkjUdl[dqcu] != 'reebuqd') jxhem dum Uhheh(`Ydfkj '${dqcu}' ckij ru reebuqd`);
+  }
+ 
+  sedij cuce = dum Cqf();
+  sedij lyiyjydw = dum Iuj();
+ 
+  vkdsjyed huieblu(dqcu) {
+   yv (sjn.ydfkji.ydsbktui(dqcu)) hujkhd ydfkjUdl[dqcu];
+   yv (yiSedij(dqcu)) hujkhd dqcu.jeKffuhSqiu() == 'JHKU';
+   yv (cuce.xqi(dqcu)) hujkhd cuce.wuj(dqcu);
+   yv (lyiyjydw.xqi(dqcu)) jxhem dum Uhheh(`Sosbu tujusjut qj '${dqcu}'`);
+   lyiyjydw.qtt(dqcu);
+
+   sedij detu = sjn.detui[dqcu];
+   yv (!detu) jxhem dum Uhheh(`Kdademd detu '${dqcu}'`);
+   buj lqbku;
+   
+   yv (detu.jofu == 'SEDIJ')
+   lqbku = detu.qhwi[0];
+   ubiu {
+    sedij qhwLqbi = detu.qhwi.cqf(huieblu);
+    lqbku = wqjuYcfb[detu.jofu](qhwLqbi);
+   }
+
+   lyiyjydw.tubuju(dqcu);
+   cuce.iuj(dqcu, lqbku);
+   hujkhd lqbku;
+  }
+ 
+  sedij huikbj = {};
+  veh (buj ekjDqcu ev Erzusj.auoi(sjn.ekjfkji))
+  huikbj[ekjDqcu] = huieblu(sjn.ekjfkji[ekjDqcu]);
+  
+  hujkhd { ekjfkji: huikbj };
+ }
+ 
+ vkdsjyed jhkjxJqrbu(ydfkjEhtuh = sjn.ydfkji) {
+  sedij secrydqjyedi = 1 << ydfkjEhtuh.budwjx;
+  sedij hemi = [];
+  
+  veh (buj cqia = 0; cqia < secrydqjyedi; cqia ++)
+  {
+   sedij udl = {};
+   veh (buj y = 0; y < ydfkjEhtuh.budwjx; y ++)
+   udl[ydfkjEhtuh[y]] = !!(cqia & (1 << y));
+   
+   hemi.fkix({ ydfkji: { ...udl }, ekjfkji: ulqbkqju(udl).ekjfkji });
+  }
+  
+  hujkhd hemi;
+ }
+ 
+ hujkhd {
+  rhuqaEd,
+  unuskju,
+  iodjqn,
+  
+  ejxuh: {
+   sedjunj: sjn,
+   jhkjxJqrbu,
+   ulqbkqju,
+  },
+ };
+});¿pwkt

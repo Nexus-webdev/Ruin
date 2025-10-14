@@ -524,6 +524,7 @@ $.struct('GitHub: static', {
   
   this.url = '';
   this.repository = '';
+  this.subdir = '';
   this.owner = '';
  },
  
@@ -531,6 +532,7 @@ $.struct('GitHub: static', {
   const path = subdirectory ? subdirectory +'/' : '';
   this.url = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
   
+  this.subdir = subdirectory;
   this.repository = name;
   this.owner = owner;
  },
@@ -601,6 +603,17 @@ $.struct('GitHub: static', {
     throw `Failed to fetch: '${path}'`;
     resolve({});
    }
+  })
+ },
+ 
+ importScript(url) {
+  return new Promise(async resolve => {
+   this.url = url;
+   const data = await this.read('');
+   const result = await $.ruin(data.content);
+   
+   this.repo(this.owner, this.repository, this.subdir);
+   resolve(result);
   })
  },
  

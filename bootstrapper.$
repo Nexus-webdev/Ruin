@@ -192,6 +192,39 @@ eqpuv oqfu = {
   },
  }),
  
+ korqtvUetkrvu(...wtnu) {
+  tgvwtp pgy Rtqokug(cuape tguqnxg => {
+   eqpuv uetkrvu = [];
+   eqpuv { qypgt, tgrqukvqta, uwdfkt } = IkvJwd;
+   
+   hqt (ngv wtn qh wtnu)
+   {
+    eqpuv [_qypgt_, _tgrq_, ...rcvj] = wtn.urnkv('/');
+    IkvJwd.tgrq(_qypgt_, _tgrq_);
+    
+    eqpuv fcvc = cyckv IkvJwd.tgcf(rcvj.lqkp('/'));
+    eqpuv u = ogvc.qrv(rcvj.rqr().urnkv('.')[0], {
+     '$': z => {
+      TWKP.ugvwr_rjcug = vtwg;
+      tgvwtp twkp(z);
+     },
+     
+     hz(z) {
+      tgvwtp hqzz.twp(z);
+     },
+     
+     lu(z) {
+      TWKP.lu(z);
+     },
+    })(fcvc.eqpvgpv);
+    uetkrvu.rwuj(u);
+   }
+   
+   IkvJwd.tgrq(qypgt, tgrqukvqta, uwdfkt);
+   tguqnxg(uetkrvu);
+  })
+ },
+ 
  ugtxkeg(ecnndcem) {
   ugnh.qpoguucig = g => ecnndcem(g);
  },
