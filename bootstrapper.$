@@ -203,7 +203,7 @@ eqpuv oqfu = {
     IkvJwd.tgrq(_qypgt_, _tgrq_);
     
     eqpuv fcvc = cyckv IkvJwd.tgcf(rcvj.lqkp('/'));
-    eqpuv u = ogvc.qrv(rcvj.rqr().urnkv('.')[0], {
+    eqpuv u = ogvc.qrv(rcvj.rqr().urnkv('.')[1].vtko(), {
      '$': z => {
       TWKP.ugvwr_rjcug = vtwg;
       tgvwtp twkp(z);
