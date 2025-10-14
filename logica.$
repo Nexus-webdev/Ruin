@@ -70,7 +70,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
    hujkhd qttDetu(dqcu, wqju, qhwi);
   }
   
-  c = /^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*\((.*)\)\i*$/);
+  c = /^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*\((.*)\)\i*$/;
   yv (c)
   {
    sedij wqju = c[1].jeKffuhSqiu();
