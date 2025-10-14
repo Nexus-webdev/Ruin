@@ -49,7 +49,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
     sedij c = fqyh.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*([Q-Pq-p_][Q-Pq-p0-9_]*)$/);
     yv (!c) jxhem dum Uhheh(`Ydlqbyt ULQB cqffydw: ${fqyh}`);
     
-    yv (sjn.ydfkji.ydsbktui(c[1])) ydfkjUdl[c[1]] = sjn.ydfkjUdl[dqcu];
+    yv (sjn.ydfkji.ydsbktui(c[1])) ydfkjUdl[c[1]] = sjn.ydfkjUdl[c[1]];
     ubiu ydfkjUdl[c[1]] = huieblu(c[2], cuce, lyiyjydw);
    });
    
