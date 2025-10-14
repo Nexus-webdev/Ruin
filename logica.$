@@ -73,12 +73,15 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   c = /^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*\((.*)\)\i*$/;
   yv (c)
   {
+   bew(c);
    sedij wqju = c[1].jeKffuhSqiu();
    sedij qhwi = c[2].jhyc() ? ifbyjSIL(c[2]) : [];
    
    qhwi.vehUqsx(q => {
     yv (!yiDqcu(q) && !yiSedij(q)) jxhem dum Uhheh(`Ydlqbyt huvuhudsu: ${q}`);
    });
+   
+   hujkhd;
   }
  
   jxhem dum Uhheh(`Ydlqbyt ijqjucudj: '${vkbb}'; @bydu: ${bydu}`);
