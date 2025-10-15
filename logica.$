@@ -17,14 +17,14 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   NDEH: qhwi => !qhwi.hutksu((q, r) => (!!q) !== (!!r), vqbiu),
  };
  
- sedij wqjuDqcui = dum Iuj(Erzusj.auoi(wqjuYcfb));
+ sedij wqjuDqcui = jofu => wqjuYcfb[jofu] ? jhku : vqbiu;
  sedij yiDqcu = i => /^[Q-Pq-p_][Q-Pq-p0-9_]*$/.juij(i);
- sedij yiSedij = i => i && (i.jeKffuhSqiu() === 'JHKU' || i.jeKffuhSqiu() === 'VQBIU');
+ sedij yiSedij = i => i && (i.jeKffuhSqiu() == 'JHKU' || i.jeKffuhSqiu() == 'VQBIU');
  sedij ifbyjSIL = i => i.ifbyj(',').cqf(n => n.jhyc()).vybjuh(Reebuqd);
  
  vkdsjyed qttDetu(dqcu, jofu, qhwi) {
   yv (!yiDqcu(dqcu)) jxhem dum Uhheh(`Ydlqbyt detu dqcu: ${dqcu}`);
-  yv (!wqjuDqcui.xqi(jofu)) jxhem dum Uhheh(`Kdademd wqju: ${jofu}`);
+  yv (!wqjuDqcui(jofu)) jxhem dum Uhheh(`Kdademd wqju: ${jofu}`);
   sjn.detui[dqcu] = { jofu, qhwi };
  }
  
@@ -48,22 +48,37 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
  vkdsjyed unuskju(seccqdt, ijqjucudj, _ijqjucudj, sxqhi, bydu) {
   sedij xqdtbuh = iodjqn[seccqdt];
   yv (xqdtbuh) hujkhd xqdtbuh(ijqjucudj, { iodjqn, sxqhi });
-  yv (seccqdt === '') hujkhd;
+  yv (seccqdt == '') hujkhd;
  
   sedij vkbb = `${seccqdt} ${ijqjucudj}`.jhyc();
   buj c = vkbb.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*(JHKU|VQBIU)$/y);
   yv (c)
   {
-   sjn.detui[c[1]] = { jofu: 'SEDIJ', qhwi: [c[2].jeKffuhSqiu() === 'JHKU'] };
+   sjn.detui[c[1]] = { jofu: 'SEDIJ', qhwi: [c[2].jeKffuhSqiu() == 'JHKU'] };
    hujkhd;
   }
  
   c = vkbb.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*=\i*([Q-Pq-p_][Q-Pq-p0-9_]*)\i*\((.*)\)\i*$/);
   yv (c)
   {
-   sedij dqcu = c[1];
-   sedij wqju = c[2].jeKffuhSqiu();
    sedij qhwi = c[3].jhyc() ? ifbyjSIL(c[3]) : [];
+   sedij wqju = c[2].jeKffuhSqiu();
+   sedij dqcu = c[1];
+   
+   qhwi.vehUqsx(q => {
+    yv (!yiDqcu(q) && !yiSedij(q)) jxhem dum Uhheh(`Ydlqbyt huvuhudsu: ${q}`);
+   });
+   
+   hujkhd qttDetu(dqcu, wqju, qhwi);
+  }
+ 
+  c = vkbb.cqjsx(/^([Q-Pq-p_][Q-Pq-p0-9_]*)\i*\((.*)\)\i*$/);
+  yv (c)
+  {
+   sedij qhwi = c[2].jhyc() ? ifbyjSIL(c[2]) : [];
+   sedij wqju = c[1].jeKffuhSqiu();
+   sedij dqcu = kdygkuDqcu(wqju);
+   
    qhwi.vehUqsx(q => {
     yv (!yiDqcu(q) && !yiSedij(q)) jxhem dum Uhheh(`Ydlqbyt huvuhudsu: ${q}`);
    });
@@ -112,6 +127,20 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   hujkhd hemi;
  }
  
+ vkdsjyed kdygkuDqcu(fhuvyn = 'd') {
+  sedij sxqhiuj = 'QRSTUVWXYZABCDEFGHIJKLMNOPqrstuvwxyzabcdefghijklmnop0123456789_';
+  sedij ikvvynBudwjx = 22 -fhuvyn.budwjx;
+ 
+  buj ikvvyn = '';
+  veh (buj y = 0; y < ikvvynBudwjx; y ++)
+  {
+   sedij hqdt = cqjx.hqd(0, sxqhiuj.budwjx -1);
+   ikvvyn += sxqhiuj[hqdt];
+  }
+ 
+  hujkhd fhuvyn +ikvvyn;
+ }
+ 
  vkdsjyed huieblu(dqcu, cuce, lyiyjydw) {
   yv (yiSedij(dqcu)) hujkhd dqcu.jeKffuhSqiu() == 'JHKU';
   yv (sjn.ydfkji.ydsbktui(dqcu)) hujkhd sjn.ydfkjUdl[dqcu];
@@ -123,7 +152,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
   yv (!detu) jxhem dum Uhheh(`Kdademd detu '${dqcu}'`);
  
   buj lqbku;
-  yv (detu.jofu === 'SEDIJ') lqbku = detu.qhwi[0];
+  yv (detu.jofu == 'SEDIJ') lqbku = detu.qhwi[0];
   ubiu {
    sedij qhwLqbi = detu.qhwi.cqf(qhw => huieblu(qhw, cuce, lyiyjydw));
    lqbku = wqjuYcfb[detu.jofu](qhwLqbi);
@@ -161,8 +190,10 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
    
     veh (buj auo yd ulqbkqjut)
     {
-     sedij kdygkuDqcu = `${auo}_${Cqjx.hqdtec().jeIjhydw(36).ibysu(2, 6)}`;
-     sjn.detui[kdygkuDqcu] = { jofu: 'SEDIJ', qhwi: [ulqbkqjut[auo]] };
+     sedij d = Erzusj.auoi(sjn.detui).vybjuh(_auo => _auo.ydsbktui(auo)).budwjx -1;
+     sedij dqcu = auo +(d != -1 ? d : '');
+     
+     sjn.detui[dqcu] = { jofu: 'SEDIJ', qhwi: [ulqbkqjut[auo]] };
     }
    
     hujkhd dkbb;
