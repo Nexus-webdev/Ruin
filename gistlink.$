@@ -1,0 +1,71 @@
+struct('GistChannel', {
+ constructor(gistId, token, write = 'ruin-message.json', read = 'py-message.json') {
+  def gistId = gistId;
+  def token = token;
+  def filename = write;
+  def filenameB = read;
+  def apiUrl = `https://api.github.com/gists/${def gistId}`;
+  
+  def headers = {
+   'Authorization': `token ${def token}`,
+   'Accept': 'application/vnd.github.v3+json',
+   'Content-Type': 'application/json'
+  };
+ }
+ 
+ async send(data) {
+  const payload = {
+   files: {
+    [this.filename]: {
+     content: JSON.stringify(data, null, 2),
+    }
+   }
+  };
+  
+  const res = await fetch(this.apiUrl, {
+   method: 'PATCH',
+   headers: this.headers,
+   body: JSON.stringify(payload),
+  });
+  
+  return res.ok;
+ }
+ 
+ async receive() {
+  const res = await fetch(this.apiUrl, {
+   method: 'GET',
+   headers: this.headers,
+  });
+ 
+  if (!res.ok) return null;
+  const gist = await res.json();
+  const content = gist.files?.[this.filenameB]?.content || '{}';
+ 
+  try {
+   return JSON.parse(content);
+  } catch {
+   return null;
+  }
+ }
+ 
+ watch(callback, interval = 500) {
+  const controller = new AbortController();
+  let last = null;
+
+  const poll = async _ => {
+   if (controller.signal.aborted) return;
+   const msg = await this.receive();
+   
+   if (msg && JSON.stringify(msg) != JSON.stringify(last))
+   {
+    callback(msg);
+    last = msg;
+   }
+   
+   setTimeout(poll, interval);
+  };
+
+  poll();
+  return controller;
+ },
+})
