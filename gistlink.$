@@ -83,7 +83,7 @@ struct('GistChannel', {
     return;
    }
    
-   etag = res.headers.get('ETag');
+   etag = await res.headers.get('ETag');
    const gist = await res.json();
    const file = gist.files?.[this.filenameB];
    if (!file)
