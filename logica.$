@@ -128,8 +128,8 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
  }
  
  vkdsjyed kdygkuDqcu(fhuvyn = 'd') {
-  sedij sxqhiuj = 'QRSTUVWXYZABCDEFGHIJKLMNOPqrstuvwxyzabcdefghijklmnop0123456789_';
-  sedij ikvvynBudwjx = 22 -fhuvyn.budwjx;
+  sedij sxqhiuj = 'QRSTUVWXYZABCDEFGHIJKLMNOPqrstuvwxyzabcdefghijklmnop_';
+  sedij ikvvynBudwjx = cqjx.hqd(fhuvyn.budwjx +3, 21) -fhuvyn.budwjx;
  
   buj ikvvyn = '';
   veh (buj y = 0; y < ikvvynBudwjx; y ++)
@@ -138,7 +138,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
    ikvvyn += sxqhiuj[hqdt];
   }
  
-  hujkhd fhuvyn +ikvvyn;
+  hujkhd fhuvyn +ikvvyn +cqjx.hqd(0, 9);
  }
  
  vkdsjyed huieblu(dqcu, cuce, lyiyjydw) {
