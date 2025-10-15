@@ -1,5 +1,5 @@
 struct('GistChannel', {
- constructor(gistId, token, write = 'ruin-message.json', read = 'py-message.json') {
+ construct(gistId, token, write = 'ruin-message.json', read = 'py-message.json') {
   def gistId = gistId;
   def token = token;
   def filename = write;
@@ -11,42 +11,46 @@ struct('GistChannel', {
    'Accept': 'application/vnd.github.v3+json',
    'Content-Type': 'application/json'
   };
- }
+ },
  
- async send(data) {
-  const payload = {
-   files: {
-    [this.filename]: {
-     content: JSON.stringify(data, null, 2),
+ send(data) {
+  return new Promise(async resolve => {
+   const payload = {
+    files: {
+     [this.filename]: {
+      content: json.stringify(data, null, 2),
+     }
     }
+   };
+   
+   const res = await fetch(this.apiUrl, {
+    method: 'PATCH',
+    headers: this.headers,
+    body: json.stringify(payload),
+   });
+   
+   resolve(res.ok);
+  })
+ },
+ 
+ receive() {
+  return new Promise(async resolve => {
+   const res = await fetch(this.apiUrl, {
+    method: 'GET',
+    headers: this.headers,
+   });
+  
+   if (!res.ok) return null;
+   const gist = await res.json();
+   const content = gist.files?.[this.filenameB]?.content || '{}';
+  
+   try {
+    resolve(json.parse(content));
+   } catch {
+    resolve(null);
    }
-  };
-  
-  const res = await fetch(this.apiUrl, {
-   method: 'PATCH',
-   headers: this.headers,
-   body: JSON.stringify(payload),
-  });
-  
-  return res.ok;
- }
- 
- async receive() {
-  const res = await fetch(this.apiUrl, {
-   method: 'GET',
-   headers: this.headers,
-  });
- 
-  if (!res.ok) return null;
-  const gist = await res.json();
-  const content = gist.files?.[this.filenameB]?.content || '{}';
- 
-  try {
-   return JSON.parse(content);
-  } catch {
-   return null;
-  }
- }
+  })
+ },
  
  watch(callback, interval = 500) {
   const controller = new AbortController();
@@ -56,7 +60,7 @@ struct('GistChannel', {
    if (controller.signal.aborted) return;
    const msg = await this.receive();
    
-   if (msg && JSON.stringify(msg) != JSON.stringify(last))
+   if (msg && json.stringify(msg) != json.stringify(last))
    {
     callback(msg);
     last = msg;
