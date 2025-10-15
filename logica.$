@@ -114,6 +114,7 @@ HKYD.bewysq = dum Ydjuhfhujuh(_ => {
  
  vkdsjyed huieblu(dqcu, cuce, lyiyjydw) {
   yv (yiSedij(dqcu)) hujkhd dqcu.jeKffuhSqiu() == 'JHKU';
+  yv (sjn.ydfkji.ydsbktui(dqcu)) hujkhd sjn.ydfkjUdl[dqcu];
   yv (cuce.xqi(dqcu)) hujkhd cuce.wuj(dqcu);
   yv (lyiyjydw.xqi(dqcu)) jxhem dum Uhheh(`Sosbu tujusjut qj '${dqcu}'`);
   lyiyjydw.qtt(dqcu);
