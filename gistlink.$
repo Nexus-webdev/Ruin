@@ -62,7 +62,7 @@ struct('GistChannel', {
    
    if (msg && json.stringify(msg) != json.stringify(last))
    {
-    if (msg.from_python) callback(msg);
+    callback(msg);
     last = msg;
    }
    
