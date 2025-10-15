@@ -1,0 +1,19 @@
+The Project Manager for Ruin is available on github:
+https://nexus-webdev.github.io/Ruin/Manager.html?id=<project id>#;
+
+Currently, only dark mode works correctly (because I'm too lazy to fix light mode).
+The textarea at the top of the page acts as a config in which you can:
+* Define an encryption key (encoding: <key>),
+* Define a prefix (prefix: <prefix>),
+* Define the project name (project: <name>);
+
+The following are customized keybinds for the manager:
+* Ctrl + Shift + r - Reopen the manager as a window,
+* Ctrl + Shift + f - Make the editor (iframe) fullscreen,
+* Ctrl + s - Save to the filesystem,
+* Ctrl + Alt + s - Save to the filesystem (overriding the current filehandle),
+* Ctrl + m - Load a directory into the manager,
+* Alt + s - Save to the localStorage only,
+* Alt + r - Replace the text in a specific area,
+* Alt + o - Execute the code in ruin,
+* Alt + m - toggle menu,

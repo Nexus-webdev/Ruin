@@ -6,7 +6,7 @@
  <meta name="description" content="This is a basic project manager made for ruin.">
  
  <link rel="icon" href="Ruin Icon.png" type="image/png">
- <title>URL Manager</title>
+ <title>Project Manager</title>
   <style>
    body {
     font-family: Courier New;
@@ -229,7 +229,7 @@ prefix: null,
   const IdPassed = urlData().id ?? urlData().manager;
   if (!IdPassed) window.location.href = `${window.location.href.split('#')[0]}?id=${Math.random()}#`;
   const id = `Manager - ${IdPassed}`;
-  document.title = `${id.split(' - ')[1]} - URL Manager`;
+  document.title = `${id.split(' - ')[1]} - Project Manager`;
   
   function urlData() {
    const Params = new URLSearchParams(window.location.search).entries()
@@ -246,7 +246,7 @@ prefix: null,
   let full = false;
   
   document.addEventListener('keydown', async e => {
-   if (e.ctrlKey && e.key == 'f')
+   if (e.ctrlKey && e.key == 'F')
    {
     e.preventDefault();
     full = true;

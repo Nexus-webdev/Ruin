@@ -1,0 +1,35 @@
+import urllib.request
+import time
+
+def loadSFL(url):
+    try:
+        response = urllib.request.urlopen(f"https://raw.githubusercontent.com/{url}")
+        code = response.read().decode("utf-8")
+        exec(code, globals())
+        print(f"Successfully Loaded SFL: {url}")
+    except Exception as e:
+        print(f"Failed to load SFL: {e}")
+
+loadSFL(url="nexus-webdev/Ruin/main/gistlink.py")
+
+# Instantiate channel
+channel = GistChannel(
+    gist_id=<your gist id>,
+    token=<your gist access token>,
+)
+
+print("Press Enter to send a message to JS. Ctrl+C to exit.")
+while True:
+    input("\nReady. Press Enter to send → ")
+    msg = input("Type your message: ")
+
+    payload = {
+        "from_python": msg,
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+
+    res = channel.send(payload)
+    if res:
+        print("Message sent.")
+    else:
+        print("Failed to send.")

@@ -1,0 +1,18 @@
+"The 'RUIN_TOKEN' variable grants read access to the 'Ruin' Repository";
+GitHub.token(RUIN_TOKEN);
+
+"The 'importScripts' function can import both ruin and foxx code from github";
+await importScripts('nexus-webdev/Ruin/gistlink.$');
+const gist_token = <your gist access token>;
+
+"The 'GistChannel' struct can facilitate communication through github gists";
+"There is also a python version";
+
+const channel = new GistChannel(<your gist id>, gist_token);
+
+"The 'watch' method checks for changes in the filedata at a set interval";
+channel.watch(msg => {
+ if (msg.from_python) ruin(msg.from_python);
+}, 150);
+
+win(channel);

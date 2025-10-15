@@ -54,16 +54,50 @@ struct('GistChannel', {
  
  watch(callback, interval = 500) {
   const controller = new AbortController();
-  let last = null;
+  let etag = null;
 
-  const poll = async _ => {
+  const poll = async () => {
    if (controller.signal.aborted) return;
-   const msg = await this.receive();
+   const headers = {
+    Authorization: `token ${this.token}`,
+    Accept: 'application/vnd.github.v3+json'
+   };
    
-   if (msg && json.stringify(msg) != json.stringify(last))
+   if (etag) headers['If-None-Match'] = etag;
+   const res = await fetch(`https://api.github.com/gists/${this.gist_id}`, {
+    method: 'GET',
+    headers,
+    signal: controller.signal,
+   });
+   
+   if (res.status == 304)
    {
+    setTimeout(poll, interval);
+    return;
+   }
+   
+   if (!res.ok)
+   {
+    console.warn('Gist fetch failed:', res.status);
+    setTimeout(poll, interval);
+    return;
+   }
+   
+   etag = res.headers.get('ETag');
+   const gist = await res.json();
+   const file = gist.files?.[this.filename];
+   if (!file)
+   {
+    terminal.warn('File not found in gist');
+    setTimeout(poll, interval);
+    return;
+   }
+   
+   try {
+    const msg = JSON.parse(file.content);
     callback(msg);
-    last = msg;
+   } catch (e) {
+    terminal.warn('Invalid JSON in gist file');
    }
    
    setTimeout(poll, interval);
