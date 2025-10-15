@@ -64,7 +64,7 @@ struct('GistChannel', {
    };
    
    if (etag) headers['If-None-Match'] = etag;
-   const res = await fetch(`https://api.github.com/gists/${this.gist_id}`, {
+   const res = await fetch(`https://api.github.com/gists/${this.gistId}`, {
     method: 'GET',
     headers,
     signal: controller.signal,
@@ -85,7 +85,7 @@ struct('GistChannel', {
    
    etag = res.headers.get('ETag');
    const gist = await res.json();
-   const file = gist.files?.[this.filename];
+   const file = gist.files?.[this.filenameB];
    if (!file)
    {
     terminal.warn('File not found in gist');
