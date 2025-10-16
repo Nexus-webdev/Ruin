@@ -403,7 +403,7 @@ const foxxModifications = {
     let i = statement.indexOf(' ? ');
     i = i == -1 ? statement.length : i;
     
-    const options = i == statement.length ? '{}' : await foxx.get(statement.slice(i +3));
+    const options = i == statement.length ? {} : await foxx.get(statement.slice(i +3));
     let searchResult = await $.Q(await foxx.get(statement.slice(0, i)), options);
     
     returns(searchResult);
