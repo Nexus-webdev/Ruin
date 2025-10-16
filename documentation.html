@@ -35,7 +35,7 @@
         overflow-y: auto;
         position: absolute;
         background: white;
-        width: 200px;
+        width: 75%;
         display: none;
        }
        
@@ -92,7 +92,7 @@
        div.textContent = match;
        div.style.color = 'black';
        div.onclick = _ => {
-        input.value = match.replace('.txt', '');
+        input.value = (match.startsWith('/') ? match.slice(1) : match).replace('.txt', '');
         box.style.display = 'none';
        };
        
@@ -102,18 +102,18 @@
       box.style.display = matches.length ? 'block' : 'none';
      }, input);
      
-     function getSuggestions(dir) {
+     function getSuggestions(dir, path = '') {
       const items = [];
       for (let key in dir.files)
       {
        const entry = dir.files[key];
-       items.push(\`\${dir.path.replace('docs/', '')}/\${key}\`);
+       items.push(\`\${path.replace('docs/', '')}/\${key}\`);
       }
       
       for (let key in dir.directories)
       {
        const entry = dir.directories[key];
-       items.push(...getSuggestions(entry));
+       items.push(...getSuggestions(entry, entry.path));
       }
       
       return items;
