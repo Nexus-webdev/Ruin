@@ -1,5 +1,4 @@
 # gistlink.py
-# gistlink.py
 import urllib.request
 import json
 

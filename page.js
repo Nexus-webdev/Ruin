@@ -453,16 +453,29 @@ const foxxModifications = {
  popup: {
   show(statement) {
    return new Promise(async resolve => {
-    const message = await foxx.get(statement);
-    document.getElementById('popup').style.display = 'block';
-    if (message) document.getElementById('popup-message').innerText = message;
+    const date = Date.now();
+    let [id, _statement] = statement.replace('>>', date).split(date);
+    const message = await foxx.get(_statement);
+    id += '-popup';
+    
+    $.html(`<div id='${id}' class='popup'>
+     <div class='popup-content'>
+      <span class='close' onclick="$.Q('#${id}').style.display = 'none';">&times;</span>
+      <p id='${id}-message'></p>
+      <textarea id='${id}-response' class='popup-response'></textarea>
+      <button id='${id}-ok' onclick="$.Q('#${id}').style.display = 'none';">OK</button>
+     </div>
+    </div>`)
+    
+    $.Q(`#${id}`).style.display = 'block';
+    if (message) $.Q(`#${id}-message`).innerText = message;
     
     resolve(1);
    })
   },
   
-  close() {
-   document.getElementById('popup').style.display = 'none';
+  async close(id) {
+   $.Q(`#${await foxx.get(id)}-popup`).style.display = 'none';
   },
  },
  
