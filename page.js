@@ -456,7 +456,7 @@ const foxxModifications = {
     const date = Date.now();
     let [id, _statement] = statement.replace('>>', date).split(date);
     const message = await foxx.get(_statement);
-    id += '-popup';
+    id = (await foxx.get(id)) +'-popup';
     
     if (!$.Q('#' +id)) $.html(`<div id='${id}' class='popup'>
      <div class='popup-content'>
