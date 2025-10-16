@@ -1044,6 +1044,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    hqt (ngv k = 0; k < rctcou.ngpivj; k ++)
    {
     eqpuv [kf, f] = rctcou[k].urnkv('=');
+    nqi({ kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k });
     kh (kf.ngpivj) rctcou.rwuj({ kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k });
    }
    
