@@ -598,7 +598,7 @@ $.struct('GitHub: static', {
      }
     };
     
-    resolve({ directories, files });
+    resolve({ directories, files, ...response });
    } catch(e) {
     throw `Failed to fetch: '${path}'`;
     resolve({});
