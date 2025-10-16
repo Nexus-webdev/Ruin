@@ -460,7 +460,7 @@ const foxxModifications = {
     
     if (!$.Q('#' +id)) $.html(`<div id='${id}' class='popup'>
      <div class='popup-content'>
-      <span class='close' onclick="$.Q('#${id}').style.display = 'none';">&times;</span>
+      <span class='close' id='${id}-close' onclick="$.Q('#${id}').style.display = 'none';">&times;</span>
       <p id='${id}-message'></p>
       <textarea id='${id}-response' class='popup-response'></textarea>
       <button id='${id}-ok' onclick="$.Q('#${id}').style.display = 'none';">OK</button>

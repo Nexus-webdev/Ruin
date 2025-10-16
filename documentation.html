@@ -28,11 +28,32 @@
         height: 120px;
         resize: vertical;
        }
+       
+       .suggestions-box {
+        border: 1px solid #ccc;
+        max-height: 150px;
+        overflow-y: auto;
+        position: absolute;
+        background: white;
+        width: 200px;
+        display: none;
+       }
+       
+       .suggestions-box div {
+        padding: 8px;
+        cursor: pointer;
+       }
+       
+       .suggestions-box div:hover {
+        background: #eee;
+       }
       </style>
       
       <h1>Documentation</h1>
       <label for='path'>Enter Documentation Path:</label>
       <input id='path' type='text' placeholder='e.g. foxx/basics'>
+      <div id='suggestions' class='suggestions-box'></div>
+      
       <button id='Find'>Find</button>
       <textarea id='output' readonly></textarea>
      !;
@@ -40,9 +61,13 @@
      const input = Q('#path');
      const button = Q('#Find');
      const output = Q('#output');
+     const box = Q('#suggestions');
      
      GitHub.repo('nexus-webdev', 'Ruin');
      GitHub.token(RUIN_TOKEN);
+     
+     const dir = await GitHub.dir('docs');
+     const items = getSuggestions(dir);
      
      listener('click', async e => {
       const path = \`docs/\${input.value.trim()}\.txt\`;
@@ -53,6 +78,39 @@
        output.value = \`Could not find file at path: '\${path}\'\`;
       }
      }, button);
+     
+     listener('input', async e => {
+      const path = input.value.trim().toLowerCase();
+      box.innerHTML = '';
+      
+      if (!path) return box.style.display = 'none';
+      const matches = items.filter(item => item.toLowerCase().includes(path));
+      
+      matches.forEach(match => {
+       const div = document.createElement('div');
+       div.textContent = match;
+       div.onclick = _ => {
+        input.value = match.replace('.txt', '');
+        box.style.display = 'none';
+       };
+       
+       box.appendChild(div);
+      });
+  
+      box.style.display = matches.length ? 'block' : 'none';
+     }, input);
+     
+     function getSuggestions(dir, path = '') {
+      const items = [];
+      for (let key in dir)
+      {
+       const entry = dir[key];
+       if (entry.type == 'file') items.push(\`\${path}/\${entry.name}\`);
+       else getSuggestions(entry, entry.path);
+      }
+      
+      return items;
+     }
    `;
    
    location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=DOCUMENTATION-PAGE';
