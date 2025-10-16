@@ -458,7 +458,7 @@ const foxxModifications = {
     const message = await foxx.get(_statement);
     id += '-popup';
     
-    $.html(`<div id='${id}' class='popup'>
+    if (!$.Q('#' +id)) $.html(`<div id='${id}' class='popup'>
      <div class='popup-content'>
       <span class='close' onclick="$.Q('#${id}').style.display = 'none';">&times;</span>
       <p id='${id}-message'></p>
