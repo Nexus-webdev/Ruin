@@ -13,7 +13,7 @@
         color: white;
        }
        
-       input, textarea, button {
+       input, #output, button {
         background-color: #222;
         border: 1px solid #555;
         color: white;
@@ -25,7 +25,7 @@
        }
        
        textarea {
-        height: 120px;
+        height: 300px;
         resize: vertical;
        }
        
@@ -51,11 +51,11 @@
       
       <h1>Documentation</h1>
       <label for='path'>Enter Documentation Path:</label>
-      <input id='path' type='text' placeholder='e.g. foxx/basics'>
+      <input id='path' type='text' spellcheck='false' placeholder='e.g. foxx/basics'>
       <div id='suggestions' class='suggestions-box'></div>
       
       <button id='Find'>Find</button>
-      <textarea id='output' readonly></textarea>
+      <textarea id='output' spellcheck='false' readonly></textarea>
      !;
      
      const input = Q('#path');
@@ -68,6 +68,7 @@
      
      const dir = await GitHub.dir('docs');
      const items = getSuggestions(dir);
+     log('Valid Searches: \\n' +items.join('\\n'));
      
      listener('click', async e => {
       const path = \`docs/\${input.value.trim()}\.txt\`;
@@ -83,12 +84,13 @@
       const path = input.value.trim().toLowerCase();
       box.innerHTML = '';
       
-      if (!path) return box.style.display = 'none';
+      if (path.trim() == '') return box.style.display = 'none';
       const matches = items.filter(item => item.toLowerCase().includes(path));
       
       matches.forEach(match => {
        const div = document.createElement('div');
        div.textContent = match;
+       div.style.color = 'black';
        div.onclick = _ => {
         input.value = match.replace('.txt', '');
         box.style.display = 'none';
@@ -100,13 +102,18 @@
       box.style.display = matches.length ? 'block' : 'none';
      }, input);
      
-     function getSuggestions(dir, path = '') {
+     function getSuggestions(dir) {
       const items = [];
-      for (let key in dir)
+      for (let key in dir.files)
       {
-       const entry = dir[key];
-       if (entry.type == 'file') items.push(\`\${path}/\${entry.name}\`);
-       else getSuggestions(entry, entry.path);
+       const entry = dir.files[key];
+       items.push(\`\${dir.path.replace('docs/', '')}/\${key}\`);
+      }
+      
+      for (let key in dir.directories)
+      {
+       const entry = dir.directories[key];
+       items.push(...getSuggestions(entry));
       }
       
       return items;
