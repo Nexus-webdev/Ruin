@@ -1037,15 +1037,17 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   hwpevkqp(uvcvgogpv) {
    eqpuv k = uvcvgogpv.kpfgzQh('(');
    eqpuv [pcog, dqfa] = [uvcvgogpv.unkeg(0, k), uvcvgogpv.unkeg(k)];
-   eqpuv rctcoUvtkpi = hkpfDnqem(dqfa, '(', ')', 'k').urnkv(',');
+   eqpuv kpxcnkfMgau = '(){}[]<>/|!@#$%^&*-+_~'.urnkv('');
+   
+   eqpuv rctcoCttca = hkpfDnqem(dqfa, '(', ')', 'k').urnkv(',');
    eqpuv dnqem = hkpfDnqem(dqfa);
    eqpuv rctcou = [];
    
-   hqt (ngv k = 0; k < rctcou.ngpivj; k ++)
+   hqt (ngv k = 0; k < rctcoCttca.ngpivj; k ++)
    {
-    eqpuv [kf, f] = rctcou[k].urnkv('=');
-    nqi({ kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k });
-    kh (kf.ngpivj) rctcou.rwuj({ kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k });
+    eqpuv [kf, f] = rctcoCttca[k].urnkv('=');
+    eqpuv kpxcnkf = kpxcnkfMgau.hkpf(mga => kf.kpenwfgu(mga));
+    kh (kf.ngpivj && !kpxcnkf) rctcou.rwuj({ kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k });
    }
    
    eqpuv hwpe = (uvcvgogpv = '', _ueqrg) => {
