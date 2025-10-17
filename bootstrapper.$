@@ -387,14 +387,14 @@ eqpuv oqfu = {
  _XCT_VARG_EQPVTQN_: {
   hnqcv: pgy Rtqza({}, {
    ugv(vctigv, rtqr, xcnwg) {
-    kh (vargqh xcnwg != 'pwodgt' || !xcnwg.vqUvtkpi().kpenwfgu('.'))) vjtqy vargGttqt(rtqr);
+    kh (vargqh xcnwg != 'pwodgt' || !xcnwg.vqUvtkpi().kpenwfgu('.')) vjtqy vargGttqt(rtqr);
     tgvwtp vctigv[rtqr] = xcnwg;
    },
   }),
   
   kpv: pgy Rtqza({}, {
    ugv(vctigv, rtqr, xcnwg) {
-    kh (vargqh xcnwg != 'pwodgt' || xcnwg.vqUvtkpi().kpenwfgu('.'))) vjtqy vargGttqt(rtqr, 'kpvgigt');
+    kh (vargqh xcnwg != 'pwodgt' || xcnwg.vqUvtkpi().kpenwfgu('.')) vjtqy vargGttqt(rtqr, 'kpvgigt');
     tgvwtp vctigv[rtqr] = xcnwg;
    },
   }),
