@@ -477,12 +477,12 @@ const foxxModifications = {
   return(statement, { returns }) {
    return new Promise(async resolve => {
     const id = await foxx.syntax.popup.show(statement);
-    listener('click', e => {
+    $.listener('click', e => {
      const message = $.Q(`#${id}-message`);
      resolve(returns({ ok: true, message }));
     }, $.Q(`#${id}-ok`));
     
-    listener('click', e => {
+    $.listener('click', e => {
      const message = { value: null };
      resolve(returns({ ok: false, message }));
     }, $.Q(`#${id}-close`));
