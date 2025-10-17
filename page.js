@@ -477,15 +477,24 @@ const foxxModifications = {
   return(statement, { returns }) {
    return new Promise(async resolve => {
     const id = await foxx.syntax.popup.show(statement);
-    $.listener('click', e => {
-     const message = $.Q(`#${id}-message`);
-     resolve(returns({ ok: true, message }));
-    }, $.Q(`#${id}-ok`));
+    $.listener('click', e => func(true), $.Q(`#${id}-ok`));
+    $.listener('click', e => func(false), $.Q(`#${id}-close`));
     
-    $.listener('click', e => {
-     const message = { value: null };
-     resolve(returns({ ok: false, message }));
-    }, $.Q(`#${id}-close`));
+    function func(allowed) {
+     const message = $.Q(`#${id}-message`);
+     const response = $.Q(`#${id}-response`);
+     const close = $.Q(`#${id}-close`);
+     const ok = $.Q(`#${id}-ok`);
+     
+     resolve(returns({
+      response,
+      message,
+      close,
+      ok,
+      
+      allowed,
+     }));
+    }
    })
   },
   
