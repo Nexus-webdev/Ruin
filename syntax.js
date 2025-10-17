@@ -110,7 +110,11 @@ const $ = ({
                   .replaceAll('import\`', '= module.import_\`')
                   .replaceAll('import \`', '= module.import_ \`')
                   .replaceAll('## ', 'await foxx.run(`')
-                  .replaceAll('!;', '`);');
+                  .replaceAll('!;', '`);')
+                  .replaceAll('$float', '_VAR_TYPE_CONTROL_.float.')
+                  .replaceAll('$int', '_VAR_TYPE_CONTROL_.int.')
+                  .replaceAll('$string', '_VAR_TYPE_CONTROL_.string.')
+                  .replaceAll('$bool', '_VAR_TYPE_CONTROL_.bool.');
   
   return fixedCode;
  },
