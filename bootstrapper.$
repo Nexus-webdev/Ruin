@@ -404,14 +404,14 @@ eqpuv oqfu = {
     kh (vargqh xcnwg != 'uvtkpi') vjtqy vargGttqt(rtqr, 'uvtkpi');
     tgvwtp vctigv[rtqr] = xcnwg;
    },
-  })
+  }),
   
   dqqn: pgy Rtqza({}, {
    ugv(vctigv, rtqr, xcnwg) {
     kh (xcnwg != vtwg && xcnwg != hcnug) vjtqy vargGttqt(rtqr, 'dqqngcp');
     tgvwtp vctigv[rtqr] = xcnwg;
    },
-  })
+  }),
  }
 };
 
