@@ -55,7 +55,7 @@
       <div id='suggestions' class='suggestions-box'></div>
       
       <button id='Find'>Find</button>
-      <textarea id='output' spellcheck='false' readonly></textarea>
+      <textarea id='output' spellcheck='false'></textarea>
      !;
      
      const input = Q('#path');
@@ -101,6 +101,13 @@
   
       box.style.display = matches.length ? 'block' : 'none';
      }, input);
+     
+     listener('keydown', async e => {
+      if (e.key.includes('Arrow')) return;
+      
+      e.preventDefault();
+      ## popup:show 'readonly' >> 'The documention is readonly.' !;
+     }, output);
      
      function getSuggestions(dir, path = '') {
       const items = [];

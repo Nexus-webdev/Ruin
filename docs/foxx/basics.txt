@@ -4,8 +4,8 @@
 # Use 'let' or 'const' to declare variables (don't use 'const' in listeners, it's buggy as hell);
 const math = { sqr, sqrt };
 
-# A popup can be shown on the screen, or removed, programmatically;
-popup:show `7 Squared is: ${math:sqr 7}`;
+# Show a popup on the screen;
+popup:show '7 to the power of 2' >> `7 Squared is: ${math:sqr 7}`;
 print `7 Squared is: ${math:sqr 7}`;
 
 # The DOM can be written to using doc:write (functions from objects can be called using ':' instead of '.');

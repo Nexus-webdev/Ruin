@@ -461,16 +461,31 @@ const foxxModifications = {
     if (!$.Q('#' +id)) $.html(`<div id='${id}' class='popup'>
      <div class='popup-content'>
       <span class='close' id='${id}-close' onclick="$.Q('#${id}').style.display = 'none';">&times;</span>
-      <p id='${id}-message'></p>
+      <p id='${id}-message' class='popup-message'></p>
       <textarea id='${id}-response' class='popup-response'></textarea>
-      <button id='${id}-ok' onclick="$.Q('#${id}').style.display = 'none';">OK</button>
+      <button id='${id}-ok' onclick="$.Q('#${id}').style.display = 'none';" class='popup-ok'>OK</button>
      </div>
     </div>`)
     
     $.Q(`#${id}`).style.display = 'block';
     if (message) $.Q(`#${id}-message`).innerText = message;
     
-    resolve(1);
+    resolve(id);
+   })
+  },
+  
+  return(statement, { returns }) {
+   return new Promise(async resolve => {
+    const id = await foxx.syntax.popup.show(statement);
+    listener('click', e => {
+     const message = $.Q(`#${id}-message`);
+     resolve(returns({ ok: true, message }));
+    }, $.Q(`#${id}-ok`));
+    
+    listener('click', e => {
+     const message = { value: null };
+     resolve(returns({ ok: false, message }));
+    }, $.Q(`#${id}-close`));
    })
   },
   
