@@ -1,0 +1,11 @@
+"Git";
+
+"The 'GitHub' struct, as the name suggests, can access github";
+GitHub.token(<your token>); "The token defines what permissions, for what repositories, you have";
+GitHub.repo(<owner>, <repo>, <subdirectory (optional)>); "This defines what repository is targeted";
+
+<var> = await GitHub.read(<path>); "Reads the file data from a given path (eg: docs/ruin/github.txt)";
+GitHub.write(<path>, <content>); "writes to a file from a given path (eg: docs/ruin/github.txt, 'Hello!')";
+<var> = await GitHub.dir(<path>); "Reads the directory data from a given path (eg: docs/ruin)";
+
+await importScripts(<owner>/<repo>/<path>, ...); "Imports scripts from github repos (for now just ruin and foxx)";

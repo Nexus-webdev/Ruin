@@ -1,0 +1,11 @@
+# Filesystem;
+-cd <directory>;
+
+<var> = -read <file>;
+-write <file> >> <content>
+-rm <file>;
+
+-mkdir <directory>;
+-rmdir <directory>;
+
+-install <alias>: <directory>, ...;

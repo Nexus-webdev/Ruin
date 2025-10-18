@@ -1,0 +1,26 @@
+"basics";
+
+"This is a comment";
+"To access the console, use the 'terminal' object";
+terminal.warn('I don\'t know what I\'m warning you about.');
+
+"Ruin has optional type control built into it (supported types are: float, int, string and bool)";
+$float foo = 4.5; "Numbers such as 2.0 do not classify as floats";
+$bool foo = true; "1 and 0 classify as booleans";
+
+"In Ruin, console.log is replaced by log";
+log($float foo, $bool foo); "log can write multiple values to the console at once";
+log('Hello, World! <css> color: red'); "log can also style messages";
+
+"Foxx can be executed like so (must start with: '## '. must end with: '!;')";
+## print 'Hello, World!' !;
+"Or so (this method gives more control)";
+foxx.run(`print 'Hello, World 2!'`);
+
+"Foxx can also be executed as a Binary Array or an Executeable";
+const exe = foxx.executeable(`let message = 'This is a message (obviously).'`);
+const program = [1110000, 1110010, 1101001, 1101110, 1110100, 100000, 1101101, 1100101, 1110011, 1110011, 1100001, 1100111, 1100101];
+
+"In Ruin, await can always be called in the global scope.";
+await foxx.exec(exe);
+await foxx.exec(program);

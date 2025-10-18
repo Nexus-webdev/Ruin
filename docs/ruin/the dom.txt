@@ -1,0 +1,14 @@
+"The DOM";
+
+"Html and css can be appended to the body with their function";
+css(`p { color: red }`);
+html(`<p id='p1'>This is a paragraph.</p>`);
+
+"The 'Q' function is used to make queries (to the dom, web searches or the url search params)";
+const p = Q('#p1');
+
+"Listeners can be initialized like so";
+listener('click', <callback>, p, <options>);
+
+"Note: <elem>.listeners includes all of an elements listeners (only those initialized by the 'listener' function)";
+removeListener('click', p.listeners.click[0], p);
