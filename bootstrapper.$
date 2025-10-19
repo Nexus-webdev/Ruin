@@ -2064,7 +2064,7 @@ hwpevkqp tcpig(uvctv, gpf = uvctv, uvgr = 1) {
  eqpuv ctt = [];
 
  (_ => {
-  hqt(ngv k = uvctv; k < gpf; k += uvgr)
+  hqt(ngv k = uvctv; ocvj.cdu(k) < ocvj.cdu(gpf); k += uvgr)
   ctt.rwuj(k);
  })();
  
