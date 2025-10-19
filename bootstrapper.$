@@ -1021,8 +1021,9 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpfkvkqpu = cyckv igv(`[${eqpfkvkqpu}]`);
     eqpuv eqfg = hkpfDnqem(dqfa);
     
+    kh (tgvwtpu.rqr() == vtwg) tgvwtp tguqnxg(tgvwtpu.rwuj(hcnug));
     eqpuv Hcnug = eqpfkvkqpu.kpenwfgu(hcnug);
-    kh (Hcnug == hcnug && tgvwtpu.rqr() == vtwg) cyckv twp(eqfg);
+    kh (Hcnug == hcnug) cyckv twp(eqfg);
     
     tgvwtpu.rwuj(Hcnug);
     tguqnxg(1);
