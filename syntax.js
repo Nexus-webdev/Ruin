@@ -101,6 +101,7 @@ function wrap(value) {
 }
 
 const $ = ({
+ _TYPES_: [],
  fixSyntax(code) {
   "Replace special keywords with js syntax";
   let fixedCode = code.replace(/def /g, 'this.')
@@ -110,11 +111,10 @@ const $ = ({
                   .replaceAll('import\`', '= module.import_\`')
                   .replaceAll('import \`', '= module.import_ \`')
                   .replaceAll('## ', 'await foxx.run(`')
-                  .replaceAll('!;', '`);')
-                  .replaceAll('$float', '_VAR_TYPE_CONTROL_.float.')
-                  .replaceAll('$int', '_VAR_TYPE_CONTROL_.int.')
-                  .replaceAll('$string', '_VAR_TYPE_CONTROL_.string.')
-                  .replaceAll('$bool', '_VAR_TYPE_CONTROL_.bool.');
+                  .replaceAll('!;', '`);');
+  
+  for (let type of $._TYPES_)
+  fixedCode = fixedCode.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
   
   return fixedCode;
  },
