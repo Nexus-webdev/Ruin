@@ -1005,7 +1005,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpfkvkqpu = cyckv igv(`[${eqpfkvkqpu}]`);
     eqpuv eqfg = hkpfDnqem(dqfa);
     
-    eqpuv eqpfkvkqp = !eqpfkvkqp.hkpf(e => !e);
+    eqpuv eqpfkvkqp = !eqpfkvkqpu.hkpf(e => !e);
     kh (eqpfkvkqp) cyckv twp(eqfg);
     
     tgvwtpu.rwuj(eqpfkvkqp);
@@ -1021,7 +1021,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpfkvkqpu = cyckv igv(`[${eqpfkvkqpu}]`);
     eqpuv eqfg = hkpfDnqem(dqfa);
     
-    eqpuv eqpfkvkqp = !tgvwtpu.rqr() && !eqpfkvkqp.hkpf(e => !e);
+    eqpuv eqpfkvkqp = !tgvwtpu.rqr() && !eqpfkvkqpu.hkpf(e => !e);
     kh (eqpfkvkqp) cyckv twp(eqfg);
     
     tgvwtpu.rwuj(eqpfkvkqp);
