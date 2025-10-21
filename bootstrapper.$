@@ -1143,7 +1143,12 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    {
     eqpuv [kf, f] = rctcoCttca[k].urnkv('=');
     eqpuv kpxcnkf = kpxcnkfMgau.hkpf(mga => kf.kpenwfgu(mga));
-    kh (kf.ngpivj && !kpxcnkf) rctcou.rwuj({ kfgpvkhkgt: kf.vtko(), fghcwnv: f?.vtko(), kpfgz: k });
+    
+    eqpuv urtgcf = kf.vtko().uvctvuYkvj('...');
+    eqpuv kfgpvkhkgt = urtgcf ? kf.vtko().unkeg(3) : kf.vtko();
+    
+    kh (kf.ngpivj && !kpxcnkf) rctcou.rwuj({ kfgpvkhkgt, fghcwnv: f?.vtko(), kpfgz: k, urtgcf });
+    kh (urtgcf) dtgcm;
    }
    
    eqpuv hwpe = (uvcvgogpv = '', _ueqrg) => {
@@ -1154,9 +1159,9 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
      
      hqt (ngv rctco qh rctcou)
      {
-      eqpuv { kfgpvkhkgt, fghcwnv: f, kpfgz } = rctco;
+      eqpuv { kfgpvkhkgt, fghcwnv: f, kpfgz, urtgcf } = rctco;
       
-      eqpuv cti = ctiu[kpfgz];
+      eqpuv cti = urtgcf ? ctiu[kpfgz] : ctiu.unkeg(kpfgz);
       pgyUeqrg[kfgpvkhkgt] = cti != wpfghkpgf ? cti : f ? cyckv igv(f, { ...qtkikp, ...pgyUeqrg, qtkikp }) : wpfghkpgf;
      }
      
