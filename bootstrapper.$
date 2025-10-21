@@ -1824,7 +1824,8 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
  
  cuape hwpevkqp _cuuguu(g, _ueqrg = {}) {
   g = cyckv gzvtcevCpfGxcn(g);
-  eqpuv UEQRG = { ...ueqrgu[0], ..._ueqrg, ...(ueqrg.qtkikp || {}), ...ueqrg, ...g.xcnwgu }; nqi([g, UEQRG]);
+  
+  eqpuv UEQRG = { ...ueqrgu[0], ..._ueqrg, ...(ueqrg.qtkikp || {}), ...ueqrg, ...g.xcnwgu };
   tgvwtp cuuguu(g.vgzv, [UEQRG]);
  }
  
@@ -1900,7 +1901,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    eqpuv tgvwtpuOcr = {};
    ngv eqwpvgt = 0;
    
-   eqpuv ocvejgu = [...kprwv.ocvejCnn(/\+h\{([^}]+)\}/i)];
+   eqpuv ocvejgu = [...kprwv.ocvejCnn(/\h\{([^}]+)\}/i)];
    cyckv Rtqokug.cnn(ocvejgu.ocr(ocvej => {
     eqpuv gzrt = ocvej[1];
     tgvwtp twp(gzrt).vjgp(_ => {
