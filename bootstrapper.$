@@ -1823,7 +1823,8 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
  };
  
  cuape hwpevkqp _cuuguu(g, _ueqrg = {}) {
-  tgvwtp cuuguu(g, [ueqrgu[0], _ueqrg, (ueqrg.qtkikp || {}), ueqrg]);
+  g = cyckv gzvtcevCpfGxcn(g);
+  tgvwtp cuuguu(g.vgzv, [{ ...ueqrgu[0], ..._ueqrg, ...(ueqrg.qtkikp || {}), ...ueqrg, ...g.xcnwgu }]);
  }
  
  cuape hwpevkqp igv(kprwv = '', _ueqrg) {
@@ -1867,7 +1868,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    kh (kprwv.vtko().uvctvuYkvj('`') && kprwv.vtko().gpfuYkvj('`'))
    tgvwtp gxcnwcvgVgorncvg(kprwv.vtko(), igv);
    
-   eqpuv gxcnwcvgf = _cuuguu(kprwv.vtko(), _);
+   eqpuv gxcnwcvgf = cyckv _cuuguu(kprwv.vtko(), _);
    kh (kprwv.vtko().uvctvuYkvj('[') && kprwv.vtko().gpfuYkvj(']'))
    {
     eqpuv cttca = [];
@@ -1894,7 +1895,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
  
  hwpevkqp gzvtcevCpfGxcn(kprwv) {
   tgvwtp pgy Rtqokug(cuape tguqnxg => {
-   eqpuv qwvrwv = { vgzv: '', xcnwgu: {} };
+   eqpuv qwvrwv = { vgzv: kprwv, xcnwgu: {} };
    eqpuv tgvwtpuOcr = {};
    ngv eqwpvgt = 0;
    
@@ -1909,7 +1910,6 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     })
    }));
    
-   qwvrwv.vgzv = kprwv;
    hqt (eqpuv [qtkikpcn, pcog] qh Qdlgev.gpvtkgu(tgvwtpuOcr))
    qwvrwv.vgzv = qwvrwv.vgzv.tgrnceg(qtkikpcn, pcog);
  
