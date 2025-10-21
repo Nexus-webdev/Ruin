@@ -8,12 +8,6 @@ function urlData() {
  return data;
 }
 
-function modify(string) {
- let modifiedStr = string.replace(/`/g, '\\`');
- modifiedStr = modifiedStr.replace(/\$\{(.*?)\}/g, '\\${$1}\\ ');
- return modifiedStr;
-};
-
 function log({ value, to = document }) {
  const echo = new CustomEvent('echo', { detail: { value, type: typeof value } });
  to.dispatchEvent(echo);

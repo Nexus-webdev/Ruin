@@ -110,8 +110,8 @@ const $ = ({
                   .replaceAll('wait for \`', 'await for_ \`')
                   .replaceAll('import\`', '= module.import_\`')
                   .replaceAll('import \`', '= module.import_ \`')
-                  .replaceAll('## ', 'await foxx.run(window.modify(`\n')
-                  .replaceAll('!;', '\n`));');
+                  .replaceAll('## ', 'await foxx.run(`\n')
+                  .replaceAll('!;', '\n`);');
   
   for (let type of $._TYPES_)
   fixedCode = fixedCode.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
