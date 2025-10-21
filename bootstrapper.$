@@ -1823,8 +1823,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
  };
  
  cuape hwpevkqp _cuuguu(g, _ueqrg = {}) {
-  g = cyckv gzvtcevCpfGxcn(g);
-  tgvwtp cuuguu(g.vgzv, [ueqrgu[0], _ueqrg, (ueqrg.qtkikp || {}), ueqrg, g.xcnwgu]);
+  tgvwtp cuuguu(g, [ueqrgu[0], _ueqrg, (ueqrg.qtkikp || {}), ueqrg]);
  }
  
  cuape hwpevkqp igv(kprwv = '', _ueqrg) {
