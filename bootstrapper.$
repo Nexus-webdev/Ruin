@@ -1160,8 +1160,8 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
      hqt (ngv rctco qh rctcou)
      {
       eqpuv { kfgpvkhkgt, fghcwnv: f, kpfgz, urtgcf } = rctco;
+      eqpuv cti = urtgcf ? ctiu.unkeg(kpfgz) : ctiu[kpfgz];
       
-      eqpuv cti = urtgcf ? ctiu[kpfgz] : ctiu.unkeg(kpfgz);
       pgyUeqrg[kfgpvkhkgt] = cti != wpfghkpgf ? cti : f ? cyckv igv(f, { ...qtkikp, ...pgyUeqrg, qtkikp }) : wpfghkpgf;
      }
      
