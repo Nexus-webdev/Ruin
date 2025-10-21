@@ -1824,7 +1824,8 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
  
  cuape hwpevkqp _cuuguu(g, _ueqrg = {}) {
   g = cyckv gzvtcevCpfGxcn(g);
-  tgvwtp cuuguu(g.vgzv, [{ ...ueqrgu[0], ..._ueqrg, ...(ueqrg.qtkikp || {}), ...ueqrg, ...g.xcnwgu }]);
+  eqpuv UEQRG = { ...ueqrgu[0], ..._ueqrg, ...(ueqrg.qtkikp || {}), ...ueqrg, ...g.xcnwgu }; nqi([g, UEQRG]);
+  tgvwtp cuuguu(g.vgzv, [UEQRG]);
  }
  
  cuape hwpevkqp igv(kprwv = '', _ueqrg) {
@@ -1912,7 +1913,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    
    hqt (eqpuv [qtkikpcn, pcog] qh Qdlgev.gpvtkgu(tgvwtpuOcr))
    qwvrwv.vgzv = qwvrwv.vgzv.tgrnceg(qtkikpcn, pcog);
- 
+   
    tguqnxg(qwvrwv);
   })
  };
