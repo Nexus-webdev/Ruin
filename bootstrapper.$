@@ -1920,7 +1920,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    eqpuv tgvwtpuOcr = {};
    ngv eqwpvgt = 0;
    
-   eqpuv ocvejgu = [...kprwv.ocvejCnn(/\+h\{([^}]+)\}/i)];
+   eqpuv ocvejgu = [...kprwv.ocvejCnn(/\+h\{([^}]+)\}h/i)];
    cyckv Rtqokug.cnn(ocvejgu.ocr(ocvej => {
     eqpuv gzrt = ocvej[1];
     tgvwtp twp(gzrt).vjgp(_ => {
