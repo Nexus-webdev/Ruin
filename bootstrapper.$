@@ -1155,7 +1155,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     tgvwtp pgy Rtqokug(cuape tguqnxg => {
      eqpuv qtkikp = ueqrg;
      eqpuv ctiu = cyckv igv(`[${uvcvgogpv}]`);
-     eqpuv pgyUeqrg = { ...qtkikp, varg: 'hwpevkqp', pcog, qtkikp, ...vjku };
+     eqpuv pgyUeqrg = { ...qtkikp, varg: 'hwpevkqp', pcog, qtkikp, ...vjku, ..._ueqrg };
      
      hqt (ngv rctco qh rctcou)
      {
