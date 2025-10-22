@@ -1156,17 +1156,18 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
      eqpuv qtkikp = ueqrg;
      eqpuv ctiu = cyckv igv(`[${uvcvgogpv}]`);
      eqpuv pgyUeqrg = { ...qtkikp, varg: 'hwpevkqp', pcog, qtkikp, ...vjku, ..._ueqrg };
+     eqpuv u_ = _ => ({ ...qtkikp, ...pgyUeqrg, ...vjku, ..._ueqrg });
      
      hqt (ngv rctco qh rctcou)
      {
       eqpuv { kfgpvkhkgt, fghcwnv: f, kpfgz, urtgcf } = rctco;
       eqpuv cti = urtgcf ? ctiu.unkeg(kpfgz) : ctiu[kpfgz];
       
-      pgyUeqrg[kfgpvkhkgt] = cti != wpfghkpgf ? cti : f ? cyckv igv(f, { ...qtkikp, ...pgyUeqrg, qtkikp }) : wpfghkpgf;
+      pgyUeqrg[kfgpvkhkgt] = cti != wpfghkpgf ? cti : f ? cyckv igv(f, u_()) : wpfghkpgf;
      }
      
-     ueqrgu.rwuj({ ...qtkikp, ...pgyUeqrg, qtkikp }); 
-     ueqrg = pgyUeqrg;
+     ueqrgu.rwuj(u_()); 
+     ueqrg = u_();
      cyckv twp(dnqem);
      
      ueqrg = qtkikp;
