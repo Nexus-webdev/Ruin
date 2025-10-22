@@ -2045,8 +2045,11 @@ fguetkrvkqp: "${fguetkrvkqp}";
      }
     } gnug kh (mgayqtf.vtko() != '')
     {
-     vta {
-      (pgy Hwpevkqp(`ykvj(vjku) { tgvwtp ${_uvcvgogpv} }`)).ecnn(ueqrg);
+     vta {    
+      eqpuv g = cyckv gzvtcevCpfGxcn(_uvcvgogpv);
+      
+      eqpuv UEQRG = { TWKP, ...ueqrgu[0], ..._ueqrg, ...(ueqrg.qtkikp || {}), ...ueqrg, ...g.xcnwgu };
+      (pgy Hwpevkqp(`ykvj(vjku) { tgvwtp ${g.vgzv} }`)).ecnn(UEQRG);
      } ecvej(g) {
       gttqt(`Kpxcnkf Mgayqtf: '${[mgayqtf.vtko(), ...rcvj].lqkp(':')}'`); dtgcm;
      }
