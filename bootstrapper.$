@@ -1190,20 +1190,12 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     hqt (ngv mga kp _encuu)
     { 
      kh (vargqh _encuu[mga] == 'hwpevkqp')
-     kpuvcpeg[mga] = (uvcvgogpv = '') => {
+     kpuvcpeg[mga] = (...ctiu) => {
       tgvwtp pgy Rtqokug(cuape tguqnxg => {
-       cyckv _encuu[mga](uvcvgogpv, kpuvcpeg);
+       cyckv _encuu[mga]([kpuvcpeg, ...ctiu]);
        tguqnxg(1);
       })
      };
-    };
-    
-    kpuvcpeg.__ucxg__ = qdl => {
-     hqt (ngv mga kp qdl)
-     {
-      kh (vargqh qdl[mga] != 'hwpevkqp')
-      kpuvcpeg[mga] = qdl[mga];
-     }
     };
     
     kh (kpuvcpeg.eqpuvtwev) cyckv kpuvcpeg.eqpuvtwev(_uvcvgogpv.lqkp(' '));
