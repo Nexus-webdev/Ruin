@@ -451,9 +451,10 @@ ${indentation}${value.substring(end)}`;
     function decode(txt) {
      const { repairedKey, scrambled } = repair(key);
      const _shift = -TxtToNum(repairedKey);
-     let code = shift(txt, _shift);
+     console.log([_shift, repairedKey]);
+     let code = scrambled ? shift(scramble(txt, _shift), _shift) : shift(txt, _shift);
      
-     return scrambled ? scramble(code, _shift) : code;
+     return code;
     }
     
     return decode(txt);
