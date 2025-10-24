@@ -450,10 +450,10 @@ ${indentation}${value.substring(end)}`;
     
     function decode(txt) {
      const { repairedKey, scrambled } = repair(key);
-     const shift = -TxtToNum(repairedKey);
-     let code = shift(txt, shift);
+     const _shift = -TxtToNum(repairedKey);
+     let code = shift(txt, _shift);
      
-     return scrambled ? scramble(code, shift) : code;
+     return scrambled ? scramble(code, _shift) : code;
     }
     
     return decode(txt);
@@ -461,7 +461,9 @@ ${indentation}${value.substring(end)}`;
    
    function compile(code, key) {
     const brokenKey = key ? '¿' +shift(key, Math.ceil(key.length /2)) +'*' : '';
-    const encodedText = !key ? code : shift(code, TxtToNum(key));
+    const _shift = TxtToNum(key);
+
+    const encodedText = !key ? code : scramble(shift(code, _shift), _shift);
     return `${encodedText}${brokenKey}`;
    };
    
