@@ -470,6 +470,7 @@ ${indentation}${value.substring(end)}`;
    function repair(key) {
     let scrambled = false;
     if (key.endsWith('*')) ([key, scrambled] = [key.slice(0, -1), true]);
+    console.log(key, scrambled);
     
     const repairedKey = shift(key, -Math.ceil(key.length /2));
     return { repairedKey, scrambled };
