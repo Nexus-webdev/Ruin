@@ -173,8 +173,8 @@
    const languageData = {
     default: {},
     css: { color: 'lightblue', font: 'Pristina bold' },
-    fx: { font: 'Footlight MT', color: 'orange' },
     mthd: { color: 'lightgrey' },
+    fx: { color: 'orange' },
    };
    
    const textarea = document.getElementById('Input');
@@ -449,18 +449,38 @@ ${indentation}${value.substring(end)}`;
     const key = urlData.encoding ?? '';
     
     function decode(txt) {
-     let code = shift(txt, -TxtToNum(key));
-     return code;
-    };
+     const { repairedKey, scrambled } = repair(key);
+     const shift = -TxtToNum(repairedKey);
+     let code = shift(txt, shift);
+     
+     return scrambled ? scramble(code, shift) : code;
+    }
     
     return decode(txt);
    };
    
    function compile(code, key) {
-    const brokenKey = key ? '¿' +shift(key, Math.ceil(key.length /2)) : '';
+    const brokenKey = key ? '¿' +shift(key, Math.ceil(key.length /2)) +'*' : '';
     const encodedText = !key ? code : shift(code, TxtToNum(key));
     return `${encodedText}${brokenKey}`;
    };
+   
+   function repair(key) {
+    let scrambled = false;
+    if (key.endsWith('*')) ([key, scrambled] = [key.slice(-1), true]);
+    
+    const repairedKey = shift(key, -Math.ceil(key.length /2));
+    return { repairedKey, scrambled };
+   }
+   
+   function scramble(txt, key) {
+    if (!key || typeof key != 'number') return txt;
+  
+    return [...txt].map((char, i) => {
+     const code = txt.charCodeAt(i);
+     return String.fromCharCode(code +key);
+    }).join('');
+   }
    
    function TxtToNum(txt) {
     const map = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&?~.,-_+=/* (){}[]<>:;';

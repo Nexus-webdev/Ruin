@@ -102,6 +102,15 @@ function wrap(value) {
 
 const $ = ({
  _TYPES_: [],
+ scramble(txt, key) {
+  if (!key || typeof key != 'number') return txt;
+
+  return [...txt].map((char, i) => {
+   const code = txt.charCodeAt(i);
+   return String.fromCharCode(code +key);
+  }).join('');
+ },
+ 
  fixSyntax(code) {
   "Replace special keywords with js syntax";
   let fixedCode = code.replace(/def /g, 'this.')
@@ -240,13 +249,19 @@ const $ = ({
    }
    
    function decode(txt) {
-    let code = $.shift(txt, -$.TxtToNum(repair(key)));
-    return code;
+    const { repairedKey, scrambled } = repair(key);
+    const shift = -$.TxtToNum(repairedKey);
+    let code = $.shift(txt, shift);
+    
+    return scrambled ? $.scramble(code, shift) : code;
    }
    
    function repair(key) {
+    let scrambled = false;
+    if (key.endsWith('*')) ([key, scrambled] = [key.slice(-1), true]);
+    
     const repairedKey = $.shift(key, -Math.ceil(key.length /2));
-    return repairedKey;
+    return { repairedKey, scrambled };
    }
    
    resolve(result);
