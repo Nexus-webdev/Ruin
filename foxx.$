@@ -35,7 +35,8 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    kh (vargqh ugnh == 'uvtkpi')
    {
     eqpuv ueqrg = ueqrgu.vctigvUeqrg();
-    ugnh = ueqrgu.vctigvUeqrg(cyckv etgcvgUeqrg({}, ueqrg));
+    ugnh = cyckv etgcvgUeqrg({}, ueqrg)
+    ueqrgu.vctigvUeqrg(ugnh);
     
     cyckv twp(kprwv);
     ueqrgu.vctigvUeqrg(-1, vtwg);
