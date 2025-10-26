@@ -158,10 +158,10 @@ function getImq(src, resolve, forceload) {
   resolve(e.data);
  })
  
- ## 
+ $.foxx.run(`
  let data = -read #${src};
  echo { responsetype: 'Imq-get', data, id: '${id}' };
- !;
+ `);
 };
 
 function setImq(src, data, resolve) {
@@ -173,10 +173,10 @@ function setImq(src, data, resolve) {
   resolve(e.data);
  })
  
- ## 
+ $.foxx.run(`
  -write #${src} >> \`${data}\`;
  echo { responsetype: 'Imq-set', data: 'Saved Image: ${src}', id: '${id}' };
- !;
+ `);
 };
 
 $.struct('Image', {
