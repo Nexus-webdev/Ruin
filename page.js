@@ -148,6 +148,7 @@ $.struct('Event', {
 
 window.Images = {};
 function getImq(src, resolve, forceload) {
+ if (!$.foxx) throw 'Please import the foxx dependency.';
  if (window.Images[src] && !forceload)
  return resolve(window.Images[src]);
  
@@ -157,23 +158,25 @@ function getImq(src, resolve, forceload) {
   resolve(e.data);
  })
  
- $.foxx.run(`
+ ## 
  let data = -read #${src};
  echo { responsetype: 'Imq-get', data, id: '${id}' };
- `);
+ !;
 };
 
 function setImq(src, data, resolve) {
+ if (!$.foxx) throw 'Please import the foxx dependency.';
  const id = Date.now();
+ 
  $.onecho(({ value: e }) => {
   if (e.responsetype == 'Imq-set' && e.id == id)
   resolve(e.data);
  })
  
- $.foxx.run(`
+ ## 
  -write #${src} >> \`${data}\`;
  echo { responsetype: 'Imq-set', data: 'Saved Image: ${src}', id: '${id}' };
- `);
+ !;
 };
 
 $.struct('Image', {
@@ -343,227 +346,217 @@ $.struct('Image', {
  },
 })
 
-const { findBlock, foxx } = $;
-foxx.scopes[0].session = sessionStorage;
-foxx.scopes[0].cache = localStorage;
-
-const foxxModifications = {
- doc: {
-  icon(x) {
-   return new Promise(async resolve => {
-    const t = $.meta.htmlTarget;
-    const data = await foxx.get(x);
-    $.meta.htmlTarget = document.head;
+if ($.foxx)
+{
+ const { findBlock, foxx } = $;
+ foxx.scopes.index(0).session = sessionStorage;
+ foxx.scopes.index(0).cache = localStorage;
+ 
+ const foxxModifications = {
+  doc: {
+   icon(x) {
+    return new Promise(async resolve => {
+     const t = $.meta.htmlTarget;
+     const data = await foxx.get(x);
+     $.meta.htmlTarget = document.head;
+     
+     $.html(`<link rel='icon' ${data}>`);
+     $.meta.htmlTarget = t;
+     
+     resolve(1);
+    })
+   },
+   
+   write(x) {
+    return new Promise(async resolve => {
+     const content = x.trim().startsWith('<') ? x : await foxx.get(x);
+     $.html(content);
+     
+     resolve(1);
+    })
+   },
+  
+   listener(x, { scope: saved }) {
+    return new Promise(async resolve => {
+     const query = $.Q(x.slice(0, x.indexOf(':')).trim()) ?? (await foxx.get(x.slice(0, x.indexOf(':')).trim()));
+     const event = findBlock(x.replace('>', '^'), '<', '^');
+     const code = findBlock(x);
+     
+     $.listener(event, async e => {
+      const scope = foxx.scopes.targetScope(await foxx.createScope({ e }, saved));
+      
+      await foxx.run(code);
+      foxx.scopes.targetScope(-1, true);
+     }, query);
+     
+     resolve(1);
+    })
+   },
     
-    $.html(`<link rel='icon' ${data}>`);
-    $.meta.htmlTarget = t;
-    
-    resolve(1);
-   })
+   query(statement, { returns }) {
+    return new Promise(async resolve => {
+     let i = statement.indexOf(' ? ');
+     i = i == -1 ? statement.length : i;
+     
+     const options = i == statement.length ? {} : await foxx.get(statement.slice(i +3));
+     let searchResult = await $.Q(await foxx.get(statement.slice(0, i)), options);
+     
+     returns(searchResult);
+     resolve(1);
+    })
+   },
   },
   
-  write(x) {
-   return new Promise(async resolve => {
-    const content = x.trim().startsWith('<') ? x : await foxx.get(x);
-    $.html(content);
-    
-    resolve(1);
-   })
-  },
- 
-  listener(x) {
-   return new Promise(async resolve => {
-    const query = $.Q(x.slice(0, x.indexOf(':')).trim()) ?? (await foxx.get(x.slice(0, x.indexOf(':')).trim()));
-    const event = findBlock(x.replace('>', '^'), '<', '^');
-    const code = findBlock(x);
-    
-    const saved = foxx.scope();
-    $.listener(event, async e => {
-     const og = foxx.scope();
-     foxx.setScope(saved);
-     foxx.scope().e = e;
-     
-     await foxx.run(code);
-     delete foxx.scope().e;
-     foxx.setScope(og);
-    }, query);
-    
-    resolve(1);
-   })
-  },
+  async echo(statement) {
+   const value = await foxx.get(statement); 
+   const destination = value?.destinationElement ?? window;
    
-  query(statement, { returns }) {
+   log({ value, to: destination });
+  },
+  
+  prompt(statement, { returns }) { 
    return new Promise(async resolve => {
-    let i = statement.indexOf(' ? ');
-    i = i == -1 ? statement.length : i;
+    const [str, default_ = ''] = statement.split('?');
+    const answer = await prompt(await foxx.get(str), await foxx.get(default_));
+    returns(answer);
     
-    const options = i == statement.length ? {} : await foxx.get(statement.slice(i +3));
-    let searchResult = await $.Q(await foxx.get(statement.slice(0, i)), options);
-    
-    returns(searchResult);
     resolve(1);
    })
   },
- },
  
- app(statement) {
-  const type = statement.split(' ')[0].trim().replace('-', '_');
-  const content = findBlock(statement, '(', ')').trim();
-
-  opt(type, {
-   async _i() {
+  popup: {
+   show(statement) {
+    return new Promise(async resolve => {
+     const date = Date.now();
+     let [id, _statement] = statement.replace('>>', date).split(date);
+     const message = await foxx.get(_statement);
+     id = (await foxx.get(id)) +'-popup';
+     
+     if (!$.Q('#' +id)) $.html(`<div id='${id}' class='popup'>
+      <div class='popup-content'>
+       <span class='close' id='${id}-close' onclick="$.Q('#${id}').style.display = 'none';">&times;</span>
+       <p id='${id}-message' class='popup-message'></p>
+       <textarea id='${id}-response' class='popup-response'></textarea>
+       <button id='${id}-ok' onclick="$.Q('#${id}').style.display = 'none';" class='popup-ok'>OK</button>
+      </div>
+     </div>`)
+     
+     $.Q(`#${id}`).style.display = 'block';
+     if (message) $.Q(`#${id}-message`).innerText = message;
+     
+     resolve(id);
+    })
+   },
+   
+   return(statement, { returns }) {
+    return new Promise(async resolve => {
+     const id = await foxx.syntax.popup.show(statement);
+     $.listener('click', e => func(true), $.Q(`#${id}-ok`));
+     $.listener('click', e => func(false), $.Q(`#${id}-close`));
+     
+     function func(allowed) {
+      const message = $.Q(`#${id}-message`);
+      const response = $.Q(`#${id}-response`);
+      const close = $.Q(`#${id}-close`);
+      const ok = $.Q(`#${id}-ok`);
+      
+      resolve(returns({
+       response,
+       message,
+       close,
+       ok,
+       
+       allowed,
+      }));
+     }
+    })
+   },
+   
+   async close(id) {
+    $.Q(`#${await foxx.get(id)}-popup`).style.display = 'none';
+   },
+  },
+  
+  app: {
+   init([App]) {
     if (!($.Q('', { type: 'params' }).open))
     {
      const url = window.location.href;
      const x = url.includes('?') ? '&' : '?';
-     const win = window.open(`${url}${x}open=true`, $.App.as, await foxx.get(content));
+     
+     const win = window.open(`${url}${x}open=true`, App.as, App.data);
      if (win) window.close();
     }
    },
-
+   
    close() {
     window.close();
    },
-  })();
- },
- 
- async echo(statement) {
-  const value = await foxx.get(statement); 
-  const destination = value?.destinationElement ?? window;
-  
-  log({ value, to: destination });
- },
- 
- prompt(statement, { returns }) { 
-  return new Promise(async resolve => {
-   const [str, default_ = ''] = statement.split('?');
-   const answer = await prompt(await foxx.get(str), await foxx.get(default_));
-   returns(answer);
-   
-   resolve(1);
-  })
- },
-
- popup: {
-  show(statement) {
-   return new Promise(async resolve => {
-    const date = Date.now();
-    let [id, _statement] = statement.replace('>>', date).split(date);
-    const message = await foxx.get(_statement);
-    id = (await foxx.get(id)) +'-popup';
-    
-    if (!$.Q('#' +id)) $.html(`<div id='${id}' class='popup'>
-     <div class='popup-content'>
-      <span class='close' id='${id}-close' onclick="$.Q('#${id}').style.display = 'none';">&times;</span>
-      <p id='${id}-message' class='popup-message'></p>
-      <textarea id='${id}-response' class='popup-response'></textarea>
-      <button id='${id}-ok' onclick="$.Q('#${id}').style.display = 'none';" class='popup-ok'>OK</button>
-     </div>
-    </div>`)
-    
-    $.Q(`#${id}`).style.display = 'block';
-    if (message) $.Q(`#${id}-message`).innerText = message;
-    
-    resolve(id);
-   })
   },
   
-  return(statement, { returns }) {
-   return new Promise(async resolve => {
-    const id = await foxx.syntax.popup.show(statement);
-    $.listener('click', e => func(true), $.Q(`#${id}-ok`));
-    $.listener('click', e => func(false), $.Q(`#${id}-close`));
+  async cache(statement) {
+   const [identifier, value] = statement.replace('=', '#=').split('#=');
+   
+   const evaluated = await foxx.get(value);
+   localStorage[identifier.trim()] = evaluated;
+  },
+  
+  async sesh(statement) {
+   const [identifier, value] = statement.replace('=', '#=').split('#=');
+   
+   const evaluated = await foxx.get(value);
+   sessionStorage[identifier.trim()] = evaluated;
+  },
+  
+  onecho(statement, { scope }) {
+   $.listener('echo', async({ detail: echo }) => {
+    foxx.scopes.targetScope({ echo }, scope);
+    await foxx.run(findBlock(statement +' '));
     
-    function func(allowed) {
-     const message = $.Q(`#${id}-message`);
-     const response = $.Q(`#${id}-response`);
-     const close = $.Q(`#${id}-close`);
-     const ok = $.Q(`#${id}-ok`);
+    foxx.scopes.targetScope(-1, true);
+   });
+  },
+ 
+  '-install'(statement, { scope }) {
+   return new Promise(async resolve => {
+    const [str, entries] = statement.split('?');
+    const [library, namespace] = str.split(':');
+    
+    const entryArray = entries.split(',').map(str => {
+     const [name, file] = str.split(':');
      
-     resolve(returns({
-      response,
-      message,
-      close,
-      ok,
-      
-      allowed,
-     }));
-    }
-   })
-  },
-  
-  async close(id) {
-   $.Q(`#${await foxx.get(id)}-popup`).style.display = 'none';
-  },
- },
- 
- async cache(statement) {
-  const [identifier, value] = statement.replace('=', '#=').split('#=');
-  
-  const evaluated = await foxx.get(value);
-  localStorage[identifier.trim()] = evaluated;
- },
- 
- async sesh(statement) {
-  const [identifier, value] = statement.replace('=', '#=').split('#=');
-  
-  const evaluated = await foxx.get(value);
-  sessionStorage[identifier.trim()] = evaluated;
- },
- 
- onecho(statement) {
-  $.listener('echo', async({ detail: echo }) => {
-   foxx.scope().echo = echo;
-   await foxx.run(findBlock(statement +' '));
-   delete foxx.scope().echo;
-  });
- },
-
- '-install': statement => {
-  return new Promise(async resolve => {
-   const [str, entries] = statement.split('?');
-   const [library, namespace] = str.split(':');
-   
-   const entryArray = entries.split(',').map(str => {
-    const [name, file] = str.split(':');
+     return {
+      name: name.trim(),
+      file: file ? file.trim() : undefined,
+     };
+    })
     
-    return {
-     name: name.trim(),
-     file: file ? file.trim() : undefined,
-    };
+    const value = await $.meta.mod([library.trim(), ...entryArray], { namespace, dir: await get(library) });
+    foxx.scopes.index(0)[namespace ? namespace.trim() : library.trim()] = value;
+    resolve(1);
    })
+  },
+ };
+ 
+ foxx.syntax['-git-']['install'] = (statement, { scope }) => {
+  return new Promise(async resolve => {
+   const [name, path] = statement.split(':');
+   const [owner, repo, ...file] = path.split('/');
+   const entry = {
+    name: name.trim(),
+    file: file.length == 0 ? '' : file.join('/').trim(),
+   };
    
-   const value = await $.meta.mod([library.trim(), ...entryArray], { namespace, dir: await get(library) });
-   foxx.scope()[namespace ? namespace.trim() : library.trim()] = value;
-   
-   for (let scope of foxx.scopes)
-   scope[namespace ? namespace.trim() : library.trim()] = value;
+   $.GitHub.repo(owner.trim(), repo.trim());
+   const value = await createModule([entry], { useGit: true });
+   foxx.scopes.index(0)[name] = value;
    resolve(1);
   })
- },
-};
-
-$.foxx.syntax['-git-']['install'] = statement => {
- return new Promise(async resolve => {
-  const [name, path] = statement.split(':');
-  const [owner, repo, ...file] = path.split('/');
-  const entry = {
-   name: name.trim(),
-   file: file.length == 0 ? '' : file.join('/').trim(),
-  };
-  
-  $.GitHub.repo(owner.trim(), repo.trim());
-  const value = await createModule([entry], { useGit: true });
-  foxx.scope()[name] = value;
-  
-  for (let scope of foxx.scopes)
-  scope[name] = value;
-  resolve(1);
- })
+ }
+ 
+ for (let key in foxxModifications)
+ foxx.syntax[key] = foxxModifications[key];
 }
-
-for (let key in foxxModifications)
-$.foxx.syntax[key] = foxxModifications[key];
 
 window.module = {};
 async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 'Sprout - Game Engine' }], { namespace = '', extensions = {}, userMessage = 'Please press any key or click the mousepad to proceed.', order = [], dir, useGit } = { }) {
@@ -772,14 +765,16 @@ async function createModule([id, ...entries] = ['main', { name: 'Sprout', file: 
    },
 
    fx(x) {
+    if (!$.foxx) throw 'Please import the foxx dependency.';
     return $.foxx.run(x);
    },
 
    exec(x) {
+    if (!$.foxx) throw 'Please import the foxx dependency.';
     const exec = $.foxx.executeable(x.split('*').map(num => Number(num)));
     exec.file = namespace +'.exec'
     
-    dp[$.foxx.scope().namespace ?? namespace] = exec;
+    dp[$.foxx.scopes.targetScope().namespace ?? namespace] = exec;
     return $.foxx.exec(exec);
    },
 
@@ -921,7 +916,7 @@ document.addEventListener('keydown', async e => {
  </head>
 </html>`;
  
-  const directory = foxx.directory() ?? await window.showDirectoryPicker();
+  const directory = $?.foxx?.directory?() ?? await window.showDirectoryPicker();
   const page = await directory.getFileHandle(document.title +'.html', { create: true });
   const pageBlob = new Blob([content], { type: 'text/html' });
   
