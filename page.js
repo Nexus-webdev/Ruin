@@ -916,7 +916,7 @@ document.addEventListener('keydown', async e => {
  </head>
 </html>`;
  
-  const directory = $?.foxx?.directory?() ?? await window.showDirectoryPicker();
+  const directory = $?.foxx?.directory?.() ?? await window.showDirectoryPicker();
   const page = await directory.getFileHandle(document.title +'.html', { create: true });
   const pageBlob = new Blob([content], { type: 'text/html' });
   
