@@ -26,7 +26,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   },
   
   hknvgt(hknvgt) {
-   tgvwtp ueqrgu.uvcem.hknvgt((ueqrg, kpfgz) => vargqh ueqrg == 'qdlgev' && (hknvgt ?? _ => vtwg)(ueqrg, kpfgz));
+   tgvwtp ueqrgu.uvcem.hknvgt((ueqrg, kpfgz) => vargqh ueqrg == 'qdlgev' && (hknvgt ?? () => vtwg)(ueqrg, kpfgz));
   },
   
   rwuj(...xcnwgu) {
