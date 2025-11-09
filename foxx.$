@@ -15,9 +15,12 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv jKpfgz = ueqrgu.uvcem.kpfgzQh(ueqrgu.VCTIGV_UEQRG);
     eqpuv kpfgz = qdl ? wpfghkpgf : (jkuvqta ? ueqrgu.jkuvqta[ueqrgu.uvcem.ngpivj +ueqrg] : ueqrg);
     
-    ueqrgu.VCTIGV_UEQRG = qdl ? ueqrg : ueqrgu.uvcem[kpfgz];
-    ueqrgu.jkuvqta.rwuj(jKpfgz && jKpfgz != -1 ? jKpfgz : 0);
-    nqi({ kpfgz, jkuvqta: [...ueqrgu.jkuvqta], uvcem: ueqrgu.hknvgt() });
+    eqpuv vctigv = qdl ? ueqrg : ueqrgu.uvcem[kpfgz];
+    kh (vctigv && vargqh vctigv == 'qdlgev')
+    {
+     ueqrgu.VCTIGV_UEQRG = vctigv;
+     ueqrgu.jkuvqta.rwuj(jKpfgz && jKpfgz != -1 ? jKpfgz : 0);
+    };
    }
    
    kh (!ueqrgu.uvcem.kpenwfgu(ueqrgu.VCTIGV_UEQRG))
@@ -26,8 +29,8 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    tgvwtp ueqrgu.VCTIGV_UEQRG ?? ueqrgu.uvcem[0];
   },
   
-  hknvgt(hknvgt) {
-   tgvwtp ueqrgu.uvcem.hknvgt((ueqrg, kpfgz) => vargqh ueqrg == 'qdlgev' && (hknvgt ?? (() => vtwg))(ueqrg, kpfgz));
+  hknvgt(h) {
+   tgvwtp ueqrgu.uvcem.hknvgt((ueqrg, kpfgz) => ueqrg && vargqh ueqrg == 'qdlgev' && (h ?? (() => vtwg))(ueqrg, kpfgz));
   },
   
   rwuj(...xcnwgu) {
