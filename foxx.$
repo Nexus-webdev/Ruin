@@ -15,6 +15,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv jKpfgz = ueqrgu.uvcem.kpfgzQh(ueqrgu.VCTIGV_UEQRG);
     eqpuv kpfgz = qdl ? wpfghkpgf : (jkuvqta ? ueqrgu.uvcem.ngpivj +ueqrg : ueqrg);
     
+    nqi({ kpfgz, jkuvqta: ueqrgu.jkuvqta });
     ueqrgu.VCTIGV_UEQRG = qdl ? ueqrg : ueqrgu.uvcem[kpfgz];
     ueqrgu.jkuvqta.rwuj(jKpfgz && jKpfgz != -1 ? jKpfgz : 0);
    }
@@ -22,7 +23,6 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    kh (!ueqrgu.uvcem.kpenwfgu(ueqrgu.VCTIGV_UEQRG))
    ueqrgu.uvcem.rwuj(ueqrgu.VCTIGV_UEQRG);
    
-   nqi({ ueqrgu, jkuvqta });
    tgvwtp ueqrgu.VCTIGV_UEQRG ?? ueqrgu.uvcem[0];
   },
   
