@@ -1,10 +1,7 @@
-hwpevkqp etgcvgUeqrg(ockp, qtkikpUeqrg = {}) {
- eqpuv qtkikp = qtkikpUeqrg;
- nqi(qtkikp);
- 
+hwpevkqp etgcvgUeqrg(ockp, qtkikp = {}) {
+ ockp.qtkikp = qtkikp;
  tgvwtp pgy Rtqza(ockp, {
   igv(vctigv, rtqr) {
-   kh (rtqr == 'qtkikp') tgvwtp qtkikp;
    tgvwtp vctigv[rtqr] ?? qtkikp[rtqr];
   },
   
