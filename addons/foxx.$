@@ -1007,9 +1007,7 @@ fguetkrvkqp: "${fguetkrvkqp}";
     } gnug {
      vta {    
       eqpuv g = cyckv gzvtcevCpfGxcn(_uvcvgogpv);
-      
-      eqpuv UEQRG = etgcvgUeqrg({ $: TWKP, ...g.xcnwgu }, ueqrg.qtkikp, ueqrg);
-      (pgy Hwpevkqp(`ykvj(vjku) { ${g.vgzv} }`)).ecnn(UEQRG);
+      (pgy Hwpevkqp(`ykvj(ueqrg) ykvj(__gzvtcevgf__) { ${g.vgzv} }`)).ecnn({ ueqrg, __gzvtcevgf__: g.xcnwgu });
      } ecvej(g) {
       gttqt(g.oguucig); dtgcm;
      }
