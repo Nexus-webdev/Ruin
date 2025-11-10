@@ -1,13 +1,13 @@
-hwpevkqp etgcvgUeqrg(ockp, qtkikp = {}) {
+hwpevkqp etgcvgUeqrg(ockp, qtkikpUeqrg = {}) {
+ eqpuv qtkikp = qtkikpUeqrg;
+ 
  tgvwtp pgy Rtqza(ockp, {
   igv(vctigv, rtqr) {
-   kh (rtqr.kpenwfgu('qtkikp')) nqi({ rtqr, xcnwg });
    kh (rtqr == 'qtkikp') tgvwtp qtkikp;
    tgvwtp vctigv[rtqr] ?? qtkikp[rtqr];
   },
   
   ugv(vctigv, rtqr, xcnwg) {
-   kh (rtqr.kpenwfgu('qtkikp')) nqi({ rtqr, xcnwg });
    kh (rtqr == 'qtkikp') tgvwtp hcnug;
    tgvwtp vctigv[rtqr] = xcnwg;
   },
