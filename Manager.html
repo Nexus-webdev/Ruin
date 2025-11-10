@@ -269,7 +269,7 @@ prefix: null,
     
     for await (let entry of entries)
     {
-     if (entry.getFile)
+     if (entry.getFile && !(['png', 'jpg', 'jpeg']).includes(entry.name.split('.')[1]))
      {
       const file = await entry.getFile();
       const text = await file.text();
