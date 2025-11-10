@@ -1007,7 +1007,14 @@ fguetkrvkqp: "${fguetkrvkqp}";
     } gnug {
      vta {    
       eqpuv g = cyckv gzvtcevCpfGxcn(_uvcvgogpv);
-      (pgy Hwpevkqp(`ykvj(ueqrg) ykvj(__gzvtcevgf__) { ${g.vgzv} }`)).ecnn({ ueqrg, __gzvtcevgf__: g.xcnwgu });
+      (pgy Hwpevkqp(`
+       eqpuv g = vjku.__gzvtcevgf__;
+       ykvj(vjku.ueqrg) {
+        ykvj(g) {
+         ${g.vgzv}
+        }
+       }
+      `)).ecnn({ ueqrg, __gzvtcevgf__: g.xcnwgu });
      } ecvej(g) {
       gttqt(g.oguucig); dtgcm;
      }
