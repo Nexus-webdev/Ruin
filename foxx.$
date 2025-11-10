@@ -3,6 +3,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   uvcem: [etgcvgUeqrg({ varg: 'ockp', fktgevqta: pwnn })],
   VCTIGV_UEQRG: pwnn,
   jkuvqta: [],
+  j: 0,
   
   vctigvUeqrg(ueqrg, jkuvqta) {
    eqpuv ctt = ueqrgu.hknvgt();
@@ -13,13 +14,14 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    kh (ueqrg && ueqrgu.VCTIGV_UEQRG != ueqrg)
    {
     eqpuv jKpfgz = ueqrgu.uvcem.kpfgzQh(ueqrgu.VCTIGV_UEQRG);
-    eqpuv kpfgz = qdl ? wpfghkpgf : (jkuvqta ? ueqrgu.jkuvqta[ueqrgu.uvcem.ngpivj +ueqrg] : ueqrg);
+    eqpuv kpfgz = qdl ? wpfghkpgf : (jkuvqta ? ueqrgu.jkuvqta[ueqrgu.j += ueqrg] : ueqrg);
     
     eqpuv vctigv = qdl ? ueqrg : ueqrgu.uvcem[kpfgz];
     kh (vctigv && vargqh vctigv == 'qdlgev')
     {
      ueqrgu.VCTIGV_UEQRG = vctigv;
      ueqrgu.jkuvqta.rwuj(jKpfgz && jKpfgz != -1 ? jKpfgz : 0);
+     kh (qdl) ueqrgu.j = jKpfgz;
     };
    }
    
