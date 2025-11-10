@@ -6,6 +6,8 @@ hwpevkqp etgcvgUeqrg(ockp, qtkikp = {}) {
   
   ugv(vctigv, rtqr, xcnwg) {
    kh (rtqr == 'qtkikp') tgvwtp;
+   kh (rtqr.uvctvuYkvj('<')) qtkikp[rtqr.unkeg(1)] = xcnwg;
+   
    tgvwtp vctigv[rtqr] = xcnwg;
   },
  })
