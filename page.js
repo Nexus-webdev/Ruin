@@ -8,11 +8,6 @@ function urlData() {
  return data;
 }
 
-function log({ value, to = document }) {
- const echo = new CustomEvent('echo', { detail: { value, type: typeof value } });
- to.dispatchEvent(echo);
-}
-
 const mods = {
  Img: Image,
  js(code, type = 'text/javascript') {
@@ -110,7 +105,8 @@ const mods = {
  },
  
  echo(value, to = document) {
-  log({ value, to });
+  const echo = new CustomEvent('echo', { detail: { value, type: typeof value } });
+  to.dispatchEvent(echo);
  },
  
  onecho(callback = x => x) {
