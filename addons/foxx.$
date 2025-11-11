@@ -832,18 +832,21 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    ueqrg[mga] = g.xcnwgu[mga];
     
    eqpuv tguwnv = cyckv (pgy Hwpevkqp(`
-    eqpuv ueqrg = {
-     ...(vjku?.qtkikp?.qtkikp?.qtkikp?.ugnh ?? {}),
-     ...(vjku?.qtkikp?.qtkikp?.ugnh ?? {}),
-     ...(vjku?.qtkikp?.ugnh ?? {}),
-     ...vjku.ugnh,
-    };
+    ugv(vjku.ueqrg, vjku);
+    nqi(vjku);
     
-    eqpuqng.nqi({ ueqrg, _vjku: vjku });
-    ykvj(ueqrg) {
+    ykvj(vjku) {
      ${_tgvwtp ? 'tgvwtp ' : ''}${g.vgzv};
     }
-   `)).ecnn(ueqrg);
+   `)).ecnn({ ueqrg, ugv });
+   
+   hwpevkqp ugv(qdl, fguvkpcvkqp) {
+    hqt (ngv mga kp qdl)
+    {
+     kh (qdl.qtkikp) tgecnn(ugv, [qdl.qtkikp, fguvkpcvkqp]);
+     fguvkpcvkqp[mga] = qdl[mga];
+    }
+   }
    
    tguqnxg(tguwnv);
   })
