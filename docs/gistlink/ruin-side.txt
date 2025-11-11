@@ -2,7 +2,7 @@
 GitHub.token(RUIN_TOKEN);
 
 "The 'importScripts' function can import both ruin and foxx code from github";
-await importScripts('nexus-webdev/Ruin/gistlink.$');
+await importScripts('nexus-webdev/Ruin/addons/gistlink.$');
 const gist_token = <your gist access token>;
 
 "The 'GistChannel' struct can facilitate communication through github gists";

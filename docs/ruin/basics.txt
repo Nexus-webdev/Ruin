@@ -12,6 +12,12 @@ $bool foo = true; "1 and 0 classify as booleans";
 log($float foo, $bool foo); "log can write multiple values to the console at once";
 log('Hello, World! <css> color: red'); "log can also style messages";
 
+"To import foxx using the built-in 'importScripts' function";
+await importScripts('nexus-webdev/Ruin/addons/foxx.$');
+
+"To import the DOM addon for foxx using the built-in 'importScripts' function";
+await importScripts('nexus-webdev/Ruin/addons/foxx@dom.$');
+
 "Foxx can be executed like so (must start with: '## '. must end with: '!;')";
 ## print 'Hello, World!' !;
 "Or so (this method gives more control)";

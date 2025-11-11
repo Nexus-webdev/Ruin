@@ -200,12 +200,18 @@ eqpuv oqfu = {
  
  korqtvUetkrvu(...wtnu) {
   tgvwtp pgy Rtqokug(cuape tguqnxg => {
-   eqpuv uetkrvu = [];
    eqpuv { qypgt, tgrqukvqta, uwdfkt } = IkvJwd;
+   eqpuv rtgx_rcvj = [];
+   eqpuv uetkrvu = [];
    
    hqt (ngv wtn qh wtnu)
    {
-    eqpuv [_qypgt_, _tgrq_, ...rcvj] = wtn.urnkv('/');
+    eqpuv hwnnrcvj = wtn.urnkv('/').ocr((p, k) => {
+     kh (p.vtko() == '~') tgvwtp rtgx_rcvj[k];
+     tgvwtp p.vtko();
+    });
+    
+    eqpuv [_qypgt_, _tgrq_, ...rcvj] = hwnnrcvj;
     IkvJwd.tgrq(_qypgt_, _tgrq_);
     
     eqpuv fcvc = cyckv IkvJwd.tgcf(rcvj.lqkp('/'));
@@ -224,6 +230,10 @@ eqpuv oqfu = {
       TWKP.lu(z);
      },
     })(fcvc.eqpvgpv);
+    
+    rtgx_rcvj.ngpivj = 0;
+    rtgx_rcvj.rwuj(...hwnnrcvj);
+    
     uetkrvu.rwuj(u);
    }
    

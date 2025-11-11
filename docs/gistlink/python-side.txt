@@ -10,7 +10,7 @@ def loadSFL(url):
     except Exception as e:
         print('Failed to load SFL: {e}'.format(e))
 
-loadSFL(url='nexus-webdev/Ruin/main/gistlink.py')
+loadSFL(url='nexus-webdev/Ruin/main/addons/gistlink.py')
 
 # Instantiate channel
 channel = GistChannel(
