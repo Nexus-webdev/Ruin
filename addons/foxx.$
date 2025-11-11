@@ -844,7 +844,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     
     hqt (ngv mga kp qdl)
     {
-     eqpuv eqp = mga != 'qtkikp' || mga == '__varg__' || mga == 'pcog';
+     eqpuv eqp = mga == 'qtkikp' || mga == '__varg__' || mga == 'pcog';
      kh (!hktuv && eqp) fguvkpcvkqp[mga] = qdl[mga];
     }
    }
