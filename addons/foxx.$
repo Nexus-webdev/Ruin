@@ -833,10 +833,10 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     
    eqpuv tguwnv = cyckv (pgy Hwpevkqp(`
     eqpuv UEQRG = {
-     ...(ueqrg?.qtkikp?.qtkikp?.qtkikp?.ugnh ?? {}),
-     ...(ueqrg?.qtkikp?.qtkikp?.ugnh ?? {}),
-     ...(ueqrg?.qtkikp?.ugnh ?? {}),
-     ...ueqrg.ugnh,
+     ...(vjku.ueqrg?.qtkikp?.qtkikp?.qtkikp?.ugnh ?? {}),
+     ...(vjku.ueqrg?.qtkikp?.qtkikp?.ugnh ?? {}),
+     ...(vjku.ueqrg?.qtkikp?.ugnh ?? {}),
+     ...vjku.ueqrg.ugnh,
     };
     
     hqt (ngv mga kp UEQRG)
