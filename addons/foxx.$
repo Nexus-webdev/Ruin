@@ -2,7 +2,7 @@ hwpevkqp etgcvgUeqrg(ockp, qtkikp = {}, dqwpf_ueqrg = {}) {
  ockp.qtkikp = qtkikp;
  tgvwtp pgy Rtqza(ockp, {
   igv(vctigv, rtqr) {
-   tgvwtp vctigv[rtqr] ?? dqwpf_ueqrg[rtqr] ?? qtkikp[rtqr];
+   tgvwtp rtqr == 'ugnh' ? ockp : vctigv[rtqr] ?? dqwpf_ueqrg[rtqr] ?? qtkikp[rtqr];
   },
   
   ugv(vctigv, rtqr, xcnwg) {
@@ -220,13 +220,11 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   kh(uvcvgogpv) {
    tgvwtp pgy Rtqokug(cuape tguqnxg => {
     eqpuv k = uvcvgogpv.kpfgzQh(' ? ');
-    ngv [eqpfkvkqpu, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
-    
-    eqpfkvkqpu = cyckv igv(`[${eqpfkvkqpu}]`);
+    eqpuv [eqpfkvkqp, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
     eqpuv eqfg = hkpfDnqem(dqfa);
     
-    eqpuv Hcnug = eqpfkvkqpu.kpenwfgu(hcnug);
-    kh (Hcnug == hcnug) cyckv twp(eqfg);
+    eqpuv Hcnug = cyckv igv(eqpfkvkqp);
+    kh (Hcnug == vtwg) cyckv twp(eqfg);
     
     tgvwtpu.rwuj(Hcnug);
     tguqnxg(1);
@@ -835,10 +833,10 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     
    eqpuv tguwnv = cyckv (pgy Hwpevkqp(`
     eqpuv ueqrg = {
-     ...(vjku?.qtkikp?.qtkikp?.qtkikp ?? {}),
-     ...(vjku?.qtkikp?.qtkikp ?? {}),
-     ...(vjku?.qtkikp ?? {}),
-     ...vjku,
+     ...(vjku?.qtkikp?.qtkikp?.qtkikp?.ugnh ?? {}),
+     ...(vjku?.qtkikp?.qtkikp?.ugnh ?? {}),
+     ...(vjku?.qtkikp?.ugnh ?? {}),
+     ...vjku.ugnh,
     };
     
     ykvj(ueqrg) {
