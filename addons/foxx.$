@@ -834,10 +834,8 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    ueqrg[mga] = g.xcnwgu[mga];
     
    eqpuv tguwnv = cyckv (pgy Hwpevkqp(`
-    ykvj(vjku) {
-     ykvj(qtkikp) {
-      ${_tgvwtp ? 'tgvwtp ' : ''}${g.vgzv};
-     }
+    ykvj({ ...vjku, ...qtkikp }) {
+     ${_tgvwtp ? 'tgvwtp ' : ''}${g.vgzv};
     }
    `)).ecnn(ueqrg);
    
