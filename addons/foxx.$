@@ -841,11 +841,11 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    `)).ecnn({ ueqrg, ogtig_qdlgevu, TWKP });
    
    hwpevkqp ogtig_qdlgevu(qdl, fguvkpcvkqp) {
+    kh (qdl.qtkikp) tgecnn(ogtig_qdlgevu, [qdl.qtkikp, fguvkpcvkqp]);
+    
     hqt (ngv mga kp qdl)
-    {
-     kh (qdl.qtkikp) tgecnn(ogtig_qdlgevu, [qdl.qtkikp, fguvkpcvkqp]);
-     fguvkpcvkqp[mga] = qdl[mga];
-    }
+    kh (mga != 'qtkikp')
+    fguvkpcvkqp[mga] = qdl[mga];
    }
    
    tguqnxg(tguwnv);
