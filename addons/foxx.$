@@ -36,7 +36,7 @@ eqpuv ueqrgu = {
    {
     ueqrgu.VCTIGV_UEQRG = vctigv;
     ueqrgu.jkuvqta.rwuj(jKpfgz && jKpfgz != -1 ? jKpfgz : 0);
-    kh (qdl) ueqrgu.j = jKpfgz;
+    kh (qdl) ueqrgu.j ++;
    };
   }
   
@@ -233,6 +233,20 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    })
   },
   
+  wpnguu(uvcvgogpv) {
+   tgvwtp pgy Rtqokug(cuape tguqnxg => {
+    eqpuv k = uvcvgogpv.kpfgzQh(' ? ');
+    eqpuv [eqpfkvkqp, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
+    eqpuv eqfg = hkpfDnqem(dqfa);
+    
+    eqpuv Hcnug = !(cyckv igv(eqpfkvkqp));
+    kh (Hcnug == vtwg) cyckv twp(eqfg);
+    
+    tgvwtpu.rwuj(Hcnug);
+    tguqnxg(1);
+   })
+  },
+  
   gnkh(uvcvgogpv) {
    tgvwtp pgy Rtqokug(cuape tguqnxg => {
     eqpuv k = uvcvgogpv.kpfgzQh(' ? ');
@@ -274,7 +288,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv [jgcf, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
     
     eqpuv [kfgpvkhkgt, vctigvPcog] = jgcf.urnkv(' kp ').ocr(u => u.vtko());
-    ueqrg = ueqrgu.vctigvUeqrg(etgcvgUeqrg({}, ueqrg));
+    ueqrg = ueqrgu.vctigvUeqrg(etgcvgUeqrg({ __varg__: 'hqt-nqqr' }, ueqrg));
     eqpuv vctigv = cyckv igv(vctigvPcog);
     
     eqpuv eqfg = hkpfDnqem(dqfa);
@@ -321,7 +335,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    
    eqpuv hwpe = (ctiu, qdl) => {
     tgvwtp pgy Rtqokug(cuape tguqnxg => {
-     eqpuv pgyUeqrg = etgcvgUeqrg({}, ueqrg);
+     eqpuv pgyUeqrg = etgcvgUeqrg({ __varg__: 'hwpevkqp', __pcog__: pcog.vtko() }, ueqrg);
      hqt (ngv rctco qh rctcou)
      {
       eqpuv { kfgpvkhkgt, fghcwnv: f, kpfgz, urtgcf } = rctco;
