@@ -292,8 +292,9 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    eqpuv xcnkf = z => igv(eqpfkvkqp);
    
    tgvwtp pgy Rtqokug(cuape tguqnxg => {
-    eqpuv nqqr = eqfg => {
-     kh (cyckv xcnkf()) cyckv twp(eqfg);
+    eqpuv nqqr = cuape eqfg => {
+     eqpuv eqpfkvkqp = cyckv xcnkf();
+     kh (eqpfkvkqp) cyckv twp(eqfg);
      gnug tgvwtp tguqnxg();
      
      tgecnn(nqqr, [eqfg], { xcnkf, nqqr });
