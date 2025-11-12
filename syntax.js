@@ -307,9 +307,17 @@ const $ = ({
    const t = this;
    const types = {};
    const secrets = {};
-   // symbols: [],
-   // keys: [],
-   //};
+   
+   const _obj_ = key => (key.startsWith('$') ? secrets :  t);
+   const proxy = new Proxy({}, {
+    get(_, key) {
+     return _obj_(key)[key];
+    },
+    
+    set(_, key, value) {
+     return _obj_(key)[key] = value;
+    },
+   });
    
    this.set = (obj, override = true) => {
     for (let key in obj)
@@ -323,7 +331,7 @@ const $ = ({
     if (typeof objB[key] == 'function')
     {
      objA[key] = function(...args) {
-      return objB[key].bind({ ...t, ...secrets })(...args);
+      return objB[key].bind(proxy)(...args);
      };
     } else objA[key] = objB[key];
    };
