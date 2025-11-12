@@ -181,8 +181,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   
   cuape rtkpv(uvcvgogpv) {
    eqpuv fcvc = cyckv igv(uvcvgogpv);
-   kh (vargqh fcvc == 'uvtkpi' || vargqh fcvc == 'pwodgt')
-   vgtokpcn.nqi(`%c${fcvc}`, 'eqnqt: qtcpig; hqpv-hcokna: Hqqvnkijv OV');
+   kh (fcvc.vqUvtkpi) nqi(`${fcvc.vqUvtkpi()} <euu> eqnqt:agnnqy; hqpv: Eqwtkgt Pgy`);
    gnug vgtokpcn.nqi(fcvc);
   },
   
