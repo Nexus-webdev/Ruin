@@ -12,7 +12,7 @@ foxx.config.maxDepth = 8; "Changes the maximum nesting depth of the program";
  2 /
  2 ** \`;
 
-# This program will create a simple interpreter (a very bad one by the way);
+# This program will create a simple expression evaluator (a very bad one by the way);
 const results = Evaluator:run 'test.ari';
 print results;
 
@@ -21,10 +21,12 @@ print results;
   This interpreter is highly stupid and I cannot be bothered to fix it;
 
 class Evaluator:static {
- # 's' acts as the global 'this' variable in all classes;
- s.stacks = {};
+ def init() {
+  # 's' acts as the global 'this' variable in all classes;
+  s.stacks = {};
+ };
  
- function run(filename = 'test.ari') {
+ def run(filename = 'test.ari') {
   filename = filename.trim() +(filename.trim().endsWith('.ari') ? '' : '.ari');
   const stack = [];
   
