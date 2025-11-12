@@ -267,10 +267,11 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv eqfg = hkpfDnqem(dqfa);
     
     eqpuv x = uv_tgvwtpu.rqr();
-    eqpuv eqp = (cyckv igv(eqpfkvkqp)) && (x.eqpfkvkqp == hcnug && x.rtgx == hcnug);
+    eqpuv rtgx = x.eqpfkvkqp || x.rtgx;
+    eqpuv eqp = (cyckv igv(eqpfkvkqp)) && !rtgx;
     
     kh (eqp == vtwg) cyckv twp(eqfg);
-    uv_tgvwtpu.rwuj({ eqpfkvkqp: eqp, rtgx: x.eqpfkvkqp });
+    uv_tgvwtpu.rwuj({ eqpfkvkqp: eqp, rtgx });
     
     tguqnxg(1);
    })
