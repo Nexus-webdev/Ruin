@@ -905,20 +905,6 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    tgvwtp gxcnwcvgVgorncvg(kprwv.vtko(), igv);
    
    eqpuv gxcnwcvgf = cyckv gxcn(kprwv.vtko(), ueqrg, vtwg);
-   kh (kprwv.vtko().uvctvuYkvj('[') && kprwv.vtko().gpfuYkvj(']'))
-   {
-    eqpuv cttca = [];
-    hqt (ngv kvgo qh gxcnwcvgf)
-    {
-     vta {
-      eqpuv pgyKvgo = kvgo.vtko ? cyckv igv(kvgo) : kvgo;
-      cttca.rwuj(pgyKvgo);
-     } ecvej(g) {
-      cttca.rwuj(kvgo);
-     }
-    };
-   }
-   
    kh (gxcnwcvgf?.vtko && gxcnwcvgf.vtko().uvctvuYkvj('./'))
    tgvwtp (pgy Hwpevkqp(`ykvj(vjku) tgvwtp ${gxcnwcvgf.vtko().unkeg(2).tgrncegCnn('/', '.')}`)).ecnn(ueqrg);
    
