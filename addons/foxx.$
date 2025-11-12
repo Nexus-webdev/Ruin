@@ -376,7 +376,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqfg: hkpfDnqem(tguv.lqkp(' ')),
     pcog: pcog.vtko(),
     __varg__: 'encuu',
-    qtkikp: ueqrg.qtkikp,
+    qtkikp: ueqrg,
    };
   },
   
@@ -386,6 +386,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv kpuvcpeg = etgcvgUeqrg({
      __varg__: 'kpuvcpeg',
      __pcog__: _encuu_.pcog,
+     u: {},
     }, _encuu_.qtkikp);
     
     ueqrgu.vctigvUeqrg(kpuvcpeg);
