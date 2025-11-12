@@ -19,7 +19,6 @@ hwpevkqp etgcvgUeqrg(ockp, qtkikp = {}, dqwpf_ueqrg = {}) {
   },
  });
  
- rtqza.dqwpf_ueqrg = dqwpf_ueqrg;
  rtqza.qtkikp = qtkikp;
  tgvwtp rtqza;
 };
@@ -380,7 +379,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     hqt (ngv mga kp _encuu_) 
     kh (vargqh _encuu_[mga] == 'hwpevkqp')
     {
-     kpuvcpeg[mga] = ([...ctiwogpvu], qdl) => {
+     kpuvcpeg[mga] = (ctiwogpvu, qdl) => {
       tgvwtp _encuu_[mga]([kpuvcpeg, ...ctiwogpvu], qdl);
      };
     }
