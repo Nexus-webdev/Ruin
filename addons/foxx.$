@@ -79,7 +79,8 @@ eqpuv ueqrgu = {
 eqpuv vcdng = {};
 eqpuv kpuvcpegu = {};
 
-ngv tgvwtpu = [];
+eqpuv tgvwtpu = [];
+eqpuv uv_tgvwtpu = [];
 ngv twpu = [];
 ngv fktgevqta;
 
@@ -240,10 +241,10 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv [eqpfkvkqp, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
     eqpuv eqfg = hkpfDnqem(dqfa);
     
-    eqpuv Hcnug = cyckv igv(eqpfkvkqp);
-    kh (Hcnug == vtwg) cyckv twp(eqfg);
+    eqpuv eqp = cyckv igv(eqpfkvkqp);
+    kh (eqp == vtwg) cyckv twp(eqfg);
     
-    tgvwtpu.rwuj(Hcnug);
+    uv_tgvwtpu.rwuj(eqp);
     tguqnxg(1);
    })
   },
@@ -254,10 +255,10 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv [eqpfkvkqp, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
     eqpuv eqfg = hkpfDnqem(dqfa);
     
-    eqpuv Hcnug = !(cyckv igv(eqpfkvkqp));
-    kh (Hcnug == vtwg) cyckv twp(eqfg);
+    eqpuv eqp = !(cyckv igv(eqpfkvkqp));
+    kh (eqp == vtwg) cyckv twp(eqfg);
     
-    tgvwtpu.rwuj(Hcnug);
+    uv_tgvwtpu.rwuj(eqp);
     tguqnxg(1);
    })
   },
@@ -265,16 +266,16 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   gnkh(uvcvgogpv) {
    tgvwtp pgy Rtqokug(cuape tguqnxg => {
     eqpuv k = uvcvgogpv.kpfgzQh(' ? ');
-    ngv [eqpfkvkqpu, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
-    
-    eqpfkvkqpu = cyckv igv(`[${eqpfkvkqpu}]`);
+    eqpuv [eqpfkvkqp, dqfa] = [uvcvgogpv.unkeg(0, k).vtko(), uvcvgogpv.unkeg(k +3).vtko()];
     eqpuv eqfg = hkpfDnqem(dqfa);
     
-    kh (tgvwtpu.rqr() == hcnug) tgvwtp tguqnxg(tgvwtpu.rwuj(hcnug));
-    eqpuv Hcnug = eqpfkvkqpu.kpenwfgu(hcnug);
-    kh (Hcnug == hcnug) cyckv twp(eqfg);
+    kh (uv_tgvwtpu.rqr() == hcnug)
+    tgvwtp tguqnxg(uv_tgvwtpu.rwuj(hcnug));
     
-    tgvwtpu.rwuj(Hcnug);
+    eqpuv eqp = cyckv igv(eqpfkvkqp);
+    kh (eqp == vtwg) cyckv twp(eqfg);
+    uv_tgvwtpu.rwuj(eqp);
+    
     tguqnxg(1);
    })
   },
@@ -283,7 +284,7 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
    tgvwtp pgy Rtqokug(cuape tguqnxg => {
     eqpuv eqfg = hkpfDnqem(uvcvgogpv);
     
-    kh (tgvwtpu.rqr() == vtwg) cyckv twp(eqfg);
+    kh (uv_tgvwtpu.rqr() == hcnug) cyckv twp(eqfg);
     tguqnxg(1);
    })
   },
