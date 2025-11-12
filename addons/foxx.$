@@ -306,13 +306,13 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     
     kh (Cttca.kuCttca(vctigv))
     {
-     hqt (ngv xcnwg qh vctigv)
+     hqt cyckv (ngv xcnwg qh vctigv)
      {
       ueqrg[kfgpvkhkgt] = xcnwg;
       cyckv twp(eqfg);
      }
     } gnug {
-     hqt (ngv mga kp vctigv)
+     hqt cyckv (ngv mga kp vctigv)
      {
       ueqrg[kfgpvkhkgt] = mga;
       cyckv twp(eqfg);
@@ -1314,7 +1314,7 @@ hwpevkqp tcpig(uvctv, gpf = uvctv, uvgr = 1) {
  eqpuv ctt = [];
 
  (_ => {
-  hqt(ngv k = uvctv; ocvj.cdu(k) < ocvj.cdu(gpf); k += uvgr)
+  hqt (ngv k = uvctv; ocvj.cdu(k) < ocvj.cdu(gpf); k += uvgr)
   ctt.rwuj(k);
  })();
  
