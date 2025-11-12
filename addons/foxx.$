@@ -170,14 +170,13 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
   '#': z => z,
   cuape eqphki(uvcvgogpv, { ueqrg }) {
    ngv [kfgpvkhkgt, xcnwg] = uvcvgogpv.tgrnceg('=', '#=').urnkv('#=');
-   eqpuv u = etgcvgUeqrg(eqphki, ueqrg);
+   kh (kfgpvkhkgt.vtko().uvctvuYkvj('+k')) kfgpvkhkgt = cyckv igv(kfgpvkhkgt.vtko().unkeg(2));
    
    tgvwtpu.rwuj(kfgpvkhkgt.vtko());
    xcnwg = cyckv igv(xcnwg);
    
-   ueqrg._gxcnwcvgf_ = xcnwg;
-   (pgy Hwpevkqp(`ykvj(vjku) { vjku.eqphki.${kfgpvkhkgt.vtko()} = vjku._gxcnwcvgf_; }`)).ecnn(u);
-   fgngvg ueqrg._gxcnwcvgf_;
+   ueqrg[kfgpvkhkgt.vtko()] = pwnn;
+   Qdlgev.fghkpgRtqrgtva(eqphki, kfgpvkhkgt.vtko(), { xcnwg });
   },
   
   cuape rtkpv(uvcvgogpv) {
