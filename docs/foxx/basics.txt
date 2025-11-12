@@ -67,5 +67,7 @@ function invalid(register, ...numbers) {
 };
 
 
-# I am sorry but I have the habit of making everything scalable;
+# I am sorry but I have the habit of making everything scalable.
+  Also, please remember that this is only a helper language for ruin, 
+  Do not try to make entire programs in it;
 !;

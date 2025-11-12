@@ -306,13 +306,26 @@ const $ = ({
   function CONSTRUCTOR(...args) {
    const t = this;
    const types = {};
-   const SYMBOL = Symbol('SYMBOLIDENTIFICATION - ' +Date.now());
+   const secrets = {};
+   // symbols: [],
+   // keys: [],
+   //};
    
-   this[SYMBOL] = true;
    this.set = (obj, override = true) => {
     for (let key in obj)
-    if (override || !this[key])
-    this[key] = obj[key];
+    {
+     if (key.startsWith('$')) apply(secrets, obj, key);
+     else apply(this, obj, key);
+    }
+   };
+   
+   function apply(objA, objB, key) {
+    if (typeof objB[key] == 'function')
+    {
+     objA[key] = function(...args) {
+      return objB[key].bind({ ...t, ...secrets })(...args);
+     };
+    } else objA[key] = objB[key];
    };
 
    this.set(prototype);
@@ -415,26 +428,6 @@ const $ = ({
    
    if (args[0] != '⌀' && this.construct)
    this.construct(...args);
-   
-   return new Proxy(this, {
-    get(target, prop, receiver) {
-     if (typeof prop == 'string' && prop.startsWith('$'))
-     return receiver[SYMBOL] == true ? target[prop] : undefined;
-     
-     return target[prop];
-    },
-    
-    set(target, prop, value, receiver) {
-     if (typeof prop == 'string' && prop.startsWith('$'))
-     {
-      if (receiver[SYMBOL] == true)
-      target[prop] = value;
-      return true;
-     };
-     
-     return target[prop] = value;
-    }
-   });
   };
   
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
@@ -454,7 +447,7 @@ const $ = ({
    for (let key in prototype.static) constructor[key] = prototype.static[key];
   }
   
-  if (name == '⌁' || name == '$.meta') return constructor;
+  if (name == '⌁' || name == '$.$') return constructor;
   if (obj[data(0)]) return;
   
   opt(data(1)?.toLowerCase(), {
