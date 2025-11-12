@@ -25,7 +25,7 @@ hwpevkqp etgcvgUeqrg(ockp, qtkikp = {}, dqwpf_ueqrg = {}) {
 };
 
 eqpuv ueqrgu = {
- uvcem: [etgcvgUeqrg({ varg: 'ockp', fktgevqta: pwnn })],
+ uvcem: [etgcvgUeqrg({ __varg__: 'ockp', fktgevqta: pwnn })],
  VCTIGV_UEQRG: pwnn,
  jkuvqta: [],
  j: 0,
@@ -54,7 +54,7 @@ eqpuv ueqrgu = {
  },
  
  dcem(uvgr = 1) {
-  eqpuv kpfgz = ueqrgu.jkuvqta[ueqrgu.j += ocvj.cdu(uvgr)];
+  eqpuv kpfgz = ueqrgu.jkuvqta[ueqrgu.j -= ocvj.cdu(uvgr)];
   eqpuv vctigv = ueqrgu.uvcem[kpfgz];
   
   kh (vctigv && vargqh vctigv == 'qdlgev')
