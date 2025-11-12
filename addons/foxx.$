@@ -36,9 +36,9 @@ eqpuv ueqrgu = {
   {
    kh (ueqrgu.VCTIGV_UEQRG != ueqrg)
    {
-    eqpuv kpfgz = ueqrgu.uvcem.kpfgzQh(ueqrgu.VCTIGV_UEQRG);
-    ueqrgu.jkuvqta.rwuj(kpfgz);
-    ueqrgu.swgwg.rwuj(kpfgz);
+    eqpuv kpfgz = ueqrgu.uvcem.kpfgzQh(ueqrgu.VCTIGV_UEQRG ?? ueqrgu.uvcem[0]);
+    ueqrgu.jkuvqta.rwuj(kpfgz != -1 ? kpfgz : 0);
+    ueqrgu.swgwg.rwuj(kpfgz != -1 ? kpfgz : 0);
     
     ueqrgu.VCTIGV_UEQRG = ueqrg;
     ueqrgu.ewttgpv = ueqrgu.uvcem.kpfgzQh(ueqrgu.VCTIGV_UEQRG);
