@@ -673,10 +673,10 @@ TWKP.hqzz = pgy Kpvgtrtgvgt(g => {
     eqpuv evz = cyckv igv(evzUvtkpi);
     
     eqpuv hkngpcog = cyckv igv(pcog);
-    ngv hkng = cyckv fktgevqta.igvHkngJcpfng(hkngpcog.vtko());
-    hkng = cyckv hkng.igvHkng();
+    eqpuv hkngjcpfng = cyckv fktgevqta.igvHkngJcpfng(hkngpcog.vtko());
+    eqpuv eqfg = cyckv (cyckv hkngjcpfng.igvHkng()).vgzv();
     
-    cyckv twkp(cyckv hkng.vgzv(), evz);
+    nqi(eqfg);
     tguqnxg(1);
    })
   },
