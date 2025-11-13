@@ -70,7 +70,6 @@
    }
   </style>
   
-  <script src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'></script>
   <script>
    script('syntax.js').then(_ => {
     bootstrapper.then(_ => {
@@ -89,6 +88,17 @@
      document.head.appendChild(scriptTag);
     });
    }
+   
+   function urlData() {
+    const Params = new URLSearchParams(window.location.search).entries();
+    const data = {};
+    
+    for (let param of Params)
+    data[param[0]] = param[1];
+    return data;
+   }
+   
+   window.urlData = urlData;
   </script>
  </head>
  

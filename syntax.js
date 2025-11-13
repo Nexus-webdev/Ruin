@@ -308,14 +308,15 @@ const $ = ({
    const types = {};
    const secrets = {};
    
-   const _obj_ = key => (key.startsWith('$') ? secrets :  t);
-   const proxy = new Proxy({}, {
-    get(_, key) {
-     return _obj_(key)[key];
+   const proxy = new Proxy(this, {
+    get(target, prop) {
+     if (typeof prop == 'symbol' || prop.startsWith('$')) return secrets[prop];
+     return target[prop];
     },
     
-    set(_, key, value) {
-     return _obj_(key)[key] = value;
+    set(target, prop, value) {
+     if (typeof prop == 'symbol' || prop.startsWith('$')) return secrets[prop] = value;
+     return target[prop] = value;
     },
    });
    
@@ -733,15 +734,35 @@ $.struct('GitHub: static', {
 })
 
 self.bootstrapper = new Promise(async resolve => {
- const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
- const response = await fetch(url);
+ let code = '';
+ const id = '__bootstrapper__';
  
- if (!response.ok) throw `Failed to read: ${response.status}`;
- let code = await response.text();
+ if (self.urlData && urlData().local == 'true')
+ {
+  let clicked;
+  document.addEventListener('keydown', async e => {
+   if (clicked || e.key != 'Enter') return;
+   clicked = true;
+   
+   const filehandle = (await get(id)) ?? (await window.showOpenFilePicker())[0];
+   const file = await filehandle.getFile();
+   code = await file.text();
+   
+   set(id, filehandle);
+   const result = await $.ruin(code);  
+   resolve(result);
+  });
+ } else {
+  const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
+  const response = await fetch(url);
  
- if ($.GitHub.isBase64(code))
- code = decodeURIComponent(escape(atob(code)));
+  if (!response.ok) throw `Failed to read: ${response.status}`;
+  let code = await response.text();
  
- const result = await $.ruin(code);
- resolve(result);
+  if ($.GitHub.isBase64(code))
+  code = decodeURIComponent(escape(atob(code)));
+  
+  const result = await $.ruin(code);
+  resolve(result);
+ }
 })

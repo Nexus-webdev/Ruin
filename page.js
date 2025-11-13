@@ -1,13 +1,4 @@
 window.githubProgram = location.href.includes('.github.io');
-function urlData() {
- const Params = new URLSearchParams(window.location.search).entries();
- const data = {};
- 
- for (let param of Params)
- data[param[0]] = param[1];
- return data;
-}
-
 const mods = {
  Img: Image,
  js(code, type = 'text/javascript') {
