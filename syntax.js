@@ -733,24 +733,87 @@ $.struct('GitHub: static', {
  },
 })
 
+function getFile(name, dir = $.__RUIN_DIR__) {
+ return new Promise(async resolve => {
+  resolve(await (await dir.getFileHandle(name)).getFile());
+ })
+}
+
+function getFileText(name, dir = $.__RUIN_DIR__) {
+ return new Promise(async resolve => {
+  resolve(await (await getFile(name, dir)).text());
+ })
+}
+
+function getDir(name, dir = $.__RUIN_DIR__) {
+ return new Promise(async resolve => {
+  resolve(await dir.getDirectoryHandle(name));
+ })
+}
+
+function importScripts(paths, dir = $.__RUIN_DIR__) {
+ return new Promise(async resolve => {
+  const prev_path = [];
+  const scripts = [];
+  
+  for (let path of paths)
+  {
+   const fullpath = path.split('/').map((n, i) => {
+    if (n.trim() == '~') return prev_path[i];
+    return n.trim();
+   });
+   
+   const filename = fullpath.pop();
+   const extension = filename.split('.')[1].trim();
+   
+   for (let part of fullpath)
+   dir = await getDir(part, dir);
+   
+   const file = await getFile(filename, dir);
+   const script = meta.opt(extension, {
+    '$': x => {
+     RUIN.setup_phase = true;
+     return ruin(x);
+    },
+    
+    fx(x) {
+     if (!RUIN.foxx) throw 'Please import the foxx dependency.';
+     return foxx.run(x);
+    },
+    
+    js(x) {
+     RUIN.js(x);
+    },
+   })(data.content);
+   
+   prev_path.length = 0;
+   prev_path.push(...fullpath);
+   
+   scripts.push(script);
+  }
+  
+  resolve(scripts);
+ })
+}
+
+$.fs = { getFile, getFileText, getDir };
+$.__local__ = self.urlData && urlData().local == 'true';
+
 self.bootstrapper = new Promise(async resolve => {
- let code = '';
- const id = '__bootstrapper__';
- 
- if (self.urlData && urlData().local == 'true')
+ if ($.__local__)
  {
   let clicked;
+  const id = '__bootstrapper__';
   document.addEventListener('keydown', async e => {
    if (clicked || e.key != 'Enter') return;
    clicked = true;
    
-   const filehandle = (await get(id)) ?? (await window.showOpenFilePicker())[0];
-   const file = await filehandle.getFile();
-   code = await file.text();
+   $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
+   const code = await getFileText('bootstrapper.$');
    
-   set(id, filehandle);
-   const result = await $.ruin(code);  
-   resolve(result);
+   set(id, $.__RUIN_DIR__);
+   $.ruin(code); 
+   resolve();
   });
  } else {
   const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
@@ -762,7 +825,7 @@ self.bootstrapper = new Promise(async resolve => {
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
   
-  const result = await $.ruin(code);
-  resolve(result);
+  $.ruin(code);
+  resolve();
  }
 })
