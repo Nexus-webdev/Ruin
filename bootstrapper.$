@@ -484,7 +484,7 @@ cuape hwpevkqp gzgewvg({ kf, tguqnxg, uvcvwu, fkt, gpvtkgu }) {
  {
   vta {
    eqpuv hkngpcog = vargqh gpvta.hkng == 'uvtkpi' ? gpvta.hkng : gpvta.pcog;
-   eqpuv fr = cyckv etgcvgEqorqpgpv(fktgevqtkgu[hkngpcog], hkngpcog, Oqfwng);
+   eqpuv fr = cyckv etgcvgEqorqpgpv(fktgevqtkgu[hkngpcog], hkngpcog, Oqfwng); nqi(fr);
    Oqfwng[fr.eqorqpgpvPcog] = fr;
    
    ogvc.rmi.rwuj(fr.eqorqpgpvPcog);
