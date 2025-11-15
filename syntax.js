@@ -281,7 +281,7 @@ const $ = ({
   },
  }),
  
- struct(name, { relationships = [], destinationObject = $.RUIN, _this, overrideModule, ...prototype } = {}) {
+ struct(name, { relationships = {}, __prototype__, destinationObject = $.RUIN, _this, overrideModule, ...prototype } = {}) {
   if (_this)
   {
    overrideModule = true;
@@ -294,6 +294,7 @@ const $ = ({
   
   const ruinContext = { ...this };
   const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
+  
   const obj = $.setup_phase == true ? $.RUIN : Obj;
   const staticValues = {};
   const arg = data(0);
@@ -308,6 +309,7 @@ const $ = ({
    const types = {};
    const secrets = {};
    
+   const func = f => (f && typeof f == 'function' ? f : null);
    const proxy = new Proxy(this, {
     get(target, prop) {
      if (typeof prop == 'symbol' || prop.startsWith('$')) return secrets[prop];
@@ -320,48 +322,48 @@ const $ = ({
     },
    });
    
-   this.set = (obj, override = true) => {
-    for (let key in obj)
-    {
-     if (key.startsWith('$')) apply(secrets, obj, key);
-     else apply(this, obj, key);
-    }
-   };
-   
    function apply(objA, objB, key) {
-    if (typeof objB[key] == 'function')
+    if (func(objB[key]))
     {
      objA[key] = function(...args) {
       return objB[key].bind(proxy)(...args);
      };
     } else objA[key] = objB[key];
    };
+   
+   function set(obj, override = true) {
+    for (let key in obj)
+    {
+     if (key.startsWith('$')) apply(secrets, obj, key);
+     else apply(t, obj, key);
+    }
+   };
 
-   this.set(prototype);
-   this.set({
+   set(prototype);
+   set({
     $relationships: relationships,
     $constructor: constructor,
-    priv: x => x(),
+    $setdata: set,
     $args: args,
     
     $extension(type) {
      const _struct = types[type];
      this.parent = _struct;
      
-     this.$uper = (...args) => {
-      delete this.$uper;
-      return _struct.construct.bind(this)(...args);
-     };
-     
-     t.set(_struct, false);
+     set(_struct);
      delete this.$extension;
+     this.$uper = function(...args) {
+      delete this.$uper; 
+      const __init__ = func(_struct.__init__ ) ?? func(_struct.construct);
+      return __init__.bind(this)(...args);
+     };
     },
     
     $addRelationship({ name, object = obj, type = 'parent' } = {}) {
      const structs = {};
      if (typeof name == 'string') opt(type?.trim()?.toLowerCase(), options)(this, name, object, structs);
      
-     this.set(structs);
+     set(structs);
     },
    });
    
@@ -406,8 +408,8 @@ const $ = ({
       const instance = new INSTANCE('⌀');
       instance[arg?.toLowerCase()] = t;
       
-      const construct = instance.construct;
-      if (typeof construct == 'function') construct(...args);
+      const construct = instance.__init__ ?? instance.construct ?? instance.constructor;
+      if (construct && typeof construct == 'function') construct(...args);
       
       if (t[name] != undefined) return instance;
       t[name] = instance;
@@ -431,12 +433,12 @@ const $ = ({
     },
    };
   
-   for (let member of relationships) opt(data(1, member)?.toLowerCase(), options)(data(0, member), obj, structs);
-   this.set(structs);
-   this.name = arg;
+   for (let member in relationships)
+   meta.opt(relationships[member], options)(member, obj, structs);
    
-   if (args[0] != '⌀' && this.construct)
-   this.construct(...args);
+   set(structs);
+   const __init__ = func(this.__init__) ?? func(this.construct);
+   if (args[0] != '⌀' && __init__) __init__(...args);
   };
   
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
@@ -448,8 +450,13 @@ const $ = ({
    ruinContext,
    prototype,
   })
-
+  
   constructor._name = arg;
+  constructor.prototype = {
+   ...constructor.prototype,
+   ...(__prototype__ ?? {}),
+  };
+  
   if (prototype.static)
   {
    constructor.static = prototype.static;
@@ -804,8 +811,13 @@ self.bootstrapper = new Promise(async resolve => {
  {
   let clicked;
   const id = '__bootstrapper__';
-  document.addEventListener('keydown', async e => {
-   if (clicked || e.key != 'Enter') return;
+  document.addEventListener('click', e => load_bootstrapper());
+  document.addEventListener('keydown', e => {
+   if (e.key == 'Enter') load_bootstrapper();
+  });
+  
+  async function load_bootstrapper() {
+   if (clicked) return;
    clicked = true;
    
    $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
@@ -814,7 +826,7 @@ self.bootstrapper = new Promise(async resolve => {
    set(id, $.__RUIN_DIR__);
    $.ruin(code); 
    resolve();
-  });
+  }
  } else {
   const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
   const response = await fetch(url);

@@ -166,6 +166,81 @@ function setImq(src, data, resolve) {
  `);
 };
 
+$.struct('Terminal', {
+ __init__({ width = 400, height = 300, backgroundColor = '#000', textColor = '#0f0', interpreter = x => x, header } = {}) {
+  this.interpreter = interpreter;
+  
+  this.el = document.createElement('div');
+  this.el.className = 'terminal';
+  this.el.style.width = width + 'px';
+  this.el.style.height = height + 'px';
+  this.el.style.backgroundColor = backgroundColor;
+  this.el.style.color = textColor;
+  
+  this.header = document.createElement('div');
+  this.header.className = 'terminal-header';
+  this.header.textContent = header ?? 'Custom Terminal';
+  this.el.appendChild(this.header);
+  
+  this.output = document.createElement('div');
+  this.output.className = 'terminal-output';
+  this.el.appendChild(this.output);
+  
+  this.input = document.createElement('textarea');
+  this.input.className = 'terminal-input';
+  this.input.style.backgroundColor = backgroundColor;
+  this.input.style.color = textColor;
+  this.el.appendChild(this.input);
+
+  document.body.appendChild(this.el);
+  $.listener('keydown', async e => {
+   if (!e.shiftKey && e.key == 'Enter')
+   {
+    const statement = this.input.value.trim();
+    const result = await this.interpreter(statement);
+    this.print('> ' +statement);
+    this.input.value = '';
+    
+    if (result) this.print(result);
+   }
+  });
+ },
+
+ print(text) {
+  this.output.textContent += text + '\n';
+  this.output.scrollTop = this.output.scrollHeight;
+ },
+
+ makeDraggable() {
+  let offsetX, offsetY, dragging = false;
+  $.listener('mousedown', e => {
+   dragging = true;
+   offsetX = e.clientX -this.el.offsetLeft;
+   offsetY = e.clientY -this.el.offsetTop;
+  }, this.header);
+
+  $.listener('mousemove', e => {
+   if (!dragging) return;
+   
+   this.el.style.left = e.clientX -offsetX +'px';
+   this.el.style.top = e.clientY -offsetY +'px';
+  });
+
+  $.listener('mouseup', _ => (dragging = false));
+ },
+ 
+ makeResizable() {
+  const resizeObserver = new ResizeObserver(() => {
+   const totalHeight = this.header.offsetHeight +this.output.offsetHeight +this.input.offsetHeight;
+   
+   this.el.style.height = totalHeight +'px';
+   this.el.style.width = this.input.offsetWidth +'px';
+  });
+  
+  resizeObserver.observe(this.input);
+ },
+})
+
 $.struct('Image', {
  onload: x => x,
  construct(src, { forceload, chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', getImq: get = getImq, setImq: set = setImq, saveInterval = 1000 } = {}) {

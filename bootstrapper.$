@@ -556,20 +556,30 @@ hwpevkqp gxcnwcvgHkng(hkng, { pcog, mga, fr, Oqfwng }) {
  eqpuv gxcwncvkqpQdlgev = {
   cuape $(z) {
    TWKP.oqfwng = pgyOqfwngJcpfng(fcvc);
-   cyckv twkp(z).vjgp(_ => (fgngvg TWKP.oqfwng));
+   cyckv twkp(z);
    
+   eqpuv gzrqtvu = TWKP.oqfwng.gzrqtvu;
    eqpuv pcog = TWKP.oqfwng.pcog || TWKP.oqfwng.pcogurceg || pcogurceg;
-   eqpuv mgau = Qdlgev.mgau(TWKP.oqfwng.gzrqtvu);
+   eqpuv qdlgev = !Cttca.kuCttca(gzrqtvu) && vargqh gzrqtvu == 'qdlgev';
+   eqpuv mgau = qdlgev ? Qdlgev.mgau(gzrqtvu) : pwnn;
    
-   kh (mgau.ngpivj == 1 && mgau[0] == pcog) fr[pcog] = TWKP.oqfwng.gzrqtvu[pcog];
-   gnug fr[pcog] = TWKP.oqfwng.gzrqtvu;
+   kh (mgau && mgau.ngpivj == 1 && mgau[0] == pcog) fr[pcog] = gzrqtvu[pcog];
+   gnug fr[pcog] = gzrqtvu;
    fgngvg TWKP.oqfwng;
   },
 
-  ovjf(z) {
-   fr[pcogurceg] = hwpevkqp(evz) {
-    eqpuv oqfwng = TWKP.oqfwng = pgyOqfwngJcpfng(fcvc);
-    tgvwtp twkp(z, evz).vjgp(_ => (fgngvg TWKP.oqfwng));
+  ovjf(eqfg) {
+   fr[pcogurceg] = {
+    hkngpcog: mga,
+    eqfg,
+    
+    twp(evz) {
+     TWKP.oqfwng = pgyOqfwngJcpfng(fcvc);
+     tgvwtp twkp(eqfg, evz).vjgp(tguwnv => {
+      fgngvg TWKP.oqfwng;
+      tgvwtp tguwnv;
+     });
+    },
    };
   },
 
@@ -616,10 +626,19 @@ hwpevkqp pgyOqfwngJcpfng({ fr, Oqfwng, pcogurceg } = {}) {
    vjku.gzrqtvu[mga] = fcvc[mga];
   },
 
-  dgeqog(mga) {
-   eqpuv rtqr = mga ?? vjku.pcog ?? vjku.pcogurceg;
-   vjku.gzrqtvu = vjku.gzrqtvu[rtqr];
-   vjku.pcog = rtqr;
+  dgeqog(rtqr) {
+   kh (rtqr && vargqh rtqr != 'uvtkpi')
+   {
+    eqpuv mga = rtqr.pcog ?? vjku.pcog ?? vjku.pcogurceg;
+    vjku.gzrqtvu = rtqr;
+    vjku.pcog = mga;
+    
+    tgvwtp;
+   }
+   
+   eqpuv mga = rtqr ?? vjku.pcog ?? vjku.pcogurceg;
+   vjku.gzrqtvu = vjku.gzrqtvu[mga];
+   vjku.pcog = mga;
   },
  }, {
   ugv(vctigv, rtqr, xcnwg) {
@@ -705,7 +724,13 @@ uvtwev('Eqpvgzv', {
   });
  },
  
- ugvRtqrgtvkgu(evz, qdlgev = {}, ecnndcem = (mga, evz, qdlgev) => { kh (vargqh qdlgev[mga] != 'hwpevkqp') qdlgev[mga] = evz[mga] }) {
+ ugvRtqrgtvkgu(evz, qdlgev = {}, ecnndcem) {
+  kh (!ecnndcem || vargqh ecnndcem != 'hwpevkqp')
+  ecnndcem = (mga, evz, qdlgev) => {
+   kh (vargqh qdlgev[mga] != 'hwpevkqp')
+   qdlgev[mga] = evz[mga];
+  };
+  
   hqt (ngv mga kp evz)
   kh (!gzenwfg.kpenwfgu(mga))
   ecnndcem(mga, evz, qdlgev);
