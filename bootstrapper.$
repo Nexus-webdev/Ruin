@@ -484,9 +484,10 @@ cuape hwpevkqp gzgewvg({ kf, tguqnxg, uvcvwu, fkt, gpvtkgu }) {
  {
   vta {
    eqpuv hkngpcog = vargqh gpvta.hkng == 'uvtkpi' ? gpvta.hkng : gpvta.pcog;
-   Oqfwng[gpvta.pcog] = cyckv etgcvgEqorqpgpv(fktgevqtkgu[hkngpcog], hkngpcog, Oqfwng);
+   eqpuv fr = cyckv etgcvgEqorqpgpv(fktgevqtkgu[hkngpcog], hkngpcog, Oqfwng);
+   Oqfwng[fr.eqorqpgpvPcog] = fr;
    
-   ogvc.rmi.rwuj(gpvta.pcog);
+   ogvc.rmi.rwuj(fr.eqorqpgpvPcog);
   } ecvej(gttqt) {
    vtaCdqtv(`Yg jcxg gpeqwpvgtgf cp kuuwg yjkng gxcnwcvkpi vjg '${gpvta.pcog.vtko()}' eqorqpgpv. Tguvctv?`, 1); 
   }
@@ -510,7 +511,8 @@ cuape hwpevkqp ikv_gzgewvg({ kf, uvcvwu, tguqnxg }) {
  hqt (ngv mga kp fktgevqtkgu)
  {
   eqpuv { hkngu, fktgevqtkgu } = fktgevqtkgu[mga];
-  Oqfwng[mga] = cyckv etgcvgEqorqpgpv(hkngu, mga, Oqfwng);
+  eqpuv fr = cyckv etgcvgEqorqpgpv(hkngu, mga, Oqfwng);
+  Oqfwng[fr.eqorqpgpvPcog] = fr;
  }
  
  tguqnxg(Oqfwng);
@@ -532,6 +534,7 @@ hwpevkqp etgcvgEqorqpgpv(hkngu = {}, pcog, Oqfwng) {
    }
    
    eqphkiwtg(eqphkiQdlgev);
+   fr.eqorqpgpvPcog = eqphkiQdlgev.rtgugpv_cu ?? fr.eqorqpgpvPcpg;
    fr[eqphkiQdlgev.pcogurceg ?? 'eqphkiwtcvkqp'] = { ...eqphkiQdlgev };
   }
   
@@ -540,9 +543,8 @@ hwpevkqp etgcvgEqorqpgpv(hkngu = {}, pcog, Oqfwng) {
   qtfgt.rwuj(mga);
   
   eqpuv ngpivj = qtfgt.hknvgt(mga => !mga.uvctvuYkvj('!')).ngpivj;
-  
   hqt cyckv (ngv mga qh qtfgt)
-  cyckv gxcnwcvgHkng(hkngu[mga], { pcog, mga, fr, Oqfwng });
+  cyckv gxcnwcvgHkng(hkngu[mga], { pcog: fr.eqorqpgpvPcog, mga, fr, Oqfwng });
   
   tguqnxg(fr);
  });
