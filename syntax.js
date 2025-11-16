@@ -117,10 +117,15 @@ const $ = ({
                   .replaceAll(' err ', ' throw ')
                   .replaceAll('wait for\`', 'await for_ \`')
                   .replaceAll('wait for \`', 'await for_ \`')
-                  .replaceAll('import\`', '= module.import_\`')
-                  .replaceAll('import \`', '= module.import_ \`')
                   .replaceAll('## ', 'await foxx.run(`\n')
                   .replaceAll('!;', '\n`);');
+                  
+  fixedCode.replace('import ', (_, i) => {
+   const end = fixedCode.indexOf(';', start);
+   const prop = str.slice(start, end);
+   
+   fixedCode = `${fixedCode.slice(0, start)}= module.import_ \`${prop}\`${fixedCode.slice(end)}`;
+  });
   
   for (let type of $._TYPES_)
   fixedCode = fixedCode.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
