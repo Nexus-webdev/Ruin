@@ -122,9 +122,9 @@ const $ = ({
                   
   fixedCode.replace('import ', (_, i) => {
    const end = fixedCode.indexOf(';', start);
-   const prop = str.slice(start, end);
+   const imported = fixedCode.slice(start, end);
    
-   fixedCode = `${fixedCode.slice(0, start)}= module.import_ \`${prop}\`${fixedCode.slice(end)}`;
+   fixedCode = `${fixedCode.slice(0, start)}= module.import_ \`${imported}\`${fixedCode.slice(end)}`;
   });
   
   for (let type of $._TYPES_)
