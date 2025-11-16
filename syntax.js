@@ -120,7 +120,7 @@ const $ = ({
                   .replaceAll('## ', 'await foxx.run(`\n')
                   .replaceAll('!;', '\n`);');
                   
-  fixedCode.replace('^import ', (_, start) => {
+  fixedCode.replace('\^import ', (_, start) => {
    const end = fixedCode.indexOf(';', start);
    const imported = fixedCode.slice(start, end);
    
