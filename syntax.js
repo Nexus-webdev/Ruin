@@ -118,7 +118,7 @@ const $ = ({
              .replaceAll('wait for\`', 'await for_ \`')
              .replaceAll('wait for \`', 'await for_ \`')
              .replaceAll('## ', 'await foxx.run(`\n')
-             .replaceAll('!;', '\n`);');
+             .replaceAll('!;', '\n`);')
              
              .replace(/\^import\s+([^;]+);/g, (match, obj) => {
               return `= module.import_ \`${obj.trim()}\`;`;
