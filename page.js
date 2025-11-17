@@ -425,7 +425,7 @@ $.listener('keydown', async e => {
  {
   e.preventDefault();
   
-  let content = document.documentElement.outerHTML;
+  let content = window.page_content;
   if ($.meta.redirect_to_output_page == true)
   {
    content = `<!DOCTYPE html>
