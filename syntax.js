@@ -316,10 +316,19 @@ const $ = ({
     if (func(objB[key]))
     {
      objA[key] = function(...args) {
-      const proxy = new Proxy({ ...t, ...secrets }, {
+      const proxy = new Proxy({}, {
+       get(_, prop) {
+        if (typeof prop == 'string' && prop.startsWith('$')) return secrets[prop];
+        return t[prop];
+       },
+       
        set(_, prop, value) {
         if (typeof prop == 'string' && prop.startsWith('$')) return secrets[prop] = value;
         return t[prop] = value;
+       },
+       
+       has(prop) {
+        return prop in t || prop in secrets;
        },
       });
       
