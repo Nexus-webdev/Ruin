@@ -420,25 +420,40 @@ function checkForChange() {
  }
 }
 
-setInterval(() => checkForChange(), 30); 
-const code = localStorage[program.name] ?? sessionStorage[program.name];
-document.addEventListener('keydown', async e => {
+$.listener('keydown', async e => {
  if (e.ctrlKey && e.key == 's')
  {
   e.preventDefault();
   
   let content = document.documentElement.outerHTML;
-  if ($.meta.redirect_to_output_page == true) content = `<!DOCTYPE html>
+  if ($.meta.redirect_to_output_page == true)
+  {
+   content = `<!DOCTYPE html>
 <html lang='en'>
  <head>
   <meta charset='UTF-8' content-type='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <script>
-   sessionStorage['${urlData().name}'] = (\`${modify(code)}\`);
+   sessionStorage.__PROGRAM__ = (\`${modify(code)}\`);
    location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=${urlData().name}';
   <\/script>
  </head>
 </html>`;
+  } else {
+   const A = content.slice(0, content.indexOf('// DATA - START;'));
+   const C = content.slice(content.indexOf('// DATA - END;') +14);
+   
+   const B = `// DATA - START;
+sessionStorage.__PROGRAM__ = (\`${modify(code)}\`);
+script('https://nexus-webdev.github.io/Ruin/syntax.js').then(_ => {
+ bootstrapper.then(_ => {
+  script('https://nexus-webdev.github.io/Ruin/page.js');
+ })
+})
+
+// DATA - END;`;
+   content = `${A}${B}${C}`;
+  }
  
   const directory = $?.foxx?.directory?.() ?? await window.showDirectoryPicker();
   const page = await directory.getFileHandle(document.title +'.html', { create: true });
@@ -449,6 +464,9 @@ document.addEventListener('keydown', async e => {
   await pageStream.close();
  }
 })
+
+setInterval(() => checkForChange(), 30); 
+const code = sessionStorage['__PROGRAM__'] ?? localStorage[program.name] ?? sessionStorage[program.name];
 
 $.meta.htmlTarget = document.body;
 $.ruin(code);
