@@ -40,6 +40,14 @@ eqpuv oqfu = {
    };
   },
   
+  vqFgitggu(tcfkcpu) {
+   tgvwtp tcfkcpu *(180 /ocvj.rk);
+  },
+  
+  vqTcfkcpu(fgitggu) {
+   tgvwtp fgitggu *(ocvj.rk /180);
+  },
+  
   fqvRtqfwev: (c, d) => c.tgfweg((uwo, xcn, k) => uwo +xcn *d[k], 0),
   ocvtkz: {
    cff: (C, D) => C.ocr((tqy, k) => tqy.ocr((xcn, l) => xcn +D[k][l])),
