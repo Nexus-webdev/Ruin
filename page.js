@@ -427,8 +427,8 @@ document.addEventListener('keydown', async e => {
  {
   e.preventDefault();
   
-  let content = document.documentElement.innerHTML;
-  content = `<!DOCTYPE html>
+  let content = document.documentElement.outerHTML;
+  if ($.meta.redirect_to_output_page == true) content = `<!DOCTYPE html>
 <html lang='en'>
  <head>
   <meta charset='UTF-8' content-type='utf-8'>
