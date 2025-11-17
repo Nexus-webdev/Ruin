@@ -312,22 +312,22 @@ const $ = ({
    const secrets = {};
    
    const func = f => (f && typeof f == 'function' ? f : null);
-   const proxy = new Proxy(this, {
-    get(target, prop) {
-     if (typeof prop == 'symbol' || prop.startsWith('$')) return secrets[prop];
-     return target[prop];
-    },
-    
-    set(target, prop, value) {
-     if (typeof prop == 'symbol' || prop.startsWith('$')) return secrets[prop] = value;
-     return target[prop] = value;
-    },
-   });
-   
    function apply(objA, objB, key) {
     if (func(objB[key]))
     {
      objA[key] = function(...args) {
+      const proxy = new Proxy(t, {
+       get(target, prop) {
+        if (typeof prop == 'string' && prop.startsWith('$')) return secrets[prop];
+        return target[prop];
+       },
+       
+       set(target, prop, value) {
+        if (typeof prop == 'string' && prop.startsWith('$')) return secrets[prop] = value;
+        return target[prop] = value;
+       },
+      });
+      
       return objB[key].bind(proxy)(...args);
      };
     } else objA[key] = objB[key];
