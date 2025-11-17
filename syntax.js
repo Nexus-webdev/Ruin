@@ -327,7 +327,7 @@ const $ = ({
         return t[prop] = value;
        },
        
-       has(prop) {
+       has(_, prop) {
         return prop in t || prop in secrets;
        },
       });
