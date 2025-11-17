@@ -113,24 +113,21 @@ const $ = ({
  
  fixSyntax(code) {
   "Replace special keywords with js syntax";
-  let fixedCode = code.replace(/def /g, 'this.')
-                  .replaceAll(' err ', ' throw ')
-                  .replaceAll('wait for\`', 'await for_ \`')
-                  .replaceAll('wait for \`', 'await for_ \`')
-                  .replaceAll('## ', 'await foxx.run(`\n')
-                  .replaceAll('!;', '\n`);');
-                  
-  fixedCode.replaceAll('*import ', (_, start) => {
-   const end = fixedCode.indexOf(';', start);
-   const imported = fixedCode.slice(start +7, end).trim();
-   
-   fixedCode = fixedCode.slice(0, start) +'= module.import_ `' +imported +'`' +fixedCode.slice(end);
-  });
+  code = code.replaceAll('def ', 'this.')
+             .replaceAll(' err ', ' throw ')
+             .replaceAll('wait for\`', 'await for_ \`')
+             .replaceAll('wait for \`', 'await for_ \`')
+             .replaceAll('## ', 'await foxx.run(`\n')
+             .replaceAll('!;', '\n`);');
+             
+             .replace(/\^import\s+([^;]+);/g, (match, obj) => {
+              return `= module.import_ \`${obj.trim()}\`;`;
+             });
   
   for (let type of $._TYPES_)
-  fixedCode = fixedCode.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
+  code = code.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
   
-  return fixedCode;
+  return code;
  },
 
  extract(inputString, pattern) {
