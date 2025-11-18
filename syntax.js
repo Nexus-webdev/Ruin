@@ -458,7 +458,7 @@ const $ = ({
   })
   
   constructor._name = arg;
-  const _prototype_ = {};
+  const __prototype__ = {};
   for (let key in prototype)
   {
    const property = prototype[key];
