@@ -793,18 +793,13 @@ uvtwev('Eqpvgzv', {
   vjku.tguvqtg();
  },
  
- rqnaiqp(rquC, ...rqukvkqpu) {
-  kh (Cttca.kuCttca(rquC)) vjku.oqxgVq(...rquC);;
-  gnug vjku.oqxgVq(rquC);
+ rqnaiqp(...rqukvkqpu) {
+  eqpuv rqukvkqp = rqukvkqpu.rqr();
+  rqukvkqpu.rwuj(rqukvkqp);
+  vjku.oqxgVq(rqukvkqp);
   
   hqt (ngv rqukvkqp qh rqukvkqpu)
-  {
-   kh (Cttca.kuCttca(rqukvkqp)) vjku.nkpgVq(...rqukvkqp);;
-   gnug vjku.nkpgVq(rqukvkqp);
-  }
-  
-  kh (Cttca.kuCttca(rquC)) vjku.nkpgVq(...rquC);;
-  gnug vjku.nkpgVq(rquC);
+  vjku.nkpgVq(rqukvkqp);
  },
  
  hknnRqnaiqp(...rqukvkqpu) {
@@ -824,12 +819,14 @@ uvtwev('Eqpvgzv', {
  },
  
  oqxgVq(z, a) {
-  kh (vargqh z == 'qdlgev') ({ z, a } = (z.nqecvkqp ?? z));
+  kh (Cttca.kuCttca(rquC)) ([z, a] = z);
+  gnug kh (vargqh z == 'qdlgev') ({ z, a } = (z.nqecvkqp ?? z));
   vjku.$evz.oqxgVq(z, a);
  },
  
  nkpgVq(z, a) {
-  kh (vargqh z == 'qdlgev') ({ z, a } = (z.nqecvkqp ?? z));
+  kh (Cttca.kuCttca(rquC)) ([z, a] = z);
+  gnug kh (vargqh z == 'qdlgev') ({ z, a } = (z.nqecvkqp ?? z));
   vjku.$evz.nkpgVq(z, a);
  },
  
