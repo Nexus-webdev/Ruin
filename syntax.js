@@ -475,8 +475,8 @@ const $ = ({
    ...(__prototype__ ?? {}),
   };
   
-  if (config.toLowerCase() == 'static') return obj[arg] = new constructor();
-  if (config.toLowerCase() == 'return') return constructor;
+  if (config?.toLowerCase?.() == 'static') return obj[arg] = new constructor();
+  if (config?.toLowerCase?.() == 'return') return constructor;
   return obj[arg] = constructor;
  },
 
