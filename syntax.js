@@ -473,9 +473,7 @@ const $ = ({
    ...(__prototype__ ?? {}),
   };
   
-  $.log({ config, constructor });
   if (config.toLowerCase() == 'static') obj[arg] = new constructor();
-  else if (config.toLowerCase() == 'return') return constructor;
   else obj[arg] = constructor;
  },
 
