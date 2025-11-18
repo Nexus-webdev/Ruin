@@ -458,9 +458,19 @@ const $ = ({
   })
   
   constructor._name = arg;
+  const _prototype_ = {};
+  for (let key in __prototype__)
+  {
+   if (typeof key == 'string' && key.startsWith('*'))
+   {
+    key = key.slice(1);
+    _prototype_[Symbol[key]] = __prototype__[key];
+   } else _prototype_[key] = __prototype__[key];
+  }
+  
   constructor.prototype = {
    ...constructor.prototype,
-   ...(__prototype__ ?? {}),
+   ...(_prototype_ ?? {}),
   };
   
   if (prototype.static)
