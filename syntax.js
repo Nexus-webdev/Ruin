@@ -457,15 +457,17 @@ const $ = ({
   const __prototype__ = {};
   for (let key in prototype)
   {
-   const property = prototype[key];
-   delete prototype[key];
-   key = key.slice(1);
-   
-   if (typeof key == 'string' && key.startsWith('*'))
-   {
+   if (typeof key == 'string' && key.startsWith('*')) {
+    const property = prototype[key];
+    delete prototype[key];
     key = key.slice(1);
-    __prototype__[Symbol[key]] = property;
-   } else __prototype__[key] = property;
+    
+    if (key.startsWith('*'))
+    {
+     key = key.slice(1);
+     __prototype__[Symbol[key]] = property;
+    } else __prototype__[key] = property;
+   }
   }
   
   constructor.prototype = {
@@ -473,8 +475,9 @@ const $ = ({
    ...(__prototype__ ?? {}),
   };
   
-  if (config.toLowerCase() == 'static') obj[arg] = new constructor();
-  else obj[arg] = constructor;
+  if (config.toLowerCase() == 'static') return obj[arg] = new constructor();
+  if (config.toLowerCase() == 'return') return constructor;
+  return obj[arg] = constructor;
  },
 
  uniqueString(base = 36, range = [2, 10]) {
@@ -548,7 +551,7 @@ const $ = ({
 });
 
 $.struct('GitHub: static', {
- construct() {
+ __init__() {
   this.$tokens = {};
   this.$token = '';
   
