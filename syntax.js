@@ -461,6 +461,7 @@ const $ = ({
   const _prototype_ = {};
   for (let key in prototype)
   {
+   key = key.slice(1);
    if (typeof key == 'string' && key.startsWith('*'))
    {
     key = key.slice(1);
