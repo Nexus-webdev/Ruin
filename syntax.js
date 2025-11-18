@@ -299,12 +299,7 @@ const $ = ({
   
   const obj = $.setup_phase == true ? $.RUIN : Obj;
   const staticValues = {};
-  const arg = data(0);
-  
-  function data(i, str = name) {
-   const result = str.split(':')[i]?.trim();
-   return result;
-  }
+  const [arg, config] = name.split(':').map(t => t.trim());
 
   function CONSTRUCTOR(...args) {
    const t = this;
@@ -477,20 +472,9 @@ const $ = ({
    ...(__prototype__ ?? {}),
   };
   
-  if (obj[arg] && !override) return;
-  return opt(data(1)?.toLowerCase(), {
-   default: x => {
-    return obj[arg] = constructor;
-   },
-   
-   static() {
-    return obj[arg] = new constructor();
-   },
-   
-   return() {
-    return constructor;
-   }
-  })();
+  if (config.toLowerCase() == 'static') return obj[arg] = new constructor();
+  if (config.toLowerCase() == 'return') return constructor;
+  return obj[arg] = constructor;
  },
 
  uniqueString(base = 36, range = [2, 10]) {
