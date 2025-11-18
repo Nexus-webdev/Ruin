@@ -461,24 +461,21 @@ const $ = ({
   const _prototype_ = {};
   for (let key in prototype)
   {
+   const property = prototype[key];
+   delete prototype[key];
    key = key.slice(1);
+   
    if (typeof key == 'string' && key.startsWith('*'))
    {
     key = key.slice(1);
-    _prototype_[Symbol[key]] = prototype[key];
-   } else _prototype_[key] = prototype[key];
+    __prototype__[Symbol[key]] = property;
+   } else __prototype__[key] = property;
   }
   
   constructor.prototype = {
    ...constructor.prototype,
    ...(_prototype_ ?? {}),
   };
-  
-  if (prototype.static)
-  {
-   constructor.static = prototype.static;
-   for (let key in prototype.static) constructor[key] = prototype.static[key];
-  }
   
   if (name == '⌁' || name == '$.$') return constructor;
   if (obj[data(0)]) return;
