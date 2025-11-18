@@ -473,9 +473,10 @@ const $ = ({
    ...(__prototype__ ?? {}),
   };
   
-  if (config.toLowerCase() == 'static') return obj[arg] = new constructor();
-  if (config.toLowerCase() == 'return') return constructor;
-  return obj[arg] = constructor;
+  log({ config, constructor });
+  if (config.toLowerCase() == 'static') obj[arg] = new constructor();
+  else if (config.toLowerCase() == 'return') return constructor;
+  else obj[arg] = constructor;
  },
 
  uniqueString(base = 36, range = [2, 10]) {
