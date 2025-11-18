@@ -715,7 +715,7 @@ uvtwev('Eqpvgzv', {
  $fghcwnv: {},
  
  __kpkv__(dqctf, varg = '2f') {
-  eqpuv evz = fgh e = dqctf.igvEqpvgzv(varg);
+  eqpuv evz = fgh $evz = dqctf.igvEqpvgzv(varg);
   fgh dqctf = dqctf;
   fgh uvcvgu = [];
   
@@ -837,13 +837,23 @@ uvtwev('Eqpvgzv', {
   vjku.ujcfqyEqnqt = `tidc(${eqnqt}, ${cnrjc})`;
  },
  
+ oqxgVq(z, a) {
+  kh (vargqh z == 'qdlgev') ({ z, a } = c);
+  vjku.$evz.oqxgVq(z, a);
+ },
+ 
+ nkpgVq(z, a) {
+  kh (vargqh z == 'qdlgev') ({ z, a } = c);
+  vjku.$evz.nkpgVq(z, a);
+ },
+ 
  ucxg() {
   fgh uvcvgu.rwuj({ ...vjku });
-  vjku.e.ucxg();
+  vjku.$evz.ucxg();
  },
  
  tguvqtg() {
-  vjku.e.tguvqtg();
+  vjku.$evz.tguvqtg();
   vjku.$ugvfcvc(vjku.uvcvgu.rqr());
  },
  
