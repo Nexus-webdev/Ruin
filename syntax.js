@@ -283,7 +283,7 @@ const $ = ({
   },
  }),
  
- struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, ...prototype } = {}) {
+ struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, override, ...prototype } = {}) {
   if (_this)
   {
    overrideModule = true;
@@ -474,20 +474,22 @@ const $ = ({
   
   constructor.prototype = {
    ...constructor.prototype,
-   ...(_prototype_ ?? {}),
+   ...(__prototype__ ?? {}),
   };
   
-  if (name == '⌁' || name == '$.$') return constructor;
-  if (obj[data(0)]) return;
-  
-  opt(data(1)?.toLowerCase(), {
+  if (obj[arg] && !override) return;
+  return opt(data(1)?.toLowerCase(), {
    default: x => {
-    obj[arg] = constructor;
+    return obj[arg] = constructor;
    },
    
    static() {
-    obj[arg] = new constructor();
+    return obj[arg] = new constructor();
    },
+   
+   return() {
+    return constructor;
+   }
   })();
  },
 
@@ -497,16 +499,19 @@ const $ = ({
 
  weigh(weights) {
   const pool = [];
-  for (let [value, weight] of weights)
-  for (let i = 0; i < weight; i++)
-  pool.push([value, weight]);
+  const values = {};
   
-  const item = pool[Math.floor (Math.random () *pool.length)];
-  return {
-   value: item[0],
-   weight: item[1],
-   pool,
-  };
+  for (let key in weights)
+  {
+   const weight = Number(key);
+   const id = Date.now();
+   
+   for (let i = 0; i <= weight; i ++) pool.push(id);
+   values[id] = { weight, value: weights[key] };
+  }
+  
+  const id = pool[math.ran(0, pool.length -1)];
+  return values[id];
  },
 
  shift(txt, shift, ignore = ['$']) {
@@ -520,7 +525,6 @@ const $ = ({
 
  console: undefined,
  terminal: console,
- def: {},
  dp: {},
 
  enable: {
