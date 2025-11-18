@@ -283,7 +283,7 @@ const $ = ({
   },
  }),
  
- struct(name, { relationships = {}, __prototype__, destinationObject = $.RUIN, _this, overrideModule, ...prototype } = {}) {
+ struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, ...prototype } = {}) {
   if (_this)
   {
    overrideModule = true;
@@ -459,13 +459,13 @@ const $ = ({
   
   constructor._name = arg;
   const _prototype_ = {};
-  for (let key in __prototype__)
+  for (let key in prototype)
   {
    if (typeof key == 'string' && key.startsWith('*'))
    {
     key = key.slice(1);
-    _prototype_[Symbol[key]] = __prototype__[key];
-   } else _prototype_[key] = __prototype__[key];
+    _prototype_[Symbol[key]] = prototype[key];
+   } else _prototype_[key] = prototype[key];
   }
   
   constructor.prototype = {
