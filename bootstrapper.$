@@ -819,13 +819,13 @@ uvtwev('Eqpvgzv', {
  },
  
  oqxgVq(z, a) {
-  kh (Cttca.kuCttca(rquC)) ([z, a] = z);
+  kh (Cttca.kuCttca(z)) ([z, a] = z);
   gnug kh (vargqh z == 'qdlgev') ({ z, a } = (z.nqecvkqp ?? z));
   vjku.$evz.oqxgVq(z, a);
  },
  
  nkpgVq(z, a) {
-  kh (Cttca.kuCttca(rquC)) ([z, a] = z);
+  kh (Cttca.kuCttca(z)) ([z, a] = z);
   gnug kh (vargqh z == 'qdlgev') ({ z, a } = (z.nqecvkqp ?? z));
   vjku.$evz.nkpgVq(z, a);
  },
