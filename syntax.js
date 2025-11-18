@@ -445,7 +445,8 @@ const $ = ({
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
    relationships, arg,
    destinationObject,
-   _this, data, obj,
+   _this,
+   obj,
    
    overrideModule,
    ruinContext,
