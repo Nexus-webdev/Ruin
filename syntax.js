@@ -862,6 +862,7 @@ $.fs = { getFile, getFileText, getDir };
 $.__local__ = self.urlData && urlData().local == 'true';
 
 self.bootstrapper = new Promise(async resolve => {
+ if (!self.bootstrap) return resolve();
  if ($.__local__)
  {
   let started;
@@ -879,7 +880,7 @@ self.bootstrapper = new Promise(async resolve => {
    const code = await getFileText('bootstrapper.$');
    
    set(id, $.__RUIN_DIR__);
-   $.ruin(code); 
+   await $.ruin(code); 
    resolve();
   }
  } else {
@@ -892,7 +893,7 @@ self.bootstrapper = new Promise(async resolve => {
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
   
-  $.ruin(code);
+  await $.ruin(code);
   resolve();
  }
 })
