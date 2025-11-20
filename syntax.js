@@ -230,41 +230,19 @@ const $ = ({
  ruin(encodedText = ``, $args = { nothin: null }) {
   return new Promise(async resolve => {
    const i = encodedText.lastIndexOf('¿');
-   let [txt, key] = [encodedText.slice(0, i), encodedText.slice(i +1)];
+   let [txt, key, length] = [encodedText.slice(0, i), encodedText.slice(i +1)];
    if (i == -1)
    {
     txt = encodedText;
     key = null;
-   }
+   } else key = $.shift(key, -(Number(key.length) **2).toString());
    
-   const result = await (new Function(`return(async() => {\n${fix(txt)}\n})()`)).call({
+   const code = $.fixSyntax(key ? await $.Cipher.decrypt(txt, key) : txt);
+   const result = await (new Function(`return(async() => {\n with(this) {\n${code}\n }\n})()`)).call({
     ...$args,
     $args,
     ...$,
    });
-   
-   function fix(code) {
-    code = $.fixSyntax(key ? decode(code) : code);
-    if (!code.startsWith('"Exclude \'with\' statement.";')) code = `with(this) {\n${code}\n}`;
-    
-    return code;
-   }
-   
-   function decode(txt) {
-    const { repairedKey, scrambled } = repair(key);
-    const shift = -$.TxtToNum(repairedKey);
-    let code = $.shift(txt, shift);
-    
-    return scrambled ? $.scramble(code, shift) : code;
-   }
-   
-   function repair(key) {
-    let scrambled = false;
-    if (key.endsWith('*')) ([key, scrambled] = [key.slice(-1), true]);
-    
-    const repairedKey = $.shift(key, -Math.ceil(key.length /2));
-    return { repairedKey, scrambled };
-   }
    
    resolve(result);
    $.setup_phase = false;
@@ -745,6 +723,74 @@ $.struct('GitHub: static', {
  },
 })
 
+$.struct('Cipher: static', {
+ __init__() {
+  this.$enc = new TextEncoder();
+  this.$dec = new TextDecoder();
+ },
+ 
+ toBase64(buf) {
+  const bytes = new Uint8Array(buf);
+  let binary = '';
+  
+  for (let i = 0; i < bytes.length; i ++)
+  binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
+ },
+ 
+ fromBase64(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  
+  for (let i = 0; i < binary.length; i ++)
+  bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+ },
+ 
+ async $deriveKey(passphrase, salt, iterations = 150_000) {
+  const encoded = this.$enc.encode(passphrase);
+  const baseKey = await crypto.subtle.importKey('raw', encoded, { name: 'PBKDF2' }, false, ['deriveKey']);
+
+  return crypto.subtle.deriveKey(...[
+   { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, baseKey,
+   { name: 'AES-GCM', length: 256 }, false,
+   ['encrypt', 'decrypt'],
+  ]);
+ },
+ 
+ async encrypt(txt, passphrase) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+
+  const key = await this.$deriveKey(passphrase, salt);
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, this.$enc.encode(txt));
+  const payload = {
+   s: this.toBase64(salt.buffer),
+   i: this.toBase64(iv.buffer),
+   c: this.toBase64(ciphertext),
+   v: 1,
+  };
+
+  return JSON.stringify(payload);
+ },
+
+ async decrypt(payloadJson, passphrase) {
+  const payload = JSON.parse(payloadJson);
+  const salt = new Uint8Array(this.fromBase64(payload.s));
+  const iv = new Uint8Array(this.fromBase64(payload.i));
+  
+  const ciphertext = this.fromBase64(payload.c);
+  const key = await this.$deriveKey(passphrase, salt);
+  
+  try {
+   const plaintextBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
+   return this.$dec.decode(plaintextBuf);
+  } catch(err) {
+   throw new Error('Decryption failed: invalid passphrase or corrupted data.');
+  }
+ },
+})
+
 function getFile(name, dir = $.__RUIN_DIR__) {
  return new Promise(async resolve => {
   resolve(await (await dir.getFileHandle(name)).getFile());
@@ -811,38 +857,41 @@ function importScripts(paths, dir = $.__RUIN_DIR__) {
 $.fs = { getFile, getFileText, getDir };
 $.__local__ = self.urlData && urlData().local == 'true';
 
-self.bootstrapper = new Promise(async resolve => {
- if ($.__local__)
- {
-  let clicked;
-  const id = '__bootstrapper__';
-  document.addEventListener('click', e => load_bootstrapper());
-  document.addEventListener('keydown', e => {
-   if (e.key == 'Enter') load_bootstrapper();
-  });
+if (self.bootstrap)
+{
+ self.bootstrapper = new Promise(async resolve => {
+  if ($.__local__)
+  {
+   let started;
+   const id = '__bootstrapper__';
+   document.addEventListener('click', e => load_bootstrapper());
+   document.addEventListener('keydown', e => {
+    if (e.key == 'Enter') load_bootstrapper();
+   });
+   
+   async function load_bootstrapper() {
+    if (started) return;
+    started = true;
+    
+    $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
+    const code = await getFileText('bootstrapper.$');
+    
+    set(id, $.__RUIN_DIR__);
+    $.ruin(code); 
+    resolve();
+   }
+  } else {
+   const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
+   const response = await fetch(url);
   
-  async function load_bootstrapper() {
-   if (clicked) return;
-   clicked = true;
+   if (!response.ok) throw `Failed to read: ${response.status}`;
+   let code = await response.text();
+  
+   if ($.GitHub.isBase64(code))
+   code = decodeURIComponent(escape(atob(code)));
    
-   $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
-   const code = await getFileText('bootstrapper.$');
-   
-   set(id, $.__RUIN_DIR__);
-   $.ruin(code); 
+   $.ruin(code);
    resolve();
   }
- } else {
-  const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
-  const response = await fetch(url);
- 
-  if (!response.ok) throw `Failed to read: ${response.status}`;
-  let code = await response.text();
- 
-  if ($.GitHub.isBase64(code))
-  code = decodeURIComponent(escape(atob(code)));
-  
-  $.ruin(code);
-  resolve();
- }
-})
+ })
+}

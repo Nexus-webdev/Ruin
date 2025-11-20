@@ -92,454 +92,416 @@
    <textarea style='color: black' spellcheck='false' id='Input' placeholder='Type your code here...'></textarea>
   </div>
 
-  <script type='module'>   
-   let db;
-   function getDB() {
-    return db || (db = createStore('IndexedDB', 'main'));
-   }
-   
-   function createStore(db, store) {
-    const request = indexedDB.open(db);
-    request.onupgradeneeded = x => request.result.createObjectStore(store);
+  <script type='module'>
+   script('syntax.js').then(async _ => {
+    let db;
+    function getDB() {
+     return db || (db = createStore('IndexedDB', 'main'));
+    }
     
-    db = promisifyRequest(request);
-    return(mode, callback) => db.then(db => callback(db.transaction(store, mode).objectStore(store)));
-   }
-   
-   function promisifyRequest(e) { 
-    return new Promise((resolve, reject) => { 
-     e.oncomplete = e.onsuccess = x => resolve(e.result);
-     e.onabort = e.onerror = x => reject(e.error);
-    }) 
-   }
-   
-   function get(name, db = getDB()) {
-    return db('readonly', store => {
-     if (typeof name == 'string') return promisifyRequest(store.get(name));
-     return Promise.all(name.map(key => promisifyRequest(store.get(key))));
-    });
-   }
-   
-   function set(name, value, db = getDB()) {
-    return db('readwrite', store => {
-     store.put(value, name);
-     return promisifyRequest(store.transaction);
-    });
-   }
-   
-   function setMany(entries, db = getDB()) {
-    return db('readwrite', store => {
-     entries.forEach(([key, value]) => store.put(value, key));
-     return promisifyRequest(store.transaction);
-    });
-   }
-   
-   function del(name, db = getDB()) {
-    return db('readwrite', store => {
-     if (typeof name == 'string') store.delete(name);
-     else name.forEach(key => store.delete(key));
+    function createStore(db, store) {
+     const request = indexedDB.open(db);
+     request.onupgradeneeded = x => request.result.createObjectStore(store);
      
-     return promisifyRequest(store.transaction);
-    });
-   }
-   
-   function update(key, updater, db = getDB()) {
-    return db('readwrite', store => {
-     return new Promise((resolve, reject) => {
-      const request = store.get(key);
-      request.onsuccess = x => {
-       try {
-        store.put(updater(request.result), key);
-        resolve(promisifyRequest(store.transaction));
-       } catch (e) {
-        reject(e);
-       }
-      };
+     db = promisifyRequest(request);
+     return(mode, callback) => db.then(db => callback(db.transaction(store, mode).objectStore(store)));
+    }
+    
+    function promisifyRequest(e) { 
+     return new Promise((resolve, reject) => { 
+      e.oncomplete = e.onsuccess = x => resolve(e.result);
+      e.onabort = e.onerror = x => reject(e.error);
+     }) 
+    }
+    
+    function get(name, db = getDB()) {
+     return db('readonly', store => {
+      if (typeof name == 'string') return promisifyRequest(store.get(name));
+      return Promise.all(name.map(key => promisifyRequest(store.get(key))));
+     });
+    }
+    
+    function set(name, value, db = getDB()) {
+     return db('readwrite', store => {
+      store.put(value, name);
+      return promisifyRequest(store.transaction);
+     });
+    }
+    
+    function setMany(entries, db = getDB()) {
+     return db('readwrite', store => {
+      entries.forEach(([key, value]) => store.put(value, key));
+      return promisifyRequest(store.transaction);
+     });
+    }
+    
+    function del(name, db = getDB()) {
+     return db('readwrite', store => {
+      if (typeof name == 'string') store.delete(name);
+      else name.forEach(key => store.delete(key));
       
-      request.onerror = x => reject(request.error);
-     })
-    });
-   }
-   
-   function clear(db = getDB()) {
-    return db('readwrite', store => {
-     store.clear();
-     return promisifyRequest(store.transaction);
-    });
-   }
-   
-   let rulesObject = {};
-   const info = {};
-   const languageData = {
-    default: {},
-    css: { color: 'lightblue', font: 'Pristina bold' },
-    mthd: { color: 'lightgrey' },
-    fx: { color: 'lightyellow' },
-   };
-   
-   const textarea = document.getElementById('Input');
-   const lineNumbers = document.getElementById('lineNumbers');
-   const screen = document.querySelector('body');
-   const urlData = getUrlData();
-   
-   const { background = 'black', font = 'Courier New', color = 'ivory' } = languageData[urlData.project.split('.')[1]] || languageData.default;
-   document.title = `$ruin - ${urlData.project}`;
-   document.getElementById('page-name').value = urlData.project;
-   screen.style.backgroundColor = background;
-   menu.style.display = 'none';
-   
-   textarea.value = decompile(localStorage[urlData.project]);
-   textarea.style.backgroundColor = background;
-   textarea.style['font-family'] = font;
-   textarea.style.color = color;
-   updateLineNumbers();
-   
-   btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
-   rules.value = sessionStorage.rules || rules.value;
-   rulesObject = getRulesObject();
-   
-   window.shift = shift;
-   window.TxtToNum = TxtToNum;
-   window.decompile = decompile;
-   
-   window.clear_ = async(exit = 1) => {
-    await del(`FileHandle - ${urlData.project}`);
-    delete localStorage[urlData.project];
-    if (exit) window.close();
-   };
-   
-   window.replaceText = (match, replacement) => {
-    textarea.value = textarea.value.replace(new RegExp(match, 'g'), replacement);
-   };
-   
-   window.Open = () => {
-    let name = urlData.project;
-    let _urlData = new URLSearchParams({ name }).toString();
-    if (confirm('Open As Window?'))
-     info.output = window.open( `Output.html?${_urlData}`, '_blank', rulesObject.window);
-    else info.output = window.open( `Output.html?${_urlData}`, '_blank');
-   };
-   
-   window.escape = x => {
-    textarea.value = textarea.value.replace(/`/g, '\\`').replace(/\$\{(.*?)\}/g, '\\${$1}\\ ');
-   };
-   
-   window.input = x => {
-    localStorage[urlData.project] = compile(textarea.value, urlData.encoding ?? '');
-   };
-   
-   window.load = async() => {
-    if (urlData.inManager)
-    {
-     window.parent.postMessage({ type: 'load' }, '*');
-     return;
+      return promisifyRequest(store.transaction);
+     });
     }
-   
-    filehandle = filehandle ? filehandle : await get(`FileHandle - ${urlData.file ?? urlData.project}`) || await window.showOpenFilePicker();
-    if (filehandle.length) [filehandle] = filehandle;
-   
-    const file = await filehandle.getFile();
-    textarea.value = decompile(await file.text());
+    
+    function update(key, updater, db = getDB()) {
+     return db('readwrite', store => {
+      return new Promise((resolve, reject) => {
+       const request = store.get(key);
+       request.onsuccess = x => {
+        try {
+         store.put(updater(request.result), key);
+         resolve(promisifyRequest(store.transaction));
+        } catch (e) {
+         reject(e);
+        }
+       };
+       
+       request.onerror = x => reject(request.error);
+      })
+     });
+    }
+    
+    function clear(db = getDB()) {
+     return db('readwrite', store => {
+      store.clear();
+      return promisifyRequest(store.transaction);
+     });
+    }
+    
+    let rulesObject = {};
+    const info = {};
+    const languageData = {
+     default: {},
+     css: { color: 'lightblue', font: 'Pristina bold' },
+     mthd: { color: 'lightgrey' },
+     fx: { color: 'lightyellow' },
+    };
+    
+    const textarea = document.getElementById('Input');
+    const lineNumbers = document.getElementById('lineNumbers');
+    const screen = document.querySelector('body');
+    const urlData = getUrlData();
+    
+    const { background = 'black', font = 'Courier New', color = 'ivory' } = languageData[urlData.project.split('.')[1]] || languageData.default;
+    document.title = `$ruin - ${urlData.project}`;
+    document.getElementById('page-name').value = urlData.project;
+    screen.style.backgroundColor = background;
+    menu.style.display = 'none';
+    
+    textarea.value = await decrypt(localStorage[urlData.project]);
+    textarea.style.backgroundColor = background;
+    textarea.style['font-family'] = font;
+    textarea.style.color = color;
+    updateLineNumbers();
+    
     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
-    
-    await set(`FileHandle - ${urlData.project}`, filehandle);
-   };
-   
-   window.save = async(override = false, encode = true) => {
-    let code = textarea.value;
-    if (encode) code = compile(code, urlData.encoding ?? '');
-    
-    if (urlData.inManager)
-    {
-     window.parent.postMessage({
-      id: `FileHandle - ${urlData.file ?? urlData.project}`,
-      suggestion: urlData.project,
-      value: code,
-      type: override ? 'saveAs' : 'save',
-     }, '*');
-   
-     return;
-    }
-   
-    const blob = new Blob([code], { type: 'text/plain' });
-    filehandle = filehandle ? filehandle : await get(`FileHandle - ${urlData.file ?? urlData.project}`) || await window.showSaveFilePicker({
-     suggestedName: urlData.project,
-     types: [{
-      accept: { 'text/plain': ['.txt', '.html'] },
-     }],
-    });
-   
-    const writableStream = await filehandle.createWritable();
-    await writableStream.write(blob);
-    await writableStream.close();
-    await set(`FileHandle - ${urlData.project}`, filehandle);
-   };
-   
-   document.getElementById('menu-btn').addEventListener('click', toggleMenu);
-   rules.addEventListener('change', e => {
+    rules.value = sessionStorage.rules || rules.value;
     rulesObject = getRulesObject();
-   });
-   
-   window.addEventListener('beforeunload', e => {
-    if (urlData.inManager) return;
     
-    if (textarea.value != localStorage[urlData.project]) e.preventDefault();
-    confirm('Reload?');
-   });
-   
-   window.addEventListener('message', e => {
-    if (e.data.type != 'loadData') return;
-    textarea.value = decompile(e.data.value);
-    localStorage[urlData.project] = decompile(e.data.value);
-   });
-   
-   document.addEventListener('keydown', e => {
-    if(e.altKey)
-    {
-     if(e.key == 'o') window.Open();
-     if(e.key == 'm') toggleMenu();
-     if(e.key == 's') input();
-    }
-   
-    if (e.ctrlKey)
-    {
-     if (e.key == 's')
+    window.decrypt = decrypt;
+    window.clear_ = async(exit = 1) => {
+     await del(`FileHandle - ${urlData.project}`);
+     delete localStorage[urlData.project];
+     if (exit) window.close();
+    };
+    
+    window.replaceText = (match, replacement) => {
+     textarea.value = textarea.value.replace(new RegExp(match, 'g'), replacement);
+    };
+    
+    window.Open = () => {
+     let name = urlData.project;
+     let _urlData = new URLSearchParams({ name }).toString();
+     if (confirm('Open As Window?'))
+      info.output = window.open( `Output.html?${_urlData}`, '_blank', rulesObject.window);
+     else info.output = window.open( `Output.html?${_urlData}`, '_blank');
+    };
+    
+    window.escape = x => {
+     textarea.value = textarea.value.replace(/`/g, '\\`').replace(/\$\{(.*?)\}/g, '\\${$1}\\ ');
+    };
+    
+    window.input = async x => {
+     localStorage[urlData.project] = await encrypt(textarea.value, urlData.encoding ?? '');
+    };
+    
+    window.load = async() => {
+     if (urlData.inManager)
      {
+      window.parent.postMessage({ type: 'load' }, '*');
+      return;
+     }
+    
+     filehandle = filehandle ? filehandle : await get(`FileHandle - ${urlData.file ?? urlData.project}`) || await window.showOpenFilePicker();
+     if (filehandle.length) [filehandle] = filehandle;
+    
+     const file = await filehandle.getFile();
+     textarea.value = await decrypt(await file.text());
+     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
+     
+     await set(`FileHandle - ${urlData.project}`, filehandle);
+    };
+    
+    window.save = async(override = false, encode = true) => {
+     let code = textarea.value;
+     if (encode) code = await encrypt(code, urlData.encoding ?? '');
+     
+     if (urlData.inManager)
+     {
+      window.parent.postMessage({
+       id: `FileHandle - ${urlData.file ?? urlData.project}`,
+       suggestion: urlData.project,
+       value: code,
+       type: override ? 'saveAs' : 'save',
+      }, '*');
+    
+      return;
+     }
+    
+     const blob = new Blob([code], { type: 'text/plain' });
+     filehandle = filehandle ? filehandle : await get(`FileHandle - ${urlData.file ?? urlData.project}`) || await window.showSaveFilePicker({
+      suggestedName: urlData.project,
+      types: [{
+       accept: { 'text/plain': ['.txt', '.html'] },
+      }],
+     });
+    
+     const writableStream = await filehandle.createWritable();
+     await writableStream.write(blob);
+     await writableStream.close();
+     await set(`FileHandle - ${urlData.project}`, filehandle);
+    };
+    
+    document.getElementById('menu-btn').addEventListener('click', toggleMenu);
+    rules.addEventListener('change', e => {
+     rulesObject = getRulesObject();
+    });
+    
+    window.addEventListener('beforeunload', e => {
+     if (urlData.inManager) return;
+     
+     if (textarea.value != localStorage[urlData.project]) e.preventDefault();
+     confirm('Reload?');
+    });
+    
+    window.addEventListener('message', async e => {
+     if (e.data.type != 'loadData') return;
+     textarea.value = await decrypt(e.data.value);
+     localStorage[urlData.project] = await decrypt(e.data.value);
+    });
+    
+    document.addEventListener('keydown', e => {
+     if(e.altKey)
+     {
+      if(e.key == 'o') window.Open();
+      if(e.key == 'm') toggleMenu();
+      if(e.key == 's') input();
+     }
+    
+     if (e.ctrlKey)
+     {
+      if (e.key == 's')
+      {
+       e.preventDefault();
+       save(e.altKey ? 1 : 0, e.shiftKey ? 0 : 1);
+       input();
+      }
+     }
+     
+     const start = textarea.selectionStart;
+     const end = textarea.selectionEnd;
+     const value = textarea.value;
+     
+     const selecting = start != end;
+     const selectedText = value.substring(start, end);
+     
+     if (e.altKey && e.key == 'r' && selecting)
+     { 
       e.preventDefault();
-      save(e.altKey ? 1 : 0, e.shiftKey ? 0 : 1);
-      input();
+      if (selectedText)
+      {
+       const textToFind = prompt('Enter the text to replace:', '');
+       const textToReplace = prompt('Enter the new text:', '');
+      
+       if (textToFind == null || textToReplace == null) return;
+       const regex = new RegExp(textToFind, 'g'); 
+       const modifiedText = selectedText.replace(regex, textToReplace);
+       const newValue = textarea.value.substring(0, start) +modifiedText +textarea.value.substring(end);
+      
+       textarea.selectionStart = textarea.selectionEnd = start +modifiedText.length;
+       textarea.value = newValue;
+      }
      }
-    }
     
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const value = textarea.value;
-    
-    const selecting = start != end;
-    const selectedText = value.substring(start, end);
-    
-    if (e.altKey && e.key == 'r' && selecting)
-    { 
-     e.preventDefault();
-     if (selectedText)
-     {
-      const textToFind = prompt('Enter the text to replace:', '');
-      const textToReplace = prompt('Enter the new text:', '');
-     
-      if (textToFind == null || textToReplace == null) return;
-      const regex = new RegExp(textToFind, 'g'); 
-      const modifiedText = selectedText.replace(regex, textToReplace);
-      const newValue = textarea.value.substring(0, start) +modifiedText +textarea.value.substring(end);
-     
-      textarea.selectionStart = textarea.selectionEnd = start +modifiedText.length;
-      textarea.value = newValue;
-     }
-    }
-   
-    if (event.key == ' ' && selecting)
-    {
-     e.preventDefault();
-     const lines = value.substring(start, end).split('\n');
-     const modifiedText = lines.map(line => ' ' +line).join('\n');
-     textarea.value = value.substring(0, start) +modifiedText +value.substring(end);
-     
-     textarea.selectionStart = start;
-     textarea.selectionEnd = start +modifiedText.length;
-    }
-   
-    if (e.key == 'Delete')
-    {
-     if (selecting)
+     if (event.key == ' ' && selecting)
      {
       e.preventDefault();
       const lines = value.substring(start, end).split('\n');
-      const modifiedText = lines.map(line => line.replace(/^ /, '')).join('\n');
+      const modifiedText = lines.map(line => ' ' +line).join('\n');
       textarea.value = value.substring(0, start) +modifiedText +value.substring(end);
       
       textarea.selectionStart = start;
       textarea.selectionEnd = start +modifiedText.length;
      }
-    }
-   })
-   
-   textarea.addEventListener('scroll', e => {
-    lineNumbers.scrollTop = textarea.scrollTop;
-   })
-   
-   textarea.addEventListener('keydown', e => {
-    if ((['Enter', 'Backspace']).includes(e.key) && !e.shiftKey) updateLineNumbers();
-    btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
     
-    const lines = textarea.value.split('\n');
-    if (lines.length > rulesObject.rows) textarea.value = lines.slice(0, rulesObject.rows).join('\n');
-   
-    if (e.key != 'Enter') return;
-    e.preventDefault();
-    function between(a = '{', b = '}') {
-     return [value.lastIndexOf(a, start) == start -1, value.indexOf(b, end) == end];
-    };
+     if (e.key == 'Delete')
+     {
+      if (selecting)
+      {
+       e.preventDefault();
+       const lines = value.substring(start, end).split('\n');
+       const modifiedText = lines.map(line => line.replace(/^ /, '')).join('\n');
+       textarea.value = value.substring(0, start) +modifiedText +value.substring(end);
+       
+       textarea.selectionStart = start;
+       textarea.selectionEnd = start +modifiedText.length;
+      }
+     }
+    })
     
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const value = textarea.value;
-    const previousLine = value.substring(0, start).split('\n').pop();
-    const indentation = previousLine.match(/^\s*/)[0];
+    textarea.addEventListener('scroll', e => {
+     lineNumbers.scrollTop = textarea.scrollTop;
+    })
     
-    const InBrackets = between()[0] && between()[1];
-    let newValue;
-    
-    if (InBrackets)
-    {
-     newValue = `${value.substring(0, start)}
-${indentation} 
-${indentation}${value.substring(end)}`;
+    textarea.addEventListener('keydown', e => {
+     if ((['Enter', 'Backspace']).includes(e.key) && !e.shiftKey) updateLineNumbers();
+     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
      
-     textarea.value = newValue;
-     textarea.selectionEnd = textarea.selectionStart = start +indentation.length +2;
-    } else
-    {
-     newValue = `${value.substring(0, start)}
-${indentation}${value.substring(end)}`;
-
-     textarea.value = newValue;
-     textarea.selectionEnd = textarea.selectionStart = start +indentation.length +1;
-    }
-   });
-   
-   textarea.addEventListener('input', e => {
-    paren("'", "'", e);
-    paren('`', '`', e);
-    paren('(', ')', e);
-    paren('{', '}', e);
-    paren('[', ']', e);
-   
-    if (e.data?.length == 1 && e.data == '"')
-    {
+     const lines = textarea.value.split('\n');
+     if (lines.length > rulesObject.rows) textarea.value = lines.slice(0, rulesObject.rows).join('\n');
+    
+     if (e.key != 'Enter') return;
+     e.preventDefault();
+     function between(a = '{', b = '}') {
+      return [value.lastIndexOf(a, start) == start -1, value.indexOf(b, end) == end];
+     };
+     
      const start = textarea.selectionStart;
      const end = textarea.selectionEnd;
      const value = textarea.value;
-   
-     const semicolon = value.indexOf(';', start);
-     if (semicolon == -1) return;
+     const previousLine = value.substring(0, start).split('\n').pop();
+     const indentation = previousLine.match(/^\s*/)[0];
      
-     textarea.value = value.slice(0, semicolon) +'"' +value.slice(semicolon);
-     textarea.selectionStart = textarea.selectionEnd = start;
-    }
-   });
-   
-   function getRulesObject() {
-    sessionStorage.rules = rules.value;
-    return new Function('return ' +rules.value).call(rules);
-   };
-   
-   function getUrlData() {
-    const data = {};
-    const Params = new URLSearchParams(location.search);
-    
-    for (let param of Params.entries())
-    data[param[0]] = param[1];
-    return data;
-   };
-
-   function decompile(encodedText = '') {
-    const i = encodedText.lastIndexOf('¿');
-    const [txt, _ = ''] = [encodedText.slice(0, i), encodedText.slice(i)];
-    
-    if (i == -1 || _.length > 20 || _.length == 0) return encodedText;
-    const key = urlData.encoding ?? '';
-    
-    function decode(txt) {
-     const { repairedKey, scrambled } = repair(key);
-     const _shift = -TxtToNum(repairedKey);
-     let code = scrambled ? shift(scramble(txt, _shift), _shift) : shift(txt, _shift);
+     const InBrackets = between()[0] && between()[1];
+     let newValue;
      
-     return code;
-    }
-    
-    return decode(txt);
-   };
-   
-   function compile(code, key) {
-    const brokenKey = key ? '¿' +shift(key, Math.ceil(key.length /2)) : '';
-    const _shift = TxtToNum(key);
-
-    const encodedText = !key ? code : shift(code, _shift);
-    return `${encodedText}${brokenKey}`;
-   };
-   
-   function repair(key) {
-    const scrambled = key.endsWith('*');
-    const repairedKey = scrambled ? key.slice(0, -1) : key;
-    return { repairedKey, scrambled };
-   }
-   
-   function scramble(txt, key) {
-    if (!key || typeof key != 'number') return txt;
-  
-    return [...txt].map((char, i) => {
-     const code = txt.charCodeAt(i);
-     return String.fromCharCode(code +key);
-    }).join('');
-   }
-   
-   function TxtToNum(txt) {
-    const map = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&?~.,-_+=/* (){}[]<>:;';
-    let num = 0;
-    let i = 0;
-    
-    for (let char of txt)
-    {
-     if (Number(char)) num += Number(char);
-     else num += map.indexOf(char) *(i % 3 +1);
-     i ++;
-    }
-    
-    return num;
-   };
-   
-   function shift(txt, shift, ignore = ['$']) {
-    const regex = new RegExp(`[a-zA-Z](?![${ignore.map(symbol => `\\${symbol}`).join('|')}])`, 'g');
-   
-    return txt.replace(regex, c => {
-     const base = c < 'a' ? 65 : 97;
-     return String.fromCharCode(((c.charCodeAt(0) -base +((shift %26) +26) %26) %26) +base);
+     if (InBrackets)
+     {
+      newValue = `${value.substring(0, start)}
+ ${indentation} 
+ ${indentation}${value.substring(end)}`;
+      
+      textarea.value = newValue;
+      textarea.selectionEnd = textarea.selectionStart = start +indentation.length +2;
+     } else
+     {
+      newValue = `${value.substring(0, start)}
+ ${indentation}${value.substring(end)}`;
+ 
+      textarea.value = newValue;
+      textarea.selectionEnd = textarea.selectionStart = start +indentation.length +1;
+     }
     });
-   };
-   
-   function paren(In, Out, e) {
-    btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
-    if (e.data?.length != 1 || e.data != In) return;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
     
-    textarea.value = textarea.value.slice(0, start) +Out +textarea.value.slice(start, textarea.value.length);  
-    textarea.selectionStart = start;
-    textarea.selectionEnd = end;
-   };
-   
-   function toggleMenu() {
-    if (menu.style.display == 'none')
-    {
-     menu.style.display = 'block';
-     btn.style.display = 'none';
-     return;
-    }
+    textarea.addEventListener('input', e => {
+     paren("'", "'", e);
+     paren('`', '`', e);
+     paren('(', ')', e);
+     paren('{', '}', e);
+     paren('[', ']', e);
     
-    menu.style.display = 'none';
-    btn.style.display = 'block';
-   };
-   
-   function updateLineNumbers() {
-    const linesA = textarea.value.split('\n');
-    const linesB = lineNumbers.value.split('\n');
+     if (e.data?.length == 1 && e.data == '"')
+     {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const value = textarea.value;
     
-    if (linesB.length < linesA.length)
-    {
-     for (let i = linesB.length; i <= linesA.length; i ++)
-     lineNumbers.value += i +'\n';
-    } else if (linesB.length > linesA.length)
-    lineNumbers.value = (linesB.slice(0, linesA.length)).join('\n');
-   };
+      const semicolon = value.indexOf(';', start);
+      if (semicolon == -1) return;
+      
+      textarea.value = value.slice(0, semicolon) +'"' +value.slice(semicolon);
+      textarea.selectionStart = textarea.selectionEnd = start;
+     }
+    });
+    
+    function getRulesObject() {
+     sessionStorage.rules = rules.value;
+     return new Function('return ' +rules.value).call(rules);
+    };
+    
+    function getUrlData() {
+     const data = {};
+     const Params = new URLSearchParams(location.search);
+     
+     for (let param of Params.entries())
+     data[param[0]] = param[1];
+     return data;
+    };
+ 
+    async function decrypt(encodedText = '') {
+     const i = encodedText.lastIndexOf('¿');
+     const [txt, _ = ''] = [encodedText.slice(0, i), encodedText.slice(i)];
+     
+     if (i == -1 || _.length > 20 || _.length == 0) return encodedText;
+     let key = urlData.encoding ?? '';
+     return $.Cipher.decrypt(txt, key);
+    };
+    
+    async function encrypt(code, key) {
+     const broken_key = key?.length > 0 ? '¿' +$.shift(key, (key.length **2).toString()) : '';
+     const encrypted = key?.length > 0 ? await $.Cipher.encrypt(code, key) : code;
+     
+     return `${encrypted}${broken_key}`;
+    };
+    
+    function paren(In, Out, e) {
+     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
+     if (e.data?.length != 1 || e.data != In) return;
+     const start = textarea.selectionStart;
+     const end = textarea.selectionEnd;
+     
+     textarea.value = textarea.value.slice(0, start) +Out +textarea.value.slice(start, textarea.value.length);  
+     textarea.selectionStart = start;
+     textarea.selectionEnd = end;
+    };
+    
+    function toggleMenu() {
+     if (menu.style.display == 'none')
+     {
+      menu.style.display = 'block';
+      btn.style.display = 'none';
+      return;
+     }
+     
+     menu.style.display = 'none';
+     btn.style.display = 'block';
+    };
+    
+    function updateLineNumbers() {
+     const linesA = textarea.value.split('\n');
+     const linesB = lineNumbers.value.split('\n');
+     
+     if (linesB.length < linesA.length)
+     {
+      for (let i = linesB.length; i <= linesA.length; i ++)
+      lineNumbers.value += i +'\n';
+     } else if (linesB.length > linesA.length)
+     lineNumbers.value = (linesB.slice(0, linesA.length)).join('\n');
+    };
+   })
+   
+   function script(src) {
+    return new Promise((resolve, reject) => {
+     const scriptTag = document.createElement('script');
+     scriptTag.src = src;
+     scriptTag.async = true;
+ 
+     scriptTag.onload = _ => resolve(scriptTag);
+     scriptTag.onerror = _ => reject(new Error(`Failed to load ${src}`));
+     document.head.appendChild(scriptTag);
+    });
+   }
   </script>
  </body>
 </html>
