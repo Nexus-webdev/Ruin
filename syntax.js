@@ -100,7 +100,7 @@ function wrap(value) {
  return value;
 }
 
-const $ = ({
+self.$ = ({
  _TYPES_: [],
  scramble(txt, key) {
   if (!key || typeof key != 'number') return txt;
