@@ -227,25 +227,29 @@ self.$ = ({
  },
  
  setup_phase: true,
- ruin(encodedText = ``, $args = { nothin: null }) {
+ ruin(encodedText = ``, context = {}) {
   return new Promise(async resolve => {
    const i = encodedText.lastIndexOf('¿');
    let [txt, key, length] = [encodedText.slice(0, i), encodedText.slice(i +1)];
-   if (i == -1)
-   {
+   if (i != -1) key = $.shift(key, -(Number(key.length) **2).toString());
+   else {
     txt = encodedText;
     key = null;
-   } else key = $.shift(key, -(Number(key.length) **2).toString());
+   }
    
-   const code = $.fixSyntax(key ? await $.Cipher.decrypt(txt, key) : txt);
-   const result = await (new Function(`return(async() => {\n with(this) {\n${code}\n }\n})()`)).call({
-    ...$args,
-    $args,
+   const code = await (key ? $.Cipher.decrypt(txt, key) : txt);
+   const result = await (new Function(`return (async() => {
+ with(this) {
+  ${$.fixSyntax(code)}
+ }
+})();`)).call({
+    ...context,
+    context,
     ...$,
    });
    
-   resolve(result);
    $.setup_phase = false;
+   resolve(result);
   })
  },
  
@@ -857,41 +861,38 @@ function importScripts(paths, dir = $.__RUIN_DIR__) {
 $.fs = { getFile, getFileText, getDir };
 $.__local__ = self.urlData && urlData().local == 'true';
 
-if (self.bootstrap)
-{
- self.bootstrapper = new Promise(async resolve => {
-  if ($.__local__)
-  {
-   let started;
-   const id = '__bootstrapper__';
-   document.addEventListener('click', e => load_bootstrapper());
-   document.addEventListener('keydown', e => {
-    if (e.key == 'Enter') load_bootstrapper();
-   });
-   
-   async function load_bootstrapper() {
-    if (started) return;
-    started = true;
-    
-    $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
-    const code = await getFileText('bootstrapper.$');
-    
-    set(id, $.__RUIN_DIR__);
-    $.ruin(code); 
-    resolve();
-   }
-  } else {
-   const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
-   const response = await fetch(url);
+self.bootstrapper = new Promise(async resolve => {
+ if ($.__local__)
+ {
+  let started;
+  const id = '__bootstrapper__';
+  document.addEventListener('click', e => load_bootstrapper());
+  document.addEventListener('keydown', e => {
+   if (e.key == 'Enter') load_bootstrapper();
+  });
   
-   if (!response.ok) throw `Failed to read: ${response.status}`;
-   let code = await response.text();
-  
-   if ($.GitHub.isBase64(code))
-   code = decodeURIComponent(escape(atob(code)));
+  async function load_bootstrapper() {
+   if (started) return;
+   started = true;
    
-   $.ruin(code);
+   $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
+   const code = await getFileText('bootstrapper.$');
+   
+   set(id, $.__RUIN_DIR__);
+   $.ruin(code); 
    resolve();
   }
- })
-}
+ } else {
+  const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
+  const response = await fetch(url);
+ 
+  if (!response.ok) throw `Failed to read: ${response.status}`;
+  let code = await response.text();
+ 
+  if ($.GitHub.isBase64(code))
+  code = decodeURIComponent(escape(atob(code)));
+  
+  $.ruin(code);
+  resolve();
+ }
+})
