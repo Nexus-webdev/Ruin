@@ -331,7 +331,8 @@
     })
     
     textarea.addEventListener('keydown', e => {
-     if ((['Enter', 'Backspace']).includes(e.key) && !e.shiftKey) updateLineNumbers();
+     const valid = ['Enter', 'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+     if (valid.includes(e.key) && !e.shiftKey) updateLineNumbers();
      btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
      
      const lines = textarea.value.split('\n');
