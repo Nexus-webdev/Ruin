@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <meta name="description" content="This is a basic project manager made for ruin.">
+ <meta charset='UTF-8'>
+ <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+ <meta name='description' content='This is a basic project manager made for ruin.'>
  
- <link rel="icon" href="Ruin Icon.png" type="image/png">
+ <link rel='icon' href='Ruin Icon.png' type='image/png'>
  <title>Project Manager</title>
   <style>
    body {
@@ -46,7 +46,7 @@
     margin-bottom: 20px;
    }
 
-   #add-url input[type="submit"] {
+   #add-url input[type='submit'] {
     width: 100px;
     height: 30px;
     font-size: 16px;
@@ -57,7 +57,7 @@
     cursor: pointer;
    }
 
-   #add-url input[type="submit"]:hover {
+   #add-url input[type='submit']:hover {
     background-color: #3e8e41;
    }
 
@@ -131,385 +131,313 @@
   </style>
  </head>
  <body>
-  <button id="mode-btn" title="Toggle dark mode">☀️</button>
- <form id="add-url">
-  <textarea type="text" id="new-url" placeholder="Enter URL" style="width: 279px; height: 65px" spellcheck="false">
+  <button id='mode-btn' title='Toggle dark mode'>☀️</button>
+ <form id='add-url'>
+  <textarea type='text' id='new-url' placeholder='Enter URL' style='width: 279px; height: 65px' spellcheck='false'>
 project: '',
 encoding: null,
 prefix: null,
 </textarea>
 
   <div></div>
-  <input type="submit" value="Add URL">
+  <input type='submit' value='Add URL'>
  </form>
 
- <ul id="url-list"></ul>
- <a id="link"></a>
+ <ul id='url-list'></ul>
+ <a id='link'></a>
 
- <div id="iframe-container">
-  <iframe id="iframe"></iframe>
+ <div id='iframe-container'>
+  <iframe id='iframe'></iframe>
  </div>
 
- <script type="module">  
-  let db;
-  function getDB() {
-   return db || (db = createStore('IndexedDB', 'main'));
-  }
-  
-  function createStore(db, store) {
-   const request = indexedDB.open(db);
-   request.onupgradeneeded = x => request.result.createObjectStore(store);
-   
-   db = promisifyRequest(request);
-   return(mode, callback) => db.then(db => callback(db.transaction(store, mode).objectStore(store)));
-  }
-  
-  function promisifyRequest(e) { 
-   return new Promise((resolve, reject) => { 
-    e.oncomplete = e.onsuccess = x => resolve(e.result);
-    e.onabort = e.onerror = x => reject(e.error);
-   }) 
-  }
-  
-  function get(name, db = getDB()) {
-   return db('readonly', store => {
-    if (typeof name == 'string') return promisifyRequest(store.get(name));
-    return Promise.all(name.map(key => promisifyRequest(store.get(key))));
-   });
-  }
-  
-  function set(name, value, db = getDB()) {
-   return db('readwrite', store => {
-    store.put(value, name);
-    return promisifyRequest(store.transaction);
-   });
-  }
-  
-  function setMany(entries, db = getDB()) {
-   return db('readwrite', store => {
-    entries.forEach(([key, value]) => store.put(value, key));
-    return promisifyRequest(store.transaction);
-   });
-  }
-  
-  function del(name, db = getDB()) {
-   return db('readwrite', store => {
-    if (typeof name == 'string') store.delete(name);
-    else name.forEach(key => store.delete(key));
+ <script> 
+  script('syntax.js').then(async _ => {
+   const IdPassed = urlData().id || urlData().manager || null;
+   const [url] = window.location.href.split('?'); 
+   if (!IdPassed) window.location.href = `${url}?id=${Math.random()}#`;
     
-    return promisifyRequest(store.transaction);
-   });
-  }
-  
-  function update(key, updater, db = getDB()) {
-   return db('readwrite', store => {
-    return new Promise((resolve, reject) => {
-     const request = store.get(key);
-     request.onsuccess = x => {
-      try {
-       store.put(updater(request.result), key);
-       resolve(promisifyRequest(store.transaction));
-      } catch (e) {
-       reject(e);
-      }
-     };
+   const id = `Manager - ${IdPassed}`;
+   document.title = `${id.split(' - ')[1]} - Project Manager`;
+   
+   const link = document.getElementById('link');
+   const iframe = document.getElementById('iframe');
+   let full = false;
+   
+   document.addEventListener('keydown', async e => {
+    if (e.ctrlKey && e.key == 'F')
+    {
+     e.preventDefault();
+     full = true;
+     window.location.href = iframe.src;
+    }
+ 
+    if (e.ctrlKey && e.key == 'R')
+    {
+     e.preventDefault();
+     window.open(window.location.href, id, `width=${window.innerWidth}, height=${window.innerHeight}`);
+    }
+ 
+    if (e.ctrlKey && e.key == 'm')
+    {
+     e.preventDefault();
      
-     request.onerror = x => reject(request.error);
-    })
+     const dir = await window.showDirectoryPicker();
+     const entries = dir.values();
+     urls.length = 0;
+     
+     for await (let entry of entries)
+     {
+      if (entry.getFile && !(['png', 'jpg', 'jpeg']).includes(entry.name.split('.')[1]))
+      {
+       const file = await entry.getFile();
+       const text = await file.text();
+       const i = newUrlInput.value;
+       
+       let { prefix, encoding } = new Function(`return {${i}}`)();
+       addUrl(entry.name, prefix, (['$', 'mthd', 'txt']).includes(entry.name.split('.')[1]) ? encoding : '');
+       
+       const key = prefix ? `${prefix} - ${entry.name}` : entry.name;
+       const id = `FileHandle - ${key}`;
+       filehandle[id] = entry;
+       
+       await $.set(id, filehandle[id]);
+       localStorage[key] = text;
+      }
+     }
+     
+     location.reload();
+    }
+   })
+   
+   window.deleteEntry = id_ => {
+    localStorage[id] = JSON.stringify(urls.filter(url => url.id == id_));
+    delete localStorage[id_];
+    $.del(`FileHandle - ${id_}`);
+   }
+   
+   window.deleteEntries = (...ids) => {
+    for (let id_ of ids)
+    {
+     localStorage[id] = JSON.stringify(urls.filter(url => url.id == id_));
+     delete localStorage[id_];
+     $.del(`FileHandle - ${id_}`);
+    }
+   }
+ 
+   const modeBtn = document.getElementById('mode-btn');
+   const urlList = document.getElementById('url-list');
+   const addUrlForm = document.getElementById('add-url');
+   const newUrlInput = document.getElementById('new-url');
+ 
+   urlList.addEventListener('click', e => {
+    if (e.target.tagName == 'A')
+    {
+     const url = e.target.getAttribute('data-url');
+     const iframeContainer = document.getElementById('iframe-container');
+     const availableWidth = window.innerWidth -iframeContainer.offsetLeft -iframeContainer.offsetWidth;
+     const availableHeight = window.innerHeight -iframeContainer.offsetTop -iframeContainer.offsetHeight;
+    
+     iframe.style.width = `${availableWidth}px`;
+     iframe.style.height = `${availableHeight}px`;
+     iframe.src = `${url}&inManager=true`;
+ 
+     iframeContainer.style.left = `${(window.innerWidth +iframeContainer.offsetWidth) /3.45}px`;
+     iframeContainer.style.top = `${(window.innerHeight +iframeContainer.offsetHeight) /2.8}px`;
+     iframe.style.left = `0px`;
+     iframe.style.top = `0px`;
+    }
    });
-  }
-  
-  function clear(db = getDB()) {
-   return db('readwrite', store => {
-    store.clear();
-    return promisifyRequest(store.transaction);
+ 
+   urlList.addEventListener('dblclick', e => {
+    if (e.target.tagName == 'A')
+    {
+     e.preventDefault();
+     const url = e.target.getAttribute('data-url');
+     const entry = urls.find(entry => url.includes(entry.url));
+     deleteEntry(entry.id);
+     
+     urls = urls.filter(entry => !url.includes(entry.url));
+     localStorage[id] = JSON.stringify(urls);
+     e.target.remove();
+    }
    });
-  }
-  
-  const IdPassed = urlData().id ?? urlData().manager;
-  if (!IdPassed) window.location.href = `${window.location.href.split('#')[0]}?id=${Math.random()}#`;
-  const id = `Manager - ${IdPassed}`;
-  document.title = `${id.split(' - ')[1]} - Project Manager`;
+   
+   let draggingItem;
+   urlList.addEventListener('dragstart', e => {
+    if (e.target.tagName == 'LI') {
+     draggingItem = e.target;
+     e.dataTransfer.effectAllowed = 'move';
+    }
+   });
+   
+   urlList.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('li');
+    if (draggingItem && target && target != draggingItem)
+    {
+     const after = target.nextSibling;
+     urlList.insertBefore(draggingItem, after || null);
+    }
+   });
+   
+   urlList.addEventListener('drop', e => {
+    urls = [...urlList.querySelectorAll('li')].map(li => {
+     const a = li.querySelector('a');
+     return urls.find(u => u.name == a.textContent);
+    });
+    
+    localStorage[id] = JSON.stringify(urls);
+   });
+ 
+   modeBtn.addEventListener('click', e => {
+    document.body.classList.toggle('dark-mode');
+    modeBtn.classList.toggle('dark-mode-btn');
+    changeColor();
+   });
+   
+   if (sessionStorage.value)
+   newUrlInput.value = sessionStorage.value;
+   
+   let urls = localStorage[id];
+   if (urls)
+   {
+    urls = JSON.parse(urls);
+    urls.forEach(entry => {
+     const newListItem = document.createElement('li');
+     newListItem.setAttribute('draggable', 'true');
+     const newLink = document.createElement('a');
+     
+     newLink.href = '#';
+     newLink.textContent = entry.name;
+     newLink.id = entry.name;
+     
+     newLink.setAttribute('data-url', `${entry.url}&nocache=${Date.now()}`);
+     newListItem.appendChild(newLink);
+     urlList.appendChild(newListItem);
+    });
+   } else urls = [];
+   changeColor(x => (sessionStorage['mode'] == 'dark'));
+   
+   let filehandle = {};
+   window.load = async() => {
+    const [handle] = await window.showOpenFilePicker();
+    
+    const file = await handle.getFile();
+    iframe.contentWindow.postMessage({ type: 'loadData', value: await file.text() }, '*');
+   }
+   
+   window.save = async(id, edit, suggestion, override = false) => {
+    const blob = new Blob([edit], { type: 'text/plain' });
+    const value = await $.get(id);
+    
+    filehandle[id] = filehandle[id] && !override ? filehandle[id] : value && !override ? value : await window.showSaveFilePicker({
+     suggestedName: (suggestion.slice(suggestion.indexOf('-') +2)).split('.txt')[0].trim(),
+     types: [{
+      description: '.$, .html, .css, .js, .txt, .rdn, .mthd, .fx, .exec, .debug, .py',
+     }],
+    });
+    
+    const writableStream = await filehandle[id].createWritable();
+    await writableStream.write(blob);
+    await writableStream.close();
+    
+    await $.set(id, filehandle[id]);
+   }
+   
+   window.addEventListener('message', e => {
+    if (e.data.type == 'save') window.save(e.data.id, e.data.value, e.data.suggestion);
+    if (e.data.type == 'saveAs') window.save(e.data.id, e.data.value, e.data.suggestion, 1);
+    else if (e.data.type == 'load') window.load();
+   });
+   
+   addUrlForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const i = newUrlInput.value;
+    let { project, prefix, encoding } = new Function(`return {${i}}`)();
+    addUrl(project, prefix, encoding);
+   });
+   
+   function addUrl(project, prefix, encoding = '') {
+    const newUrlName = prefix ? `${prefix} - ${project}` : project;
+    const searchParams = new URLSearchParams({ project: newUrlName, encoding: encoding != 'null' ? encoding : '', opened: true, inManager: true });
+    const newUrl = `Editor.html?${searchParams.toString()}`;
+    
+    const newLink = document.getElementById(newUrlName) ?? document.createElement('a');
+    const newListItem = document.createElement('li');
+    iframe.src = newUrl;
+    
+    newLink.href = '#';
+    newLink.textContent = project;
+    newLink.id = newUrlName;
+    newLink.setAttribute('data-url', newUrl);
+    
+    newListItem.appendChild(newLink);
+    urlList.appendChild(newListItem);
+    urls.push({ name: project, url: newUrl, id: newUrlName });
+    
+    localStorage[id] = JSON.stringify(urls);
+    sessionStorage.value = newUrlInput.value;
+    changeColor();
+   } 
+   
+   function changeColor(condition = x => modeBtn.classList.contains('dark-mode-btn')) {
+    if (condition())
+    {
+     document.body.classList.add('dark-mode');
+     modeBtn.classList.add('dark-mode-btn');
+     sessionStorage['mode'] = 'dark';
+     modeBtn.textContent = '🌙';
+     
+     document.querySelectorAll('a').forEach(link => {
+      link.style.color = 'white';
+     });
+    } else {
+     document.body.classList.remove('dark-mode');
+     modeBtn.classList.remove('dark-mode-btn');
+     sessionStorage['mode'] = 'light';
+     modeBtn.textContent = '☀️';
+     
+     document.querySelectorAll('a').forEach(link => {
+      link.style.color = 'black';
+     });
+    } 
+    
+    let theme = ''; 
+    if (sessionStorage['mode'] == 'dark') theme = 'dark';
+    else theme = 'light';
+     
+    for (let li of urlList.children)
+    {
+     const [link] = li.children;
+     if (link)
+     {  
+      const [url] = link.attributes['data-url'].textContent.split('&theme=');
+      link.setAttribute('data-url', `${url}&theme=${theme}`); 
+     } 
+    }  
+   }
+  })
   
   function urlData() {
-   const Params = new URLSearchParams(window.location.search).entries()
+   const Params = new URLSearchParams(window.location.search).entries();
    const data = {};
-   for (window.param of Params) {
-    data[param[0]] = param[1];
-   }
+    
+   for (window.param of Params)
+   data[param[0]] = param[1];
    
    return data;
   }
   
-  const link = document.getElementById('link');
-  const iframe = document.getElementById('iframe');
-  let full = false;
-  
-  document.addEventListener('keydown', async e => {
-   if (e.ctrlKey && e.key == 'F')
-   {
-    e.preventDefault();
-    full = true;
-    window.location.href = iframe.src;
-   }
+  function script(src) {
+   return new Promise((resolve, reject) => {
+    const scriptTag = document.createElement('script');
+    scriptTag.src = src;
+    scriptTag.async = true;
 
-   if (e.ctrlKey && e.key == 'R')
-   {
-    e.preventDefault();
-    window.open(window.location.href, id, `width=${window.innerWidth}, height=${window.innerHeight}`);
-   }
-
-   if (e.ctrlKey && e.key == 'm')
-   {
-    e.preventDefault();
-    
-    const dir = await window.showDirectoryPicker();
-    const entries = dir.values();
-    urls.length = 0;
-    
-    for await (let entry of entries)
-    {
-     if (entry.getFile && !(['png', 'jpg', 'jpeg']).includes(entry.name.split('.')[1]))
-     {
-      const file = await entry.getFile();
-      const text = await file.text();
-      const i = newUrlInput.value;
-      
-      let { prefix, encoding } = new Function(`return {${i}}`)();
-      addUrl(entry.name, prefix, (['$', 'mthd', 'txt']).includes(entry.name.split('.')[1]) ? encoding : '');
-      
-      const key = prefix ? `${prefix} - ${entry.name}` : entry.name;
-      const id = `FileHandle - ${key}`;
-      filehandle[id] = entry;
-      
-      await set(id, filehandle[id]);
-      localStorage[key] = text;
-     }
-    }
-    
-    location.reload();
-   }
-  })
-  
-  window.deleteEntry = id_ => {
-   localStorage[id] = JSON.stringify(urls.filter(url => url.id == id_));
-   delete localStorage[id_];
-   del(`FileHandle - ${id_}`);
-  }
-  
-  window.deleteEntries = (...ids) => {
-   for (let id_ of ids)
-   {
-    localStorage[id] = JSON.stringify(urls.filter(url => url.id == id_));
-    delete localStorage[id_];
-    del(`FileHandle - ${id_}`);
-   }
-  }
-
-  const modeBtn = document.getElementById('mode-btn');
-  const urlList = document.getElementById('url-list');
-  const addUrlForm = document.getElementById('add-url');
-  const newUrlInput = document.getElementById('new-url');
-
-  urlList.addEventListener('click', e => {
-   if (e.target.tagName == 'A')
-   {
-    const url = e.target.getAttribute('data-url');
-    const iframeContainer = document.getElementById('iframe-container');
-    const availableWidth = window.innerWidth -iframeContainer.offsetLeft -iframeContainer.offsetWidth;
-    const availableHeight = window.innerHeight -iframeContainer.offsetTop -iframeContainer.offsetHeight;
-   
-    iframe.style.width = `${availableWidth}px`;
-    iframe.style.height = `${availableHeight}px`;
-    iframe.src = `${url}&inManager=true`;
-
-    iframeContainer.style.left = `${(window.innerWidth +iframeContainer.offsetWidth) /3.45}px`;
-    iframeContainer.style.top = `${(window.innerHeight +iframeContainer.offsetHeight) /2.8}px`;
-    iframe.style.left = `0px`;
-    iframe.style.top = `0px`;
-   }
-  });
-
-  urlList.addEventListener('contextmenu', e => {
-   if (e.target.tagName == 'A')
-   {
-    e.preventDefault();
-    const url = e.target.getAttribute('data-url');
-    const entry = urls.find(entry => url.includes(entry.url));
-    deleteEntry(entry.id);
-    
-    urls = urls.filter(entry => !url.includes(entry.url));
-    localStorage[id] = JSON.stringify(urls);
-    e.target.remove();
-   }
-  });
-  
-  let draggingItem;
-  urlList.addEventListener('dragstart', e => {
-   if (e.target.tagName == 'LI') {
-    draggingItem = e.target;
-    e.dataTransfer.effectAllowed = 'move';
-   }
-  });
-  
-  urlList.addEventListener('dragover', e => {
-   e.preventDefault();
-   const target = e.target.closest('li');
-   if (draggingItem && target && target != draggingItem)
-   {
-    const after = target.nextSibling;
-    urlList.insertBefore(draggingItem, after || null);
-   }
-  });
-  
-  urlList.addEventListener('drop', e => {
-   urls = [...urlList.querySelectorAll('li')].map(li => {
-    const a = li.querySelector('a');
-    return urls.find(u => u.name == a.textContent);
+    scriptTag.onload = _ => resolve(scriptTag);
+    scriptTag.onerror = _ => reject(new Error(`Failed to load ${src}`));
+    document.head.appendChild(scriptTag);
    });
-   
-   localStorage[id] = JSON.stringify(urls);
-  });
-
-  modeBtn.addEventListener('click', e => {
-   document.body.classList.toggle('dark-mode');
-   modeBtn.classList.toggle('dark-mode-btn');
-   
-   if (modeBtn.classList.contains('dark-mode-btn'))
-   {
-    modeBtn.textContent = '🌙';
-    sessionStorage.setItem('mode', 'dark');
-    
-    document.querySelectorAll('a').forEach(link => {
-     link.style.color = 'white';
-    });
-   } else {
-    modeBtn.textContent = '☀️';
-    sessionStorage.setItem('mode', 'light');
-    
-    document.querySelectorAll('a').forEach(link => {
-     link.style.color = 'black';
-    });
-   }
-  });
-  
-  if (sessionStorage.value)
-  newUrlInput.value = sessionStorage.value;
-  
-  let urls = localStorage[id];
-  if (urls)
-  {
-   urls = JSON.parse(urls);
-   urls.forEach(entry => {
-    const newListItem = document.createElement('li');
-    newListItem.setAttribute('draggable', 'true');
-    const newLink = document.createElement('a');
-    
-    newLink.href = '#';
-    newLink.textContent = entry.name;
-    newLink.id = entry.name;
-    
-    newLink.setAttribute('data-url', `${entry.url}&nocache=${Date.now()}`);
-    newListItem.appendChild(newLink);
-    urlList.appendChild(newListItem);
-   });
-  } else urls = [];
-  
-  if (sessionStorage.getItem('mode') == 'dark')
-  {
-   document.body.classList.add('dark-mode');
-   modeBtn.classList.add('dark-mode-btn');
-   modeBtn.textContent = '🌙';
-   
-   document.querySelectorAll('a').forEach(link => {
-    link.style.color = 'white';
-   });
-  } else {
-   document.body.classList.remove('dark-mode');
-   modeBtn.classList.remove('dark-mode-btn');
-   modeBtn.textContent = '☀️';
-   
-   document.querySelectorAll('a').forEach(link => {
-    link.style.color = 'black';
-   });
-  }
-  
-  let filehandle = {};
-  window.get = get;
-  window.del = del;
-  
-  window.load = async() => {
-   const [handle] = await window.showOpenFilePicker();
-   
-   const file = await handle.getFile();
-   iframe.contentWindow.postMessage({ type: 'loadData', value: await file.text() }, '*');
-  }
-  
-  window.save = async(id, edit, suggestion, override = false) => {
-   const blob = new Blob([edit], { type: 'text/plain' });
-   const value = await get(id);
-   
-   filehandle[id] = filehandle[id] && !override ? filehandle[id] : value && !override ? value : await window.showSaveFilePicker({
-    suggestedName: (suggestion.slice(suggestion.indexOf('-') +2)).split('.txt')[0].trim(),
-    types: [{
-     description: '.$, .html, .css, .js, .txt, .rdn, .mthd, .fx, .exec, .debug, .py',
-    }],
-   });
-   
-   const writableStream = await filehandle[id].createWritable();
-   await writableStream.write(blob);
-   await writableStream.close();
-   
-   await set(id, filehandle[id]);
-  }
-  
-  window.addEventListener('message', e => {
-   if (e.data.type == 'save') window.save(e.data.id, e.data.value, e.data.suggestion);
-   if (e.data.type == 'saveAs') window.save(e.data.id, e.data.value, e.data.suggestion, 1);
-   else if (e.data.type == 'load') window.load();
-  });
-  
-  addUrlForm.addEventListener('submit', async e => {
-   e.preventDefault();
-   const i = newUrlInput.value;
-   let { project, prefix, encoding } = new Function(`return {${i}}`)();
-   addUrl(project, prefix, encoding);
-  });
-  
-  function addUrl(project, prefix, encoding = '') {
-   const newUrlName = prefix ? `${prefix} - ${project}` : project;
-   const searchParams = new URLSearchParams({ project: newUrlName, encoding: encoding != 'null' ? encoding : '', opened: true, inManager: true });
-   const newUrl = `Editor.html?${searchParams.toString()}`;
-   
-   const newLink = document.getElementById(newUrlName) ?? document.createElement('a');
-   const newListItem = document.createElement('li');
-   iframe.src = newUrl;
-   
-   newLink.href = '#';
-   newLink.textContent = project;
-   newLink.id = newUrlName;
-   newLink.setAttribute('data-url', newUrl);
-   
-   newListItem.appendChild(newLink);
-   urlList.appendChild(newListItem);
-   urls.push({ name: project, url: newUrl, id: newUrlName });
-   
-   localStorage[id] = JSON.stringify(urls);
-   sessionStorage.value = newUrlInput.value;
-   
-   if (modeBtn.classList.contains('dark-mode-btn')) {
-    modeBtn.textContent = '🌙';
-    sessionStorage.setItem('mode', 'dark');
-    document.querySelectorAll('a').forEach(link => {
-     link.style.color = 'white';
-    });
-   } else {
-    modeBtn.textContent = '☀️';
-    sessionStorage.setItem('mode', 'light');
-    document.querySelectorAll('a').forEach(link => {
-     link.style.color = 'black';
-    });
-   }
   }
  </script>
 </body>
