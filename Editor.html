@@ -356,7 +356,7 @@
      {
       newValue = `${value.substring(0, start)}
  ${indentation} 
- ${indentation}${value.substring(end)}`;
+ ${indentation.slice(0, -1)}${value.substring(end)}`;
       
       textarea.value = newValue;
       textarea.selectionEnd = textarea.selectionStart = start +indentation.length +2;
