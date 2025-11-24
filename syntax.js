@@ -237,16 +237,26 @@ self.$ = ({
     key = null;
    }
    
+   const proxy = new Proxy(context, {
+    get(target, property) {
+     return $[property] ?? target[property];
+    },
+    
+    set(target, property, value) {
+     return target[property] = value;
+    },
+    
+    has(target, property) {
+     return property in $ || property in target;
+    },
+   })
+   
    const code = await (key ? $.Cipher.decrypt(txt, key) : txt);
    const result = await (new Function(`return (async() => {
  with(this) {
   ${$.fixSyntax(code)}
  }
-})();`)).call({
-    ...context,
-    context,
-    ...$,
-   });
+})();`)).call(proxy);
    
    $.setup_phase = false;
    resolve(result);
@@ -254,7 +264,7 @@ self.$ = ({
  },
  
  _: undefined,
- RUIN: new Proxy(this, {
+ RUIN: new Proxy({}, {
   get(_, property) {
    return $[property];
   },
@@ -263,6 +273,10 @@ self.$ = ({
    _[property] = value;
    return $[property] = value;
   },
+  
+  has(_, prop) {
+   return prop in $;
+  }
  }),
  
  struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, override, ...prototype } = {}) {
