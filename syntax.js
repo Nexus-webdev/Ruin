@@ -237,7 +237,7 @@ self.$ = ({
     key = null;
    }
    
-   const proxy = new Proxy(, {
+   const proxy = new Proxy($, {
     get(target, property) {
      return context[property] ?? target[property];
     },
