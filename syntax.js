@@ -264,19 +264,14 @@ self.$ = ({
  },
  
  _: undefined,
- RUIN: new Proxy({}, {
-  get(_, property) {
-   return $[property];
+ RUIN: new Proxy($, {
+  get(target, property) {
+   return target[property];
   },
   
-  set(_, property, value) {
-   _[property] = value;
-   return $[property] = value;
+  set(target, property, value) {
+   return target[property] = value;
   },
-  
-  has(_, prop) {
-   return prop in $;
-  }
  }),
  
  struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, override, ...prototype } = {}) {
