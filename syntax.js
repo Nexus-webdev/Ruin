@@ -237,17 +237,17 @@ self.$ = ({
     key = null;
    }
    
-   const proxy = new Proxy(context, {
+   const proxy = new Proxy(, {
     get(target, property) {
-     return $[property] ?? target[property];
+     return context[property] ?? target[property];
     },
     
-    set(target, property, value) {
-     return target[property] = value;
+    set(_, property, value) {
+     return context[property] = value;
     },
     
     has(target, property) {
-     return property in $ || property in target;
+     return property in context || property in target;
     },
    })
    
