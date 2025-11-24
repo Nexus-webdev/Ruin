@@ -252,7 +252,18 @@ self.$ = ({
    })
    
    const code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-   const result = await (new Function(`return (async() => {
+   const result = await (new Function(`this.RUIN = new Proxy(this, {
+ get(target, property) {
+  return window.$[property];
+ },
+ 
+ set(target, property, value) {
+  target[property] = value;
+  return window.$[property] = value;
+ },
+});
+
+return (async() => {
  with(this) {
   ${$.fixSyntax(code)}
  }
@@ -264,16 +275,6 @@ self.$ = ({
  },
  
  _: undefined,
- RUIN: new Proxy($, {
-  get(target, property) {
-   return target[property];
-  },
-  
-  set(target, property, value) {
-   return target[property] = value;
-  },
- }),
- 
  struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, override, ...prototype } = {}) {
   if (_this)
   {
