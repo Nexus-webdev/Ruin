@@ -237,37 +237,16 @@ self.$ = ({
     key = null;
    }
    
-   const proxy = new Proxy($, {
-    get(target, property) {
-     return context[property] ?? target[property];
-    },
-    
-    set(_, property, value) {
-     return context[property] = value;
-    },
-    
-    has(target, property) {
-     return property in context || property in target;
-    },
-   })
-   
    const code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-   const result = await (new Function(`this.RUIN = new Proxy(this, {
- get(target, property) {
-  return window.$[property];
- },
- 
- set(target, property, value) {
-  target[property] = value;
-  return window.$[property] = value;
- },
-});
-
-return (async() => {
+   const result = await (new Function(`return (async() => {
  with(this) {
   ${$.fixSyntax(code)}
  }
-})();`)).call(proxy);
+})();`)).call({
+    ...context,
+    context,
+    ...$,
+   });
    
    $.setup_phase = false;
    resolve(result);
@@ -275,7 +254,18 @@ return (async() => {
  },
  
  _: undefined,
- struct(name, { relationships = {}, destinationObject = this.RUIN, _this, overrideModule, override, ...prototype } = {}) {
+ RUIN: new Proxy(this, {
+  get(_, property) {
+   return $[property];
+  },
+  
+  set(_, property, value) {
+   _[property] = value;
+   return $[property] = value;
+  },
+ }),
+ 
+ struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, override, ...prototype } = {}) {
   if (_this)
   {
    overrideModule = true;
@@ -289,7 +279,7 @@ return (async() => {
   const ruinContext = { ...this };
   const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
   
-  const obj = $.setup_phase == true ? this.RUIN : Obj;
+  const obj = $.setup_phase == true ? $.RUIN : Obj;
   const staticValues = {};
   const [arg, config] = name.split(':').map(t => t.trim());
 
