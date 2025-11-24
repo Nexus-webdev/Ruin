@@ -289,7 +289,7 @@ return (async() => {
   const ruinContext = { ...this };
   const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
   
-  const obj = $.setup_phase == true ? $.RUIN : Obj;
+  const obj = $.setup_phase == true ? this.RUIN : Obj;
   const staticValues = {};
   const [arg, config] = name.split(':').map(t => t.trim());
 
