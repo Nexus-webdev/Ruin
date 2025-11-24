@@ -275,7 +275,7 @@ return (async() => {
  },
  
  _: undefined,
- struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, override, ...prototype } = {}) {
+ struct(name, { relationships = {}, destinationObject = this.RUIN, _this, overrideModule, override, ...prototype } = {}) {
   if (_this)
   {
    overrideModule = true;
