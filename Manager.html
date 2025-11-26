@@ -171,11 +171,12 @@ prefix: null,
      full = true;
      window.location.href = iframe.src;
     }
- 
-    if (e.ctrlKey && e.key == 'R')
+    
+    if (e.ctrlKey && e.altKey && e.key == 'c')
     {
      e.preventDefault();
-     window.open(window.location.href, id, `width=${window.innerWidth}, height=${window.innerHeight}`);
+     const [href] = window.location.href.split('?');
+     window.location.href = `${href}?id=${prompt('Enter Project Name')}#`;
     }
  
     if (e.ctrlKey && e.key == 'm')
