@@ -494,13 +494,40 @@ self.$ = ({
  
  make_textarea_interactive(t) {
   if (!t.addEventListener) return;
+  t.addEventListener('input', e => {
+   paren("'", "'");
+   paren('`', '`');
+   paren('(', ')');
+   paren('{', '}');
+   paren('[', ']');
+  
+   if (e.data?.length == 1 && e.data == '"')
+   {
+    const semicolon = t.value.indexOf(';', start);
+    if (semicolon == -1) return;
+    
+    t.value = t.value.slice(0, semicolon) +'"' +t.value.slice(semicolon);
+    t.selectionStart = t.selectionEnd = start;
+   }
+   
+   function paren(left, right) {
+    if (e.data?.length != 1 || e.data != left) return;
+    const start = t.selectionStart;
+    const end = t.selectionEnd;
+    const value = t.value;
+    
+    t.value = value.slice(0, start) +right +value.slice(start);  
+    t.selectionStart = start;
+    t.selectionEnd = end;
+   };
+  })
+  
   t.addEventListener('keydown', e => {
    const start = t.selectionStart;
    const end = t.selectionEnd;
-   const value = t.value;
    
    const selecting = start != end;
-   const selectedText = value.substring(start, end);
+   const selectedText = t.value.substring(start, end);
    
    if (e.altKey && e.key == 'r' && selecting)
    { 
@@ -523,9 +550,9 @@ self.$ = ({
    if (event.key == ' ' && selecting)
    {
     e.preventDefault();
-    const lines = value.substring(start, end).split('\n');
+    const lines = t.value.substring(start, end).split('\n');
     const modifiedText = lines.map(line => ' ' +line).join('\n');
-    t.value = value.substring(0, start) +modifiedText +value.substring(end);
+    t.value = t.value.substring(0, start) +modifiedText +t.value.substring(end);
     
     t.selectionStart = start;
     t.selectionEnd = start +modifiedText.length;
@@ -536,9 +563,9 @@ self.$ = ({
     if (selecting)
     {
      e.preventDefault();
-     const lines = value.substring(start, end).split('\n');
+     const lines = t.value.substring(start, end).split('\n');
      const modifiedText = lines.map(line => line.replace(/^ /, '')).join('\n');
-     t.value = value.substring(0, start) +modifiedText +value.substring(end);
+     t.value = t.value.substring(0, start) +modifiedText +t.value.substring(end);
      
      t.selectionStart = start;
      t.selectionEnd = start +modifiedText.length;
@@ -549,10 +576,10 @@ self.$ = ({
    {
     e.preventDefault();
     function between(a = '{', b = '}') {
-     return [value.lastIndexOf(a, start) == start -1, value.indexOf(b, end) == end];
+     return [value.lastIndexOf(a, start) == start -1, t.value.indexOf(b, end) == end];
     };
     
-    const previousLine = value.substring(0, start).split('\n').pop();
+    const previousLine = t.value.substring(0, start).split('\n').pop();
     const indentation = previousLine.match(/^\s*/)[0];
     
     const InBrackets = between()[0] && between()[1];
@@ -560,44 +587,21 @@ self.$ = ({
     
     if (InBrackets)
     {
-     newValue = `${value.substring(0, start)}
+     newValue = `${t.value.substring(0, start)}
 ${indentation} 
-${indentation}${value.substring(end)}`;
+${indentation}${t.value.substring(end)}`;
      
      t.value = newValue;
      t.selectionEnd = t.selectionStart = start +indentation.length +2;
     } else
     {
-     newValue = `${value.substring(0, start)}
-${indentation}${value.substring(end)}`;
+     newValue = `${t.value.substring(0, start)}
+${indentation}${t.value.substring(end)}`;
 
      t.value = newValue;
      t.selectionEnd = t.selectionStart = start +indentation.length +1;
     }
    }
-   
-   paren("'", "'", e);
-   paren('`', '`', e);
-   paren('(', ')', e);
-   paren('{', '}', e);
-   paren('[', ']', e);
-  
-   if (e.data?.length == 1 && e.data == '"')
-   {
-    const semicolon = value.indexOf(';', start);
-    if (semicolon == -1) return;
-    
-    t.value = value.slice(0, semicolon) +'"' +value.slice(semicolon);
-    t.selectionStart = t.selectionEnd = start;
-   }
-   
-   function paren(In, Out, e) {
-    if (e.data?.length != 1 || e.data != In) return;
-    
-    t.value = t.value.slice(0, start) +Out +t.value.slice(start, t.value.length);  
-    t.selectionStart = start;
-    t.selectionEnd = end;
-   };
   })
  },
 
