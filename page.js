@@ -445,25 +445,117 @@ $.listener('keydown', async e => {
    
    const B = `// DATA - START;
 sessionStorage.__PROGRAM__ = (\`${modify(code)}\`);
+const link = document.createElement('link');
+
+link.rel = 'manifest';
+link.href = 'program_data_folder/manifest.json';
+document.head.appendChild(link);
+
 script('https://nexus-webdev.github.io/Ruin/syntax.js').then(_ => {
  bootstrapper.then(_ => {
   script('https://nexus-webdev.github.io/Ruin/page.js');
  })
 })
 
+if ('serviceWorker' in navigator)
+navigator.serviceWorker.register('./program_data_folder/service_worker.js')
+ .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
+ .catch(e => console.error('Service Worker failed to load', e));
+
 // DATA - END;`;
    content = `${A}${B}${C}`;
   }
- 
-  const directory = $?.foxx?.directory?.() ?? await window.showDirectoryPicker();
-  const page = await directory.getFileHandle(document.title +'.html', { create: true });
-  const pageBlob = new Blob([content], { type: 'text/html' });
   
-  const pageStream = await page.createWritable();
-  await pageStream.write(pageBlob);
-  await pageStream.close();
+  const manifest = {
+   name: document.title,
+   short_name: document.title,
+   
+   start_url: 'index.html',
+   display: 'standalone',
+   background_color: '#ffffff',
+   theme_color: '#000000',
+   
+   icons: [
+    {
+     src: 'https://nexus-webdev.github.io/Ruin/icons/manager.png',
+     sizes: '192x192',
+     type: 'image/png',
+    }
+   ],
+   
+   ...($.meta.manifest ?? {}),
+  }
+ 
+  const directory = await window.showDirectoryPicker();
+  const program_data_folder = await directory.getDirectoryHandle('program_data_folder', { create: true });
+  const create = file_creator(program_data_folder);
+  
+  await create('service_worker.js', service_worker(manifest.name));
+  await create('manifest.json', JSON.stringify(manifest));
+  await file_creator(directory)('index.html', content);
  }
 })
+
+function file_creator(directory) {
+ return async(name, content) => {
+  const file = await directory.getFileHandle(name, { create: true });
+  const blob = new Blob([content]);
+  
+  const stream = await file.createWritable();
+  await stream.write(blob);
+  await stream.close();
+ }
+}
+
+function service_worker(name) {
+ return `"Service Worker: ${name}";
+const prechache = 'precache-v1';
+const runtime = 'runtime-v1';
+
+"Predefined paths and URLs to precache";
+const prechache_urls = [
+ './',
+ './index.html',
+];
+
+"Install: precache critical files";
+self.addEventListener('install', e => {
+ e.waitUntil(caches.open(prechache).then(cache => cache.addAll(prechache_urls)));
+});
+
+"Activate: cleanup old caches";
+self.addEventListener('activate', e => {
+ const cacheWhitelist = [prechache, runtime];
+ e.waitUntil(caches.keys().then(keys =>
+  Promise.all(keys.map(key => {
+   if (cacheWhitelist.includes(key)) return;
+   return caches.delete(key);
+  }))
+ ));
+});
+
+"Fetch: serve from cache, else fetch and cache dynamically";
+self.addEventListener('fetch', e => {
+ e.respondWith(caches.match(e.request).then(cachedResponse => {
+  if (cachedResponse) return cachedResponse;
+ 
+  "Otherwise, fetch from network and cache it";
+  return caches.open(runtime).then(cache => {
+   return fetch(e.request).then(response => {
+    "Only cache valid responses (status 200, type basic)";
+    if (response && response.status == 200 && response.type == 'basic')
+    cache.put(e.request, response.clone());
+    
+    return response;
+   }).catch(() => {
+    "Optional: fallback for offline errors";
+    if (e.request.destination == 'document')
+    return caches.match('./index.html');
+   })
+  });
+ }));
+});`;
+}
 
 setInterval(() => checkForChange(), 30); 
 const code = sessionStorage['__PROGRAM__'] ?? localStorage[program.name] ?? sessionStorage[program.name];
