@@ -457,13 +457,13 @@ script('https://nexus-webdev.github.io/Ruin/syntax.js').then(_ => {
  })
 })
 
-if ('serviceWorker' in navigator)
+if ('serviceWorker' in navigator && location.href.includes('https'))
 navigator.serviceWorker.register('./program_data_folder/service_worker.js')
  .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
  .catch(e => console.error('Service Worker failed to load', e));
 
 // DATA - END;`;
-   content = `${A}${B}${C}`;
+   content = `<!DOCTYPE html>${A}${B}${C}`;
   }
   
   const manifest = {
