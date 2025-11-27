@@ -1,5 +1,5 @@
 self.addEventListener('install', e => {
- e.waitUntil(caches.open('v1').then(cache => {
+ e.waitUntil(caches.open('rre_cache_v1').then(cache => {
   cache.addAll([
    '/Ruin/',
    '/Ruin/Output.html',
