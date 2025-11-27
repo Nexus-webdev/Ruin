@@ -131,7 +131,7 @@
    script('syntax.js').then(_ => {
     bootstrapper.then(_ => {
      script('page.js').then(_ => {
-      if ('serviceWorker' in navigator && $.meta.use_service_worker == true)
+      if ('serviceWorker' in navigator)
       navigator.serviceWorker.register('./service_workers/output.js')
        .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
        .catch(e => console.error('Service Worker failed to load', e));
