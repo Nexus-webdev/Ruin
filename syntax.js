@@ -512,22 +512,19 @@ self.$ = ({
    
    function paren(left, right) {
     if (e.data?.length != 1 || e.data != left) return;
-    const start = t.selectionStart;
-    const end = t.selectionEnd;
-    const value = t.value;
     
-    t.value = value.slice(0, start) +right +value.slice(start);  
-    t.selectionStart = start;
-    t.selectionEnd = end;
+    t.value = t.value.slice(0, t.selectionStart) +right +t.value.slice(t.selectionStart);  
+    t.selectionStart = t.selectionStart;
+    t.selectionEnd = t.selectionEnd;
    };
   })
   
   t.addEventListener('keydown', e => {
-   const start = t.selectionStart;
-   const end = t.selectionEnd;
+   const t.selectionStart = t.selectionStart;
+   const t.selectionEnd = t.selectionEnd;
    
-   const selecting = start != end;
-   const selectedText = t.value.substring(start, end);
+   const selecting = t.selectionStart != t.selectionEnd;
+   const selectedText = t.value.substring(t.selectionStart, t.selectionEnd);
    
    if (e.altKey && e.key == 'r' && selecting)
    { 
@@ -540,9 +537,9 @@ self.$ = ({
      if (textToFind == null || textToReplace == null) return;
      const regex = new RegExp(textToFind, 'g'); 
      const modifiedText = selectedText.replace(regex, textToReplace);
-     const newValue = t.value.substring(0, start) +modifiedText +t.value.substring(end);
+     const newValue = t.value.substring(0, t.selectionStart) +modifiedText +t.value.substring(t.selectionEnd);
     
-     t.selectionStart = t.selectionEnd = start +modifiedText.length;
+     t.selectionStart = t.selectionEnd = t.selectionStart +modifiedText.length;
      t.value = newValue;
     }
    }
@@ -550,12 +547,12 @@ self.$ = ({
    if (event.key == ' ' && selecting)
    {
     e.preventDefault();
-    const lines = t.value.substring(start, end).split('\n');
+    const lines = t.value.substring(t.selectionStart, t.selectionEnd).split('\n');
     const modifiedText = lines.map(line => ' ' +line).join('\n');
-    t.value = t.value.substring(0, start) +modifiedText +t.value.substring(end);
+    t.value = t.value.substring(0, t.selectionStart) +modifiedText +t.value.substring(t.selectionEnd);
     
-    t.selectionStart = start;
-    t.selectionEnd = start +modifiedText.length;
+    t.selectionStart = t.selectionStart;
+    t.selectionEnd = t.selectionStart +modifiedText.length;
    }
   
    if (e.key == 'Delete')
@@ -563,12 +560,12 @@ self.$ = ({
     if (selecting)
     {
      e.preventDefault();
-     const lines = t.value.substring(start, end).split('\n');
+     const lines = t.value.substring(t.selectionStart, t.selectionEnd).split('\n');
      const modifiedText = lines.map(line => line.replace(/^ /, '')).join('\n');
-     t.value = t.value.substring(0, start) +modifiedText +t.value.substring(end);
+     t.value = t.value.substring(0, t.selectionStart) +modifiedText +t.value.substring(t.selectionEnd);
      
-     t.selectionStart = start;
-     t.selectionEnd = start +modifiedText.length;
+     t.selectionStart = t.selectionStart;
+     t.selectionEnd = t.selectionStart +modifiedText.length;
     }
    }
    
@@ -576,30 +573,29 @@ self.$ = ({
    {
     e.preventDefault();
     function between(a = '{', b = '}') {
-     return [value.lastIndexOf(a, start) == start -1, t.value.indexOf(b, end) == end];
+     return t.value.lastIndexOf(a, t.selectionStart) == t.selectionStart -1
+            && t.value.indexOf(b, t.selectionEnd) == t.selectionEnd;
     };
     
-    const previousLine = t.value.substring(0, start).split('\n').pop();
+    const previousLine = t.value.substring(0, t.selectionStart).split('\n').pop();
     const indentation = previousLine.match(/^\s*/)[0];
     
-    const InBrackets = between()[0] && between()[1];
+    const InBrackets = !between().includes(false);
     let newValue;
     
     if (InBrackets)
     {
-     newValue = `${t.value.substring(0, start)}
+     t.value = `${t.value.substring(0, t.selectionStart)}
 ${indentation} 
-${indentation}${t.value.substring(end)}`;
+${indentation}${t.value.substring(t.selectionEnd)}`;
      
-     t.value = newValue;
-     t.selectionEnd = t.selectionStart = start +indentation.length +2;
+     t.selectionEnd = t.selectionStart = t.selectionStart +indentation.length +2;
     } else
     {
-     newValue = `${t.value.substring(0, start)}
-${indentation}${t.value.substring(end)}`;
-
-     t.value = newValue;
-     t.selectionEnd = t.selectionStart = start +indentation.length +1;
+     t.value = `${t.value.substring(0, t.selectionStart)}
+${indentation}${t.value.substring(t.selectionEnd)}`;
+     
+     t.selectionEnd = t.selectionStart = t.selectionStart +indentation.length +1;
     }
    }
   })
@@ -616,11 +612,6 @@ ${indentation}${t.value.substring(end)}`;
     return $.enable.auto;
    },
   },
- },
-
- App: {
-  name: 'MyApp',
-  as: '_blank',
  },
  
  when(condition, checkDelay = 100) {
