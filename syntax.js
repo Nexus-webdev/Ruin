@@ -520,9 +520,6 @@ self.$ = ({
   })
   
   t.addEventListener('keydown', e => {
-   const t.selectionStart = t.selectionStart;
-   const t.selectionEnd = t.selectionEnd;
-   
    const selecting = t.selectionStart != t.selectionEnd;
    const selectedText = t.value.substring(t.selectionStart, t.selectionEnd);
    
