@@ -470,7 +470,7 @@ navigator.serviceWorker.register('./program_data_folder/service_worker.js')
    name: document.title,
    short_name: document.title,
    
-   start_url: 'index.html',
+   start_url: '/index.html',
    display: 'standalone',
    background_color: '#ffffff',
    theme_color: '#000000',
