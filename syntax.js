@@ -579,7 +579,7 @@ self.$ = ({
     
     const previousLine = t.value.substring(0, t.selectionStart).split('\n').pop();
     const indentation = previousLine.match(/^\s*/)[0];
-    if (InBrackets() || InBrackets('[', ']')))
+    if (InBrackets() || InBrackets('[', ']'))
     {
      const start = t.selectionStart;
      t.value = `${t.value.substring(0, t.selectionStart)}
