@@ -4,7 +4,7 @@ const assets = [
  '/Ruin/Manager.html',
  '/Ruin/syntax.js',
  
- '/Ruin/icons/manager.png',
+ '/Ruin/icons/rre.png',
 ];
 
 "Install event: cache files";

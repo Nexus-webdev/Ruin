@@ -274,122 +274,21 @@
        input();
       }
      }
-     
-     const start = textarea.selectionStart;
-     const end = textarea.selectionEnd;
-     const value = textarea.value;
-     
-     const selecting = start != end;
-     const selectedText = value.substring(start, end);
-     
-     if (e.altKey && e.key == 'r' && selecting)
-     { 
-      e.preventDefault();
-      if (selectedText)
-      {
-       const textToFind = prompt('Enter the text to replace:', '');
-       const textToReplace = prompt('Enter the new text:', '');
-      
-       if (textToFind == null || textToReplace == null) return;
-       const regex = new RegExp(textToFind, 'g'); 
-       const modifiedText = selectedText.replace(regex, textToReplace);
-       const newValue = textarea.value.substring(0, start) +modifiedText +textarea.value.substring(end);
-      
-       textarea.selectionStart = textarea.selectionEnd = start +modifiedText.length;
-       textarea.value = newValue;
-      }
-     }
+    })
     
-     if (event.key == ' ' && selecting)
-     {
-      e.preventDefault();
-      const lines = value.substring(start, end).split('\n');
-      const modifiedText = lines.map(line => ' ' +line).join('\n');
-      textarea.value = value.substring(0, start) +modifiedText +value.substring(end);
-      
-      textarea.selectionStart = start;
-      textarea.selectionEnd = start +modifiedText.length;
-     }
-    
-     if (e.key == 'Delete')
-     {
-      if (selecting)
-      {
-       e.preventDefault();
-       const lines = value.substring(start, end).split('\n');
-       const modifiedText = lines.map(line => line.replace(/^ /, '')).join('\n');
-       textarea.value = value.substring(0, start) +modifiedText +value.substring(end);
-       
-       textarea.selectionStart = start;
-       textarea.selectionEnd = start +modifiedText.length;
-      }
-     }
+    $.make_textarea_interactive(textarea);
+    textarea.addEventListener('keydown', e => {
+     const valid = ['Enter', 'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+     
+     if (valid.includes(e.key) && !e.shiftKey) updateLineNumbers();
+     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
     })
     
     textarea.addEventListener('scroll', e => {
      lineNumbers.scrollTop = textarea.scrollTop;
     })
     
-    textarea.addEventListener('keydown', e => {
-     const valid = ['Enter', 'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
-     if (valid.includes(e.key) && !e.shiftKey) updateLineNumbers();
-     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
-     
-     const lines = textarea.value.split('\n');
-     if (lines.length > rulesObject.rows) textarea.value = lines.slice(0, rulesObject.rows).join('\n');
-    
-     if (e.key != 'Enter') return;
-     e.preventDefault();
-     function between(a = '{', b = '}') {
-      return [value.lastIndexOf(a, start) == start -1, value.indexOf(b, end) == end];
-     };
-     
-     const start = textarea.selectionStart;
-     const end = textarea.selectionEnd;
-     const value = textarea.value;
-     const previousLine = value.substring(0, start).split('\n').pop();
-     const indentation = previousLine.match(/^\s*/)[0];
-     
-     const InBrackets = between()[0] && between()[1];
-     let newValue;
-     
-     if (InBrackets)
-     {
-      newValue = `${value.substring(0, start)}
-${indentation} 
-${indentation}${value.substring(end)}`;
-      
-      textarea.value = newValue;
-      textarea.selectionEnd = textarea.selectionStart = start +indentation.length +2;
-     } else
-     {
-      newValue = `${value.substring(0, start)}
-${indentation}${value.substring(end)}`;
- 
-      textarea.value = newValue;
-      textarea.selectionEnd = textarea.selectionStart = start +indentation.length +1;
-     }
-    });
-    
     textarea.addEventListener('input', e => {
-     paren("'", "'", e);
-     paren('`', '`', e);
-     paren('(', ')', e);
-     paren('{', '}', e);
-     paren('[', ']', e);
-    
-     if (e.data?.length == 1 && e.data == '"')
-     {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const value = textarea.value;
-    
-      const semicolon = value.indexOf(';', start);
-      if (semicolon == -1) return;
-      
-      textarea.value = value.slice(0, semicolon) +'"' +value.slice(semicolon);
-      textarea.selectionStart = textarea.selectionEnd = start;
-     }
     });
     
     function getRulesObject() {
@@ -420,17 +319,6 @@ ${indentation}${value.substring(end)}`;
      const encrypted = key?.length > 0 ? await $.Cipher.encrypt(code, key) : code;
      
      return `${encrypted}${broken_key}`;
-    };
-    
-    function paren(In, Out, e) {
-     btn.title = `characters: ${textarea.value.length}, lines: ${textarea.value.split('\n').length}`;
-     if (e.data?.length != 1 || e.data != In) return;
-     const start = textarea.selectionStart;
-     const end = textarea.selectionEnd;
-     
-     textarea.value = textarea.value.slice(0, start) +Out +textarea.value.slice(start, textarea.value.length);  
-     textarea.selectionStart = start;
-     textarea.selectionEnd = end;
     };
     
     function toggleMenu() {

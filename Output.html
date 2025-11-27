@@ -133,14 +133,19 @@
    script('syntax.js').then(_ => {
     bootstrapper.then(_ => {
      script('page.js').then(_ => {
-       $.listener('keydown', e => {
-        if (e.ctrlKey && e.altKey && e.key == 'c')
-        {
-         e.preventDefault();
-         const [href] = window.location.href.split('?');
-         window.location.href = `${href}?name=${prompt('Enter Program Name')}#`;
-        }
-       })
+      if ('serviceWorker' in navigator)
+      navigator.serviceWorker.register('./service_workers/output.js')
+       .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
+       .catch(e => console.error('Service Worker failed to load', e));
+       
+      $.listener('keydown', e => {
+       if (e.ctrlKey && e.altKey && e.key == 'c')
+       {
+        e.preventDefault();
+        const [href] = window.location.href.split('?');
+        window.location.href = `${href}?name=${prompt('Enter Program Name')}#`;
+       }
+      })
      });
     })
    })

@@ -1,9 +1,4 @@
 window.githubProgram = location.href.includes('.github.io');
-if ('serviceWorker' in navigator)
-navigator.serviceWorker.register('./service_workers/output.js')
- .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
- .catch(e => console.error('Service Worker failed to load', e));
-
 const mods = {
  Img: Image,
  js(code, type = 'text/javascript') {
