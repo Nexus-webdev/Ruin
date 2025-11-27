@@ -453,14 +453,14 @@ document.head.appendChild(link);
 
 script('https://nexus-webdev.github.io/Ruin/syntax.js').then(_ => {
  bootstrapper.then(_ => {
-  script('https://nexus-webdev.github.io/Ruin/page.js');
+  script('https://nexus-webdev.github.io/Ruin/page.js').then(_ => {
+   if ('serviceWorker' in navigator && location.href.includes('https') && $.meta.use_service_worker == true)
+   navigator.serviceWorker.register('./program_data_folder/service_worker.js')
+    .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
+    .catch(e => console.error('Service Worker failed to load', e));
+  })
  })
 })
-
-if ('serviceWorker' in navigator && location.href.includes('https'))
-navigator.serviceWorker.register('./program_data_folder/service_worker.js')
- .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
- .catch(e => console.error('Service Worker failed to load', e));
 
 // DATA - END;`;
    content = `<!DOCTYPE html>${A}${B}${C}`;
