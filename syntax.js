@@ -507,15 +507,11 @@ self.$ = ({
     if (semicolon == -1) return;
     
     t.value = t.value.slice(0, semicolon) +'"' +t.value.slice(semicolon);
-    t.selectionStart = t.selectionEnd = start;
    }
    
    function paren(left, right) {
     if (e.data?.length != 1 || e.data != left) return;
-    
     t.value = t.value.slice(0, t.selectionStart) +right +t.value.slice(t.selectionStart);  
-    t.selectionStart = t.selectionStart;
-    t.selectionEnd = t.selectionEnd;
    };
   })
   
@@ -569,26 +565,21 @@ self.$ = ({
    if (e.key == 'Enter')
    {
     e.preventDefault();
-    function between(a = '{', b = '}') {
+    function InBrackets(a = '{', b = '}') {
      return t.value.lastIndexOf(a, t.selectionStart) == t.selectionStart -1
             && t.value.indexOf(b, t.selectionEnd) == t.selectionEnd;
     };
     
     const previousLine = t.value.substring(0, t.selectionStart).split('\n').pop();
     const indentation = previousLine.match(/^\s*/)[0];
-    
-    const InBrackets = !between().includes(false);
-    let newValue;
-    
-    if (InBrackets)
+    if (InBrackets() || InBrackets('[', ']')))
     {
      t.value = `${t.value.substring(0, t.selectionStart)}
 ${indentation} 
 ${indentation}${t.value.substring(t.selectionEnd)}`;
      
      t.selectionEnd = t.selectionStart = t.selectionStart +indentation.length +2;
-    } else
-    {
+    } else {
      t.value = `${t.value.substring(0, t.selectionStart)}
 ${indentation}${t.value.substring(t.selectionEnd)}`;
      
