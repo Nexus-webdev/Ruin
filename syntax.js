@@ -511,7 +511,10 @@ self.$ = ({
    
    function paren(left, right) {
     if (e.data?.length != 1 || e.data != left) return;
+    const start = t.selectionStart;
+    
     t.value = t.value.slice(0, t.selectionStart) +right +t.value.slice(t.selectionStart);  
+    t.selectionStart = t.selectionEnd = start;
    };
   })
   
@@ -540,12 +543,14 @@ self.$ = ({
    if (event.key == ' ' && selecting)
    {
     e.preventDefault();
+    const start = t.selectionStart;
+    
     const lines = t.value.substring(t.selectionStart, t.selectionEnd).split('\n');
     const modifiedText = lines.map(line => ' ' +line).join('\n');
     t.value = t.value.substring(0, t.selectionStart) +modifiedText +t.value.substring(t.selectionEnd);
     
-    t.selectionStart = t.selectionStart;
-    t.selectionEnd = t.selectionStart +modifiedText.length;
+    t.selectionStart = start;
+    t.selectionEnd = start +modifiedText.length;
    }
   
    if (e.key == 'Delete')
@@ -553,12 +558,14 @@ self.$ = ({
     if (selecting)
     {
      e.preventDefault();
+     const start = t.selectionStart;
+     
      const lines = t.value.substring(t.selectionStart, t.selectionEnd).split('\n');
      const modifiedText = lines.map(line => line.replace(/^ /, '')).join('\n');
      t.value = t.value.substring(0, t.selectionStart) +modifiedText +t.value.substring(t.selectionEnd);
      
-     t.selectionStart = t.selectionStart;
-     t.selectionEnd = t.selectionStart +modifiedText.length;
+     t.selectionStart = start;
+     t.selectionEnd = start +modifiedText.length;
     }
    }
    
@@ -572,18 +579,20 @@ self.$ = ({
     
     const previousLine = t.value.substring(0, t.selectionStart).split('\n').pop();
     const indentation = previousLine.match(/^\s*/)[0];
-    if (InBrackets() || InBrackets('[', ']'))
+    if (InBrackets() || InBrackets('[', ']')))
     {
+     const start = t.selectionStart;
      t.value = `${t.value.substring(0, t.selectionStart)}
 ${indentation} 
 ${indentation}${t.value.substring(t.selectionEnd)}`;
      
-     t.selectionEnd = t.selectionStart = t.selectionStart +indentation.length +2;
+     t.selectionEnd = t.selectionStart = start +indentation.length +2;
     } else {
+     const start = t.selectionStart;
      t.value = `${t.value.substring(0, t.selectionStart)}
 ${indentation}${t.value.substring(t.selectionEnd)}`;
      
-     t.selectionEnd = t.selectionStart = t.selectionStart +indentation.length +1;
+     t.selectionEnd = t.selectionStart = start +indentation.length +1;
     }
    }
   })
