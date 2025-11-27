@@ -1,5 +1,5 @@
-self.addEventListener('install', event => {
- event.waitUntil(caches.open('v1').then(cache => {
+self.addEventListener('install', e => {
+ e.waitUntil(caches.open('v1').then(cache => {
   cache.addAll([
    '/Ruin/',
    '/Ruin/Output.html',
@@ -7,9 +7,6 @@ self.addEventListener('install', event => {
    '/Ruin/page.js',
    
    '/Ruin/bootstrapper.$',
-   '/Ruin/addons/foxx@dom.$',
-   '/Ruin/addons/foxx.$',
-   
    '/Ruin/icons/rre.png',
   ]);
  }));
