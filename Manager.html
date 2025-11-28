@@ -4,7 +4,6 @@
  <meta charset='UTF-8'>
  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
  <meta name='description' content='This is a basic project manager made for ruin.'>
- <link rel='manifest' href='manager.json'>
  
  <link rel='icon' href='icons/rre.png' type='image/png'>
  <title>Project Manager</title>
@@ -442,7 +441,7 @@ prefix: null,
    });
   }
   
-  const path = './service_workers/manager.js';
+  const path = './service_worker.js';
   if ('serviceWorker' in navigator)
   navigator.serviceWorker.register(path).then(_ => _).catch(err => {
    console.error(`Service Worker '${path}' failed`, err);

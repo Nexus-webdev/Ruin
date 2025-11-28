@@ -1,7 +1,11 @@
-const cache_name = 'rre_cache_v1';
+const cache_name = 'ruin_cache_v1';
 const assets = [
  '/Ruin/',
+ '/Ruin/index.html',
  '/Ruin/Output.html',
+ '/Ruin/Manager.html',
+ '/Ruin/Editor.html',
+ 
  '/Ruin/syntax.js',
  '/Ruin/page.js',
  

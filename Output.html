@@ -4,7 +4,6 @@
   <meta charset='UTF-8' content-type='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <meta name='description' content='This is the original description of the webpage.'>
-  <link rel='manifest' href='output_manifest.json'>
   
   <link rel='icon' href='icons/rre.png' type='image/png'>
   <title>Output</title>
@@ -133,11 +132,6 @@
    script('syntax.js').then(_ => {
     bootstrapper.then(_ => {
      script('page.js').then(_ => {
-      if ('serviceWorker' in navigator)
-      navigator.serviceWorker.register('./service_workers/output.js')
-       .then(_ => $.log('Service Worker loaded <css> color:lightgreen'))
-       .catch(e => console.error('Service Worker failed to load', e));
-       
       $.listener('keydown', e => {
        if (e.ctrlKey && e.altKey && e.key == 'c')
        {
