@@ -557,7 +557,32 @@ self.addEventListener('fetch', e => {
 });`;
 }
 
+class RuinScript extends HTMLElement {
+ async connectedCallback() {
+  let code = '';
+  if (this.hasAttribute('src'))
+  {
+   const src = this.getAttribute('src');
+   const from_git = src.startsWith('https://github.com/') || src.includes('.github.io');
+   
+   if (from_git)
+   {
+    const [owner, repo, ...path] = src.split('/');
+    const { owner: og_owner, repo: og_repo } = GitHub;
+    
+    GitHub.repo(owner.trim(), repo.trim());
+    code = await $.GitHub.read(src);
+    GitHub.repo(og_owner, og_repo);
+   } else if ($.FileSystem.origin) code = await $.FileSystem.read(src);
+  } else code = this.textContent.trim();
+ 
+  if (code) $.ruin(code);
+ }
+}
+
+customElements.define('ruin', RuinScript);
 setInterval(() => checkForChange(), 30); 
+
 const code = sessionStorage['__PROGRAM__'] ?? localStorage[program.name] ?? sessionStorage[program.name];
 
 $.meta.htmlTarget = document.body;
