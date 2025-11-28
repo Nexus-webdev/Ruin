@@ -580,7 +580,7 @@ class RuinScript extends HTMLElement {
  }
 }
 
-customElements.define('ruin', RuinScript);
+customElements.define('ruin-script', RuinScript);
 setInterval(() => checkForChange(), 30); 
 
 const code = sessionStorage['__PROGRAM__'] ?? localStorage[program.name] ?? sessionStorage[program.name];
