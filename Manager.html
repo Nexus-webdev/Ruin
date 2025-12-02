@@ -325,6 +325,21 @@ prefix: null,
   navigator.serviceWorker.register(path).then(_ => _).catch(err => {
    console.error(`Service Worker '${path}' failed`, err);
   });
+  
+  if ('launchQueue' in window)
+  {
+   launchQueue.setConsumer(async launchParams => {
+    console.log(launchParams.files);
+    const [file_handle] = launchParams.files;
+    if (!file_handle) return;
+    
+    const file = await file_handle.getFile();
+    const code = await file.text();
+    
+    sessionStorage['__PROGRAM__'] = code;
+    location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?';
+   })
+  }
  </script>
 </body>
 </html>
