@@ -594,7 +594,7 @@ setInterval(() => checkForChange(), 30);
   {
    $.log(handle);
    
-   const has_permission = await this.ensurePermission(handle);
+   const has_permission = await $.file_mode.ensurePermission(handle);
    if (has_permission)
    {
     const file = await handle.getFile();
