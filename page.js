@@ -591,12 +591,8 @@ setInterval(() => checkForChange(), 30);
   const handle = await script_files.get(program.name);
   if (handle)
   {
-   const has_permission = await $.file_mode.ensurePermission(handle);
-   if (has_permission)
-   {
-    const file = await handle.getFile();
-    code = await file.text();
-   }
+   const file = await handle.getFile();
+   code = await file.text();
   }
  }
  

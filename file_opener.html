@@ -9,8 +9,14 @@
     if ('launchQueue' in window)
     {
      launchQueue.setConsumer(async launchParams => {
-      const [file_handle] = launchParams.files;
-      $.file_mode.useFile(file_handle, script_files);
+      const [handle] = launchParams.files;
+      if (!handle) return null;
+      
+      const file = await handle.getFile();
+      await script_files.set(file.name, handle);
+      
+      sessionStorage['file-mode'] = true;
+      location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=' +file.name;
      })
     }
    })
