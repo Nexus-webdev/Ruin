@@ -582,9 +582,14 @@ class RuinScript extends HTMLElement {
 
 customElements.define('ruin-script', RuinScript);
 setInterval(() => checkForChange(), 30); 
-
-const code = sessionStorage['__PROGRAM__'] ?? localStorage[program.name] ?? sessionStorage[program.name];
-
-$.meta.htmlTarget = document.body;
-$.ruin(code);
+(async _ => {
+ const useFile = sessionStorage['file-mode'] == 'true';
+ const db = new $.Database('ScriptFiles');
+ 
+ const file_content = useFile ? await $.file_mode.useFile(program.name, db) : null;
+ const code = file_content ?? sessionStorage['__PROGRAM__'] ?? sessionStorage[program.name] ?? localStorage[program.name];
+ 
+ $.meta.htmlTarget = document.body;
+ $.ruin(code);
+})();
 

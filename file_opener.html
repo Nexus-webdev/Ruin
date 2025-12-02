@@ -2,19 +2,18 @@
 <html lang='en'>
  <p>Please Wait...</p>
  <script>
-  if ('launchQueue' in window)
-  {
-   launchQueue.setConsumer(async launchParams => {
-    console.log(launchParams);
-    const [file_handle] = launchParams.files;
-    if (!file_handle) return;
-    
-    const file = await file_handle.getFile();
-    const code = await file.text();
-    
-    sessionStorage['__PROGRAM__'] = code;
-    location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?';
+  window.bootstrap = true;
+  script('syntax.js').then(_ => {
+   bootstrapper.then(_ => {
+    const db = new $.Database('ScriptFiles');
+    if ('launchQueue' in window)
+    {
+     launchQueue.setConsumer(async launchParams => {
+      const [file_handle] = launchParams.files;
+      $.file_mode.useFile(file_handle, db);
+     })
+    }
    })
-  }
+  })
  </script>
 </html>
