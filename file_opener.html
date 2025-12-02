@@ -5,12 +5,12 @@
   window.bootstrap = true;
   script('syntax.js').then(_ => {
    bootstrapper.then(_ => {
-    const db = new $.Database('ScriptFiles');
+    const script_files = new $.Database('ScriptFiles');
     if ('launchQueue' in window)
     {
      launchQueue.setConsumer(async launchParams => {
       const [file_handle] = launchParams.files;
-      $.file_mode.useFile(file_handle, db);
+      $.file_mode.useFile(file_handle, script_files);
      })
     }
    })
