@@ -6,6 +6,10 @@ const assets = [
  '/Ruin/Manager.html',
  '/Ruin/Editor.html',
  
+ '/Ruin/manager-styles.css',
+ '/Ruin/editor-styles.css',
+ '/Ruin/output-styles.css',
+ 
  '/Ruin/syntax.js',
  '/Ruin/page.js',
  

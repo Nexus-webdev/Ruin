@@ -1,135 +1,14 @@
 <!DOCTYPE html>
 <html lang='en'>
-<head>
- <meta charset='UTF-8'>
- <meta name='viewport' content='width=device-width, initial-scale=1.0'>
- <meta name='description' content='This is a basic project manager made for ruin.'>
- 
- <link rel='icon' href='icons/rre.png' type='image/png'>
- <title>Project Manager</title>
-  <style>
-   body {
-    font-family: Courier New;
-    margin: 20px;
-    padding: 0;
-    background-color: #f0f0f0;
-    transition: background-color 0.3s ease;
-    overflow: hidden;
-   }
-
-   .dark-mode {
-    background-color: black;
-    color: #fff;
-   }
-
-   .dark-mode a {
-    color: #fff;
-   }
-
-   .dark-mode a:hover {
-    color: #ccc;
-   }
-
-   #add-url {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-   }
-
-   #new-url {
-    width: 300px;
-    height: 100px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-   }
-
-   #add-url input[type='submit'] {
-    width: 100px;
-    height: 30px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: #fff;
-    cursor: pointer;
-   }
-
-   #add-url input[type='submit']:hover {
-    background-color: #3e8e41;
-   }
-
-   #url-list {
-    list-style: none;
-    padding: 0;
-    height: 100px;
-    width: 150px;
-    overflow-y: auto;
-    overflow-x: hidden;
-   }
-
-   #url-list::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
-   }
-
-   #url-list li {
-    margin-bottom: 10px;
-    padding-left: 16px;
-    cursor: move;
-   }
-
-   #url-list a {
-    text-decoration: none;
-    color: #337ab7;
-   }
-
-   #url-list a:hover {
-    color: #23527c;
-   }
-
-   #link {
-    display: none;
-   }
-
-   #iframe-container {
-    position: absolute;
-    resize: both;
-    top: 62%;
-    left: 52%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 480px;
-    border: 1px solid #ccc;
-    padding: 10px;
-   }
-
-   #iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-   }
-
-   #mode-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
-    border: none;
-    border-radius: 50%;
-    background-color: #4CAF50;
-    color: #fff;
-    cursor: pointer;
-   }
-
-   #mode-btn:hover {
-    background-color: #3e8e41;
-   }
-  </style>
+ <head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta name='description' content='This is a basic project manager made for ruin.'>
+  
+  <link rel='icon' href='icons/rre.png' type='image/png'>
+  <link rel='stylesheet' href='manager-styles.css'>
  </head>
+ 
  <body>
   <button id='mode-btn' title='Toggle dark mode'>☀️</button>
  <form id='add-url'>
