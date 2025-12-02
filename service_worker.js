@@ -25,8 +25,11 @@ self.addEventListener('install', e => {
 
 "Fetch event: serve cached files";
 self.addEventListener('fetch', e => {
- console.log(e.request);
- e.respondWith(caches.match(e.request).then(response => {
+ const url = new URL(e.request.url);
+ "Strip query params for matching";
+ const request = new Request(url.origin +url.pathname);
+ 
+ e.respondWith(caches.match(request).then(response => {
   return response || fetch(e.request);
  }));
 });
