@@ -12,11 +12,7 @@
  <body>
   <button id='mode-btn' title='Toggle dark mode'>☀️</button>
  <form id='add-url'>
-  <textarea type='text' id='new-url' placeholder='Enter URL' style='width: 279px; height: 65px' spellcheck='false'>
-project: '',
-encoding: null,
-prefix: null,
-</textarea>
+  <textarea type='text' id='new-url' placeholder='Enter URL' style='width: 279px; height: 65px' spellcheck='false'></textarea>
 
   <div></div>
   <input type='submit' value='Add URL'>
@@ -31,12 +27,17 @@ prefix: null,
 
  <script> 
   script('syntax.js').then(async _ => {
-   const IdPassed = urlData().id || urlData().manager || null;
+   const IdPassed = urlData().id || urlData().name || prompt('Please Enter a project id.');
    const [url] = window.location.href.split('?'); 
-   if (!IdPassed) window.location.href = `${url}?id=${Math.random()}#`;
     
    const id = `Manager - ${IdPassed}`;
-   document.title = `${id.split(' - ')[1]} - Project Manager`;
+   document.title = `${IdPassed} - Project Manager`;
+   if (IdPassed && !sessionStorage.value)
+   sessionStorage.value = `
+project: 'Page',
+encoding: '',
+prefix: '${IdPassed}',
+   `.trim();
    
    const link = document.getElementById('link');
    const iframe = document.getElementById('iframe');
