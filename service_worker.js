@@ -20,6 +20,16 @@ const assets = [
  '/Ruin/icons/rre.png',
 ];
 
+async function online() {
+ if (!navigator.onLine) return false;
+ try {
+  const response = await fetch('/ping.txt', { cache: 'no-store' });
+  return response.ok;
+ } catch (err) {
+  return false;
+ }
+}
+
 "Install event: cache files";
 self.addEventListener('install', e => {
  e.waitUntil(caches.open(cache_name).then(cache => {
@@ -33,7 +43,9 @@ self.addEventListener('fetch', e => {
  "Strip query params for matching";
  const request = new Request(url.origin +url.pathname);
  
- e.respondWith(caches.match(request).then(response => {
-  return response || fetch(e.request);
- }));
+ online().then(status => {
+  e.respondWith(caches.match(request).then(response => {
+   return status ? fetch(e.request) : response;
+  }));
+ })
 });
