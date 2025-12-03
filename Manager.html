@@ -28,7 +28,9 @@
  <script> 
   script('syntax.js').then(async _ => {
    const IdPassed = urlData().id || urlData().name || prompt('Please Enter a project id.');
-   const [url] = window.location.href.split('?'); 
+   const [url] = window.location.href.split('?');
+   if (!urlData().id && !urlData().name)
+   location.href = `${url}?name=${IdPassed}`;
     
    const id = `Manager - ${IdPassed}`;
    document.title = `${IdPassed} - Project Manager`;
