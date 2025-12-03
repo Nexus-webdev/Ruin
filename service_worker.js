@@ -43,9 +43,8 @@ self.addEventListener('fetch', e => {
  "Strip query params for matching";
  const request = new Request(url.origin +url.pathname);
  
- online().then(status => {
-  e.respondWith(caches.match(request).then(response => {
-   return status ? fetch(e.request) : response;
-  }));
- })
+ e.respondWith(caches.match(request).then(async response => {
+  const status = await online();
+  return status ? fetch(e.request) : response;
+ }));
 });
