@@ -23,7 +23,7 @@ const assets = [
 async function online() {
  if (!navigator.onLine) return false;
  try {
-  const response = await fetch('/ping.txt', { cache: 'no-store' });
+  const response = await fetch('https://nexus-webdev.github.io/Ruin/ping.txt');
   return response.ok;
  } catch (err) {
   return false;
@@ -43,8 +43,12 @@ self.addEventListener('fetch', e => {
  "Strip query params for matching";
  const request = new Request(url.origin +url.pathname);
  
- e.respondWith(caches.match(request).then(async response => {
-  const status = await online();
-  return status ? fetch(e.request) : response;
+ e.respondWith(caches.match(request).then(res => {
+  return new Promise(async resolve => {
+   const status = await online(); console.log(status);
+   const response = await (status || !res ? fetch(e.request) : res);
+   
+   resolve(response);
+  }) 
  }));
 });
