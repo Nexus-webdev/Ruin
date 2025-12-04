@@ -117,6 +117,7 @@ self.$ = ({
              .replaceAll(' err ', ' throw ')
              .replaceAll('wait for\`', 'await for_ \`')
              .replaceAll('wait for \`', 'await for_ \`')
+             .replaceAll('import `', 'await meta.mod `',)
              .replaceAll('## ', 'await foxx.run(`\n')
              .replaceAll('!;', '\n`);')
              
