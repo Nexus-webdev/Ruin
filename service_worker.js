@@ -5,6 +5,7 @@ const assets = [
  '/Ruin/Output.html',
  '/Ruin/Manager.html',
  '/Ruin/Editor.html',
+ '/Ruin/file_opener.html',
  
  '/Ruin/manager-styles.css',
  '/Ruin/editor-styles.css',
@@ -46,7 +47,7 @@ self.addEventListener('fetch', e => {
  e.respondWith(caches.match(request).then(res => {
   return new Promise(async resolve => {
    const status = await online(); console.log(status);
-   const response = await (status || !res ? fetch(e.request) : res);
+   const response = await (status || !res ? fetch(request) : res);
    
    resolve(response);
   }) 
