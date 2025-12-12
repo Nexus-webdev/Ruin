@@ -255,6 +255,10 @@ self.$ = ({
  },
  
  _: undefined,
+ False: false,
+ True: true,
+ nil: null,
+ 
  RUIN: new Proxy(this, {
   get(_, property) {
    return $[property];
@@ -590,19 +594,6 @@ ${indentation}${t.value.substring(t.selectionEnd)}`;
     }
    }
   })
- },
-
- console: undefined,
- terminal: console,
- dp: {},
-
- enable: {
-  auto: {
-   reload() {
-    $.autoReload = true;
-    return $.enable.auto;
-   },
-  },
  },
  
  when(condition, checkDelay = 100) {

@@ -105,10 +105,30 @@ const mods = {
  },
  
  session: sessionStorage,
- cache: localStorage,
- parent: window.parent,
+ cache: new Proxy(localStorage, {
+  set(target, prop, value) {
+   target[prop] = value;
+   current[prop] = value;
+  },
+ }),
+ 
+ liveReload: {
+  push(...names) {
+   watch.push(...names);
+  },
+  
+  remove(...names) {
+   const w = [...watch];
+   watch.length = 0;
+   
+   watch.push(...w.filter(name => !names.includes(name)));
+  },
+ },
 };
 
+const program = urlData();
+const watch = [program.name];
+const current = { ...localStorage };
 for (let key in mods)
 {
  if (typeof mods[key] == 'function')
@@ -408,18 +428,6 @@ $.struct('Image', {
  },
 })
 
-const program = urlData();
-const watch = [program.name];
-const prev = {};
-
-function checkForChange() {
- for (let key of watch)
- {
-  if (!prev[key]) prev[key] = localStorage[key];
-  else if (localStorage[key] != prev[key] && $.autoReload) location.reload();
- }
-}
-
 $.listener('keydown', async e => {
  if (e.ctrlKey && e.key == 's')
  {
@@ -581,7 +589,12 @@ class RuinScript extends HTMLElement {
 }
 
 customElements.define('ruin-script', RuinScript);
-setInterval(() => checkForChange(), 30); 
+window.addEventListener('storage', _ => {
+ for (let key of watch)
+ if (localStorage[key] != current[key] && $.meta.autoReload)
+ location.reload();
+});
+
 (async _ => {
  let code = sessionStorage['__PROGRAM__'] ?? sessionStorage[program.name] ?? localStorage[program.name];
  const useFile = sessionStorage['file-mode'] == 'true';
