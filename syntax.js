@@ -504,7 +504,7 @@ self.$ = ({
   
    if (e.data?.length == 1 && e.data == '"')
    {
-    const semicolon = t.value.indexOf(';', start);
+    const semicolon = t.value.indexOf(';', t.selectionStart);
     if (semicolon == -1) return;
     
     t.value = t.value.slice(0, semicolon) +'"' +t.value.slice(semicolon);
