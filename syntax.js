@@ -504,10 +504,12 @@ self.$ = ({
   
    if (e.data?.length == 1 && e.data == '"')
    {
-    const semicolon = t.value.indexOf(';', t.selectionStart);
+    const start = t.selectionSart;
+    const semicolon = t.value.indexOf(';', start);
     if (semicolon == -1) return;
     
     t.value = t.value.slice(0, semicolon) +'"' +t.value.slice(semicolon);
+    t.selectionStart = t.selectionEnd = semicolon -1;
    }
    
    function paren(left, right) {
