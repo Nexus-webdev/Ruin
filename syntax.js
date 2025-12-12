@@ -496,21 +496,12 @@ self.$ = ({
  make_textarea_interactive(t) {
   if (!t.addEventListener) return;
   t.addEventListener('input', e => {
+   paren('"', '";');
    paren("'", "'");
    paren('`', '`');
    paren('(', ')');
    paren('{', '}');
    paren('[', ']');
-  
-   if (e.data?.length == 1 && e.data == '"')
-   {
-    const start = t.selectionSart;
-    const semicolon = t.value.indexOf(';', start);
-    if (semicolon == -1) return;
-    
-    t.value = t.value.slice(0, semicolon) +'"' +t.value.slice(semicolon);
-    t.selectionStart = t.selectionEnd = semicolon -1;
-   }
    
    function paren(left, right) {
     if (e.data?.length != 1 || e.data != left) return;
