@@ -551,7 +551,11 @@ self.$ = ({
    
    set(structs);
    const __init__ = func(this.__init__) ?? func(this.construct);
-   if (args[0] != '⌀' && __init__) __init__(...args);
+   if (args[0] != '*bypass init*' && __init__)
+   {
+    const result = __init__(...args);
+    if (result != undefined) return result;
+   }
   };
   
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
