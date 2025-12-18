@@ -180,7 +180,7 @@ Object.defineProperty(String.prototype, 'decompress', {
   const readCode = _ => {
    while (bit_count < bits_per_code)
    {
-    if (index >= compressed.length) return nil;
+    if (index >= compressed.length) return null;
     bit_buffer |= compressed.charCodeAt(index ++) << bit_count;
     bit_count += 16;
    }
@@ -199,14 +199,14 @@ Object.defineProperty(String.prototype, 'decompress', {
   dictionary.set(i, String.fromCharCode(i));
 
   let firstCode = readCode();
-  if (firstCode == nil) return '';
+  if (firstCode == null) return '';
 
   let w = dictionary.get(firstCode);
-  if (w == nil) throw new Error('Invalid compressed data (first code)');
+  if (w == null) throw new Error('Invalid compressed data (first code)');
   let result = w;
 
   let code;
-  while ((code = readCode()) != nil)
+  while ((code = readCode()) != null)
   {
    let entry;
    if (dictionary.has(code)) entry = dictionary.get(code);
