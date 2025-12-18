@@ -227,6 +227,8 @@ Object.defineProperty(String.prototype, 'decompress', {
 
 self.$ = ({
  _TYPES_: [],
+ _currentCtx_: {},
+ 
  scramble(txt, key) {
   if (!key || typeof key != 'number') return txt;
 
@@ -354,6 +356,7 @@ self.$ = ({
  
  setup_phase: true,
  ruin(encodedText = ``, context = {}) {
+  const prevCtx = $._currentCtx_;
   return new Promise(async resolve => {
    const i = encodedText.lastIndexOf('¿');
    let [txt, key, length] = [encodedText.slice(0, i), encodedText.slice(i +1)];
@@ -365,6 +368,7 @@ self.$ = ({
    
    const code = await (key ? $.Cipher.decrypt(txt, key) : txt);
    const result = await (new Function(`return (async() => {
+ RUIN._currentCtx_ = this;
  with(this) {
   ${$.fixSyntax(code)}
  }
@@ -374,6 +378,7 @@ self.$ = ({
     ...$,
    });
    
+   $._currentCtx_ = prevCtx;
    $.setup_phase = false;
    resolve(result);
   })
