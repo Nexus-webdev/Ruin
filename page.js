@@ -186,6 +186,84 @@ function setImq(src, data, resolve) {
  `);
 };
 
+$.struct('xml: static', {
+ parser: new DOMParser(),
+ serializer: new XMLSerializer(),
+ $add_methods(doc) {
+  "Make sure xml documents can stringify or convert themselves into arrays independently";
+  doc.stringify = _ => this.stringify(doc);
+  doc.to_array = _ => this.to_array(doc);
+  
+  "Make map and filter methods for elements";
+  doc.map = f => {
+   f = f && typeof f == 'function' ? f : (_ => _);
+   const root = doc.documentElement;
+   const children = [];
+   
+   for (let child of root.children) children.push(f(child));
+   return children;
+  };
+  
+  doc.filter = f => {
+   f = f && typeof f == 'function' ? f : (_ => _);
+   const root = doc.documentElement;
+   const children = [];
+   
+   for (let child of root.children)
+   if (f(child)) children.push(child);
+   return children;
+  };
+ },
+ 
+ to_array(doc) {
+  "Converts xml doc into an array of { tag, text }";
+  const root = doc.documentElement;
+  const array = [];
+  
+  for (let node of root.children)
+  {
+   array.push({
+    tag: node.tagName,
+    txt: node.textContent,
+   });
+  }
+
+  return array;
+ },
+ 
+ parse(str) {
+  "Evaluates to an xml doc based on the string provided";
+  return new Promise(async resolve => {
+   const doc = await this.parser.parseFromString(str, 'application/xml');
+   this.$add_methods(doc);
+   
+   resolve(doc);
+  })
+ },
+ 
+ stringify(doc) {
+  "Serializes an xml doc to string form";
+  return this.serializer.serializeToString(doc);
+ },
+ 
+ build(name, nodes = [], elem) {
+  "Builds an xml doc from an array of { tag, text }";
+  const doc = elem || document.implementation.createDocument('', '', null);
+  const root = doc.createElement(name);
+  
+  nodes.forEach(node => {
+   const child = doc.createElement(node.tag);
+   if (node.txt) child.textContent = node.txt;
+   
+   root.appendChild(child);
+  });
+  
+  doc.appendChild(root);
+  this.$add_methods(doc);
+  return doc;
+ },
+})
+
 $.struct('Terminal', {
  __init__({ width = 400, height = 300, backgroundColor = '#000', textColor = '#0f0', interpreter = x => x, header } = {}) {
   this.interpreter = interpreter;
