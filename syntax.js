@@ -238,7 +238,7 @@ self.$ = ({
   }).join('');
  },
  
- fixSyntax(code) {
+ _macro_(code) {
   "Replace special keywords with js syntax";
   code = code.replaceAll('def ', 'this.')
              .replaceAll(' err ', ' throw ')
@@ -368,9 +368,9 @@ self.$ = ({
    
    const code = await (key ? $.Cipher.decrypt(txt, key) : txt);
    const result = await (new Function(`return (async() => {
- RUIN._currentCtx_ = this;
  with(this) {
-  ${$.fixSyntax(code)}
+  RUIN._currentCtx_ = this;
+  ${$._macro_(code)}
  }
 })();`)).call({
     ...context,
