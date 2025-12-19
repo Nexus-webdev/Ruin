@@ -46,7 +46,7 @@ self.addEventListener('fetch', e => {
  
  e.respondWith(caches.match(request).then(res => {
   return new Promise(async resolve => {
-   const status = await online(); console.log(status);
+   const status = await online();
    const response = await (status || !res ? fetch(request) : res);
    
    resolve(response);
