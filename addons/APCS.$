@@ -1,1 +1,595 @@
-{"s":"9uaB8s6i0+L/onVOmsEDBw==","i":"Gdl6NXHNq294jxP4","c":"mRnaVajflMwl1UMjeHS1xKSxxBqH1RCwx5PZNmMfKXSyWkRyr4UuAFLJyM0OEZXYe75xQyi28njCNIYHij+Z7KdWQyHWly0vR8YblqPZ4scw3H/7npUzjauFd+UJ+Yl5D2wDGYFwfKeT08Omay86r3+y4vzX+7gzgT7PrZBK83FGiy1TZ+pW01x5nxuh8ZQVoIuqt1QElX+fhhFdD0b1D1VqexdpyihF55IUeXxIsEYnYH2SY5x0gZKlCH/OQKYI0PlolA23sK+vNBhah6DuD8B6Xt/2dkOHYLirrtwj30iV08EfV9kVqPqljkE/NlARNdzTJ8S1vTdKnhexKNFhm8LNm7sk0HIJCTiV1fRnwBtb+yhvDLkvaeQBYfawLlrjjhPCxyS+3/tEtw/V5Uz/jvyw0x6kKlFDrPOlsEtoRiIkM3MoHqhTCpHRt/6Qryzu4wKBKohYyMf3zQ9tRC6PdsypYDc30fzbhH3UGuGFhuSd7EdstM3zPaOkyGeZFUqaM6dlx2tVCyLobFtPRAdtx1n40TWLJSJ6p3Pz+kWhdI18qlkgbhCK5CS1WYBmTXt2acHwkwxfeE5dCQ0jgBk67upsHQjUM9d5wphi1AhqNcibPMiawTal8+VkK5HRlFyy/c+hVYaAN+VctNrqZOk3TGO7Kby7a29o2ym/QOz4MOb9t8lx1ilSVrVAuqT7bqazCrKzB31YQBsufwwez+82jLpeEsB9XNnUyQz+wVePFz6p4RXqtjBq5DIxx1Nv6YrDo5I9RsSUQV06yIhAaRiTH5JYuc7r/aNrj5c6RrN0nLyfuGn0Afn2yK9FEtxVPia0ScXFn5CKnp41D1KjEuYnscZ2VIiRkl3IQH90R712IJaBSl2a23MDAJGHEbGyCzvdaT0kBUoTEhguowFE9XN7QmmnGUBxoF4GFkvgX3nviitkkIrnKDSBXjJ9vbWrib4mQP6i2RMkf5pTy0yHcb82dbPIsOnFKJy5TwUTTEi3XUnZGQ45XaoyLTaAITLBVqU95FN0h6Ty9URlOCMYYSOBOlPEV8fpw4VP+IZAW/giAN2obWVoqZiWD+bm1pmV66FlGRp6gfSF6FagjKrFejKAdjPCRsWrkTfsWZKIQUt2pH0gBmCRFFb7m9AclfsN7+iZ0+Qf3QliXx/aiDRSr8bwPT0PWx+O7Bo67yjb9myoRrt2IUwe6F/sS8M+oeZva4VzSQJCHPsF2/sFcLhvUdD5lYEPqc/smSrCp83ChGrEawUgg4XiYfnMYjoi94qYpwS61XaWygx8E+g9PjhPvyn/CrmdIS3mKnk831aU2ToN/9zDX7teZt6iBAcUvofAChgf9bXrfPo18YtlYnvS9awmrQMxVOCalPNkO5jwtTe4c84RU2L8ia0qp0YiXSmx/L6zTz5weSo15dW4cJCh88XLpIXXA3R1u2jBI24kkXmXjVyX/3iPvScPLxTyiihS1/7XamcZUInUyRthBjH9s2w5EVa4LA3HWQXb/iXJS4kvOGQQF5F1NmIYWzz6NyazAR8pRtLGv81auYhLMlY/l43hqKy9IMdZ14hFT2wMIdLm+ZkmMcW2143kjzYz942T5g0LXqL4ywGaZ1TXiVa7xAkkAfvGhPRHk6jfxz+R5o0Za4ha38h9puyzTe7iRbGeSgElQdbjCZwx4oTU52z0FO+arH7gBOKkQwGJyhuS70Qw2qrmpAAGjqJEnuoq29y/rWru8ycBXTY7gce6yXsM8eayqObnaedXHK5u3VbudhDGLu3h8u4KNTAIeE3vP+dHLPIq4B2Qj4XMUclpVcHW7wnOzD1dXwMIkemj+yDvnntWYphTVd5sGvtoS36y4epOvZyRcb8Vk9pb6001HrUH3xEOw+RW6fXK9w6wvXQaPh3bRm18piX1fuVM6oG676c1UtXXQvBns7Z5ityEk+tV/qBpq8gfBYR4gxAQgWmxyZVVpOjoJoX+Tn8GwuS8gQr8cgj3DaSjgJOoFQ3RiAse+bNOKGMZd2s/tlje7ZfPMADT8rwgYd8ofO9mNnCT/0P11oqR2vTdxiXT+/dOJCZEs7BJYngLMxIIiZpYO/ery4lJVlOvDSxHXbZYu9m0d0X/xDb1XWZMUN6fI2rgD3R1qAaLq9r3bV5bDS/3q1WwUT/IZ6Owks/bvr+D7iyfww3AfvaGTu0/WATtud+vgIUai2vJtIH4R7bZmjl8N2P10wMNfU7I/jQM89yqvEeZPSLMzSmEts3I23ckWzJW57+MxDpHXC++1Cjk7taHpblcwdiWKJUh90pVZmAGnMywIqI/aiqpgJNfKLPPRhMKM31d2pi3D4fWXlGXMMTQ0xsfWNCQFwgLl7978QcP8GgtEjtwxH5ALup1lcHAawC2JO46ICGS55xXHJ7wVHzhYlJ5aaE6Fzu6BxQOENn8gMiiHMD+LTFR+qSrfGlo31avEzp2LtxV8tAtf7o2QZzY3Jb7r7oDRWdsl3fAE5eOlqUqUtb5vmfmSolm8Dma2sk+ZoDR0SGOsSUZYye+5Fzh0mi627am/pOVN5PlFaIjFx08Ht0Jz3FPtTkOtXY9aH3eN9a9gMzeEHetTfG+BFqLPHhR2Fzf+s3Jb1OMDi2jS/6s7c5l2EgIagpiEHIc7IKzQ4sWtwmKl6NM1QYdag5W6IubJ6veZRRPapXoFTd7UrNetIEDIAytKeM5fdx7RdPDNPPMjjX6p8RyVfNadwH6KyF+PbPxagVBAzk2ebVEfl4HyMrOxmRQfinkLQyCvK/QY5syA+z/HLVFJerwFha+3aiagG+mGVpP2Bs1mCDgJfwi7KAY1P4JQFmTdVrOtg8cEgewFFeVHMJf5VoMxaUlQcCNVAtv0ZohPL6UCPCnN7KUTEuU3hOddroYaalqkjZRpSM9BEkoYqaAn8I4zjeyCO96zRKs9Zr54f+Ar5Vp+RWca4rIKbYpgyoQbjlxiz+VTCLhFGTa7mqNh1CqiKt4Mp6QFdMWGPdlIjzgoRrzNrkJnd2vjUfevgTwJ5x/1CiAEfhzWnY5ao0LWeyfrksHRQqOmwngkJFYY24zKzSeBymXvFBDY3rZY5RIzntOXewGLEvFhnXn9q1Jgh33QFVs0Pp5ekkEdxqh/M3ySoGi7pCVlYIhhbwtcrsP1JWuyjxbxmfJpTBIWASHWzit21QRL9+ibMH7XMLzUE1PTODMWs8iWxDBqSZOXaf9T5lP1dchOmRsTjR7jhAR81ebRpnRg1WlCii5zw54j3b/GsvCgbqGT/z/DbdI8ydlUX+yHnr+rOBCyzDJQTOfFS2tFizYtwlk9q1uNF7haaf+zdBK2S8OyW5cjq73RTwguwTMm1f0HJLmpmnNUdCRP5CGWtSf2wVUedtVgtNfTSjJu85QyAz0KrWhhVI+13ytiUic08uYqz7ZAn/JGoe7SxybAJI8szx/+Rm1EDkJ8r2D4ohU6zYgO+cWVhjq/JWiSzuN5QX0r2+QbXCYI6ZV25lVHrHdudEPeXrQkSjbpGdSawLzNCue06oXe/Oi85RzIeReASCxLcB/DGaHdbtVjEwL/vuuTl6KXCdzfguA2/9BkQJvIuBGGy5GyYiQLNFWFnwhNChBwqAzdu50ZKgYSN8po7BujnQwISpvm/gAB8ORgnYH37KKf4WwSRn9yyfv0Lh9wtAS0EFaccKArsvIhHqWb+kHc1Y1fIHiadT7tG3bTp9hrRvm83QN4dyNoYQQNa6Hb8ndtGdTwmJvfDrmul2J53wpaoxlzI9xHZP3uFsnAKLiJjRzze2jmhLxP9RhisFD5NF5xjob+Z6JKjW64l+eBF3ICpjDz/eYvvdwsDZ8SMBACy3Y1CCzTr3IxAnotpQRFpcZ5lFlxzoAgSLk4NKL9/QrHFGxKYOxcMKcySyIrKTGkZ59qHapI3idt4NLyy6LwGf4nl6oYEb2+btn7qzRjU4t76N+ap11Jp/61jE49PvVWhLKbfYUMwnfDR2URulWvJlzyFYc5remkijSf9INf7tittOTPEKIGfQc1BumX6ZSkyJDh3gqNOhvKDoA0LMEWZiDNx/Jyf8ZeXY6UzITOiur+2qDwvDUzzv1MJ8eM7QT9oeCTM2ASwiLOXUAk0lyecycvxOONhOpeKilrlEHdkmU+/0I1zbIjXs9beJybNa529/sYa5C8+SSHngZJQDe1Vwo2hv/MWWP9WXNzODOyH/P5UihXUgy+ehSpN7f1VTofmILQwjKR7+aWD+AF0aeFqh9KE+CM+H0mlVPdLD4i54GSas+ZTY18MYcwPE0qMhal90MyoEqurfU4PII0BjQigCh0sPat87t9p5DesIvDbPU/6vJdY6upAqb/T5kU25Cc6mPmgVeJ0QjmyOguuJoFXIlX1467UQss1XpU8FoTsWz2XZbdEe0LmDGwYF6O7SIchxBjE863su1/KqesWYzXHUkNW5T3e+twXeAuIJfcVo/dExMfNZ1jpaz7uZIrchspNCQOAEGR6cznxvvSuz/wzO2v5WA/2Kp9We14gVqdL9NInQybpXzZV5TaTCUhRj75LB+vxxPVjuiIZYO4XTCQeYZQriNL8RTiT6P22pmIkDLoM2xuABP7CQ9WjvsAUJKF3urrmZ35x04FP89zAJS9VqvnSD3ZUUmCQ7jf9Ybj7Jiw0rK53rGXV2ZLsVU3INt8/gbTrYIE+b+aVKjEft0t9G20LUlZmgPXsogGxyMwF2Bf5isJ09MPZYMIh6FypWU/GLXe528MPQ3BzT6jH6E/tLjK/fnaoETRQGaDeai2Q2h1yQLcpfbGp3QnZdYobxESH5zNofOE7jP3JKyeZ2ObKJEQ1Q5vt9kAPqEHEbqEku5Kbm3lgTuzCrlM92PImyfZHQVOPPLQgBnpWKgNhYJyszQIYjEwJc8SA8bznrirOhrNKtGdJ2ESJuDI2NBoRxactzcpOJcOZIgSQsN1wQqpAHuNl+1fMB0/p5tGp1ogKOOT5PukpqfPV6TO3zPNf/XZLMENk+tOj8xmX6QMb6wiTeqqKNdBBJUSPV1A2Xdy+MsVleml76aK/pT8Bn6nxOhUMSjgIhFm3uqxoJVVmw5MEOMivedUk/8elZGAV4CL+s2B/hBvoRmmERqCiz7XAylwacP0gwzGaKHXF4vFgZAUrjsnIwYPriCxrBckCfZJ3MBCmXQ61kCzw/lURMFYPWVx3xi/C8D+tNZwqCPui+QMdbvFyJjpbtfKls1r/wExz/ICkbHEzIiA1kY3G6efLFSjRgLVE47ngbH5esLKnT2fQtyHvLnsaoRN34zJ1b9TgH57/q274uvYx5JcdsP8hLKOOGYNWwlXMg4CJ9BMMP0HevYkQ54lHfan20S0wR2Spmmo4lEgufcKxnQrsQHCmb7PrBNDQj5BnQ/Ud2qteaLfrl2WMcl//YilLKC/p5kJuSAWON13HZVNhjIoad6fpmHWX3kUJ8CReuwpLboDyCgnGm7XhGg72IHkDZbwuMz4aUJ14A1guoxhFxzxQiodLxcZBbtLHZ5pwnrf/1N+6rvxxD+zoVfSaBqvd30yedj0ZrAu5/6Rfqw5GcEffSGNemFIw0T/MixfKeoVLLjyawhSvUuWkUiy/tPF3dVAT1jE7jx/V4nF3vDWR15Jq4/cpKu3TFrcEhVFje5Bl0pJkB2Un3bwp4lvo4apIAXgoIBzC8tOjMMW5XhvsY61LHx5Bo9cZyeQDtpAJn1w0d8NKXQni+P94+AA5QdywkBbQy7ep+cgXX+Xa69TFYh5lmhZqoZUL3O9eenQTOq1LP/zQlUmQLEFgrZXUKhvqD3PZrJxKPi13C3MiVMciKXoj85/oWFOcFSLr/RdG2bfipRSHk6ZGcz5JdaiDLE5x+MJ7IQf477JnKCDxVULVpK2xIecylY/D2yWOtciqGRbgUUVZvx0B/dBBrG/CACMjWlMiuj+bsA8H/zzpeJvqJ/u6s1IkUpfrWpzwZWMuZoRiOlizk/E+ZgJt8zjb4u550toPGG+yKsA5ZOQ9xbqkEPSxI5m+6meuXaXt5JtMlQC137SioMMcz6TiOQOXs+lEKgYCTY4e6K7/4qh0DdmTx5p0cC9yHQ+brfh+ga/Z1GdxTsgCga1PiPZ7RV668A1zKLT7M2d2LcW7zy3kfWxgEzX8MpBKbtEdCCTVspP5cXSVZyrNuLmo3Xp1d+F0qtFdR+hJyz7NJT3Sg5I+6VgLZ46GeQ7rCWNR5Ylzl6P8uDFRBeoWXXoojLEBksGj/jFLtxm78Npq/2QzTqArILHkCYsY+KtJyQRDq65fcS8WUIBqAzXP/WNQsyEGA9S6uy0Q1LqglZDq+sHWyJfTT2SlVtHxSZ9N3LGpYtVHPyDZHElzYTwrug0I9UZiJALkyV7a+BBHApnSPeqlpWt35PhydNNTe9B6eo+edIoCmYOK8R8TvOJWUFVsUIncxfS5NVlR7Lih+ggFu1OnNE7msoyo+/KPa+n80J74QZet2hWmGqYEwh1++6gkGmp+x7hcSZHNg9lLnP8KYIDUL/V+8PePHPHp+QyPFK0dlaqPgCgxiYEhRHuSqhfvslmGjVkO1CNl1Z0WsS7CS2Rzp/HoIEG4h0+eLBR9iefSY3XnCPv3qJkLaW0jztdTLa/bKkVmHYPogfZU3Kza+rhhzDIDC4RAknMdj4/JXxcy7BQY8KcBEVhWpf1NULgQ/5fR62jKq8UrKY0QWiLA4LZWK2ysMtg8LbrWv3nLP18g5VNb3s96RJPGBQdCqlKAStfxVtZRPVMl5Nvc5TdbvjK1U0T2fE1OJxZfHaHuaaZhn7HjXcV/n9ecLSR4j83AYdSUSZN0Lm5BIsl336fqhPkqzcDfqE7qojATV05DU4j9Ojg6Eblk88zUMyzzrOCvxukARs+sYxDz3774wE2f5gH6kF0dc5ys24qZ+pd7RZ9h/toXWght+jK+lykRFxjvt56vSqQDtLUf2O78qZtQOW6Tq+a2ECqesicIMMAGPdbN3jvaMeiZ6284UJsBotKfO2iGcQG7PpAV7PxSMFRS2DYOAnufZlN1enHYQFrEHycS22QMljyksK6hKHu+WGwEaz0DK1tpurrmfdYxAQRJoLf2BWgAgjkm/bVz//lxa2Ml6Xwuhf9llBigSanm1qNpqfvmsxmQio4mTPMOTkVQU4asz7Uedccfmx2jfttSqG6Fj2mB3mBcLuwRGGSVrENYY3+j6KV42Wzc2mtpjbprR3MCM3Jw0ZKovFSxCnbK6+0eKDEsNkBpbWwC196qFJq8UWSgYp4KgzirPj9SL4/CxHI8GVqiWuPnoOVfrj44WIynX2v+bVVzfdMi97vm6903QoG0MQY5mY+r5yAGOKcjv2CgMD/3FiAATOU4yES4qzUlbP60zpvq9jlS3TtfNB2egUI0nlwUZ/tpHFZbuuLR5t58UBeYMTPvJjNWyZicigmejCsNs+zseGqSwNP6dww661TvBP+ASzA3WgX4kflyVWmcWdBSIfRnoZOkbSrO15KdSvAcqLqLekIZQtk7V1t+9IKWWTaC+haVzAtQYK5DupxfJickO6nJBD0w0MHUXcfdG+04zH8rZkAGPy/lEJxsjK3aBpjIzn/afAfNLdBdt4oMfL1SgsbdFcJC0RqGxS8Eb4y0fn7rOhJ3D8FtsfLTuz8w5OdBYJi9j04vZqLUdTGy5nTq+yDrVsIGgJIbNnDzIitA65iaVEmAY6MUnDGOLByYR5LaY2/G4jaNzoupP4OoJ7zaSnFTVB7fkzV4+HzUoDKdWZbR8Y5gkMR5HKTdV17ODJhL96cyvMb3ut+X0vvUBBwJcmlDwK9K0pqtmKAtvqvc552qZf2JEU5wmVrvBPloLe2MdqFlCMi6IAgsfcAEJE15rDQ2o/dkp3gGLMF3gZDnqUoEZjQCUOlwtJSqYTiEy7xPvrjV+1eUmQgddiXd9LbpJqdnkIKM6I1fHm6ADE+5yZG5sr135YboKSeIZr/Oe/bhwt9I/RT5kB5Pa6PYKbr0gMXa6Dchb3vRrO1+/DS3HMtq2znfjuu7OG0tb+jKpQEBGGPJe0GhKsl2kL80lo3nouNSfl2FYRFDWA2HVi9TlSmRNMGrOv1kiZGY0JZ4ZXqoBWIWJrSB+4UWXB6jxhgz/XNxqzWIDXiKIR/1DoQPbLYsazLjcY1zTGvhADAhPaYSuiRfV5UGDe+J8JRQIWt+Avw5MFYcGATkx8KBhXVCywo6vUhy91b2a4PbD8SFiNi7rmxEefmdfd4ZyIkBMrkVxVf5ll4MKCNfYcHZEzP+2VDve+CL0L+Gk0xAvKwsF1iokgiBb3cnfHT+46r1MRkLvNT+ER5FFUWsIp3BrSdZEgI7xYlr0h8v0NUGqkH4onTR6VP2/82c4O7o2B1NCXLgRcP6+AJY0MQTpcyVto73+0JeZ3Z6NKfiGQ2WrVcAucrRONv5OOqo8r0LCbclwAYrhs/4bIKGOXZsHyTDqJQ/rrYt//4h4lGcZDrU97Fno27DFdtSCvx9rs4JnZjzaHk8SFjMCgh2F0SJp4q17ifY/8saWTXZ/SNko7ybKdiV/Q2fdyJt49A/yk3KyTX56s/mfqNnSFWbXgTgZ6JOEyV3YxWGPC1E7/Dsa6xudFxHrifAjy+M3PoqjJRZjjTe1GMyjP7a6wqgIY/hGeJDsrRKxMbu0uO25x+Xz6HObJUOKHBPpa23z+SBXc9H/Y4VHSrZZRvVo67cMKUjakBhhJFvvNdUyoBsZ4fB/B3S7PDM5oRtolT2cMccUEq7AE/aij07Zux5gdo83/4Paf5oa7ZaItmlN5vTd3nhkMjKy+jVF0uLONPdv/40Jr/klpa08zJGrczbRFaag3GeEzTiw2itCprjGQJ4KVmznYDwmKBfsrMhkBC+qor+zgLTeLe/IXdm6Ip55KN6t0rnehM6VvQh/fBXefDT02kh/QeI0XiULqvZferxRFKjAv8cd0wDsG1gUW9pHTgaLupG3LAu6iKK6LmGEPCxoj/0rUzqsX0+3dAjbSvhf9vY62IcgBTzhvZV215sKuesbz6+V2GTY2+sUBGFLFL5Oq1MSw5dKboTFVRgv+pi9XcAdQeK83hJ7dh2G8XPBiKQYyHHZe5QF+mJRJzGW3ZEmvku3WCgLozRPn/a1GzJ0tN2Yv+cRg/M+QU1iuD91++I8oBKo+h/dOsjJV8m+NxvC7gHZhb1CVB+w4sVf+TRF1sM9GKaMJCoL4AEGCC31RtTMvgK10TvXMh1cKd2RCR6brdGQuk9EKBiOnFEIz5ua8k58YUbRqpFldz4ovtdHCmV/q0du/7hYaiLjfnD7zrHvfslF3o4zhHKYKJw39Am1y+118QCYRZLDlun8KKT7HwK52kFf14sxe5QZR6wa0Ml+OF3sH4nntYRu24w+FE1+41OjkNKW4FxvlhlqgqkPS2yUcRM2q9iuTnSygFluKfeEuecP5eal1Iidi5xTg/RMPQR2EtlRrICsFm2h1gtRIR0Bm1dKt25kdmlBluMzrylXBQyU10Ck/XemUYDMQPaJNiqhjAsHiAO1AbQbTjwY2kJbyRK1anmiUhmtMCQ/+dfA3tm/WBAUK3YOGTD7NdT/Tl2EUqlmpprvDrEeEQHcIEOnTiybjtMkZH6WuLn+39nbhF7ORZqYQk2/Vu8HCEaiKQIfCal7LNVDwRzphvJo4TkxTY7IQCRQMzgXbgo8r2ervmoF3iC2KMMRIdHdQu6JBkRVlzE1AaDmqwYPh7Gi58o+laE+k2VtcTJT9Ju/XH3kkGDs+SqihvnexeHtRf6zlDkqaWboP+0uvWhZCgQBI8gmVaNETPPCCSZaHDolmxmf8grJV50K6Xy51eyMYTvoqel13iFgXVhtIm6qYQhSr5vuobh8FYlW8JIWGx1QJ33rD+RA7qrSFM7lg/ejzyHr+6x2dm9vNHwIGK+gBcDa/qTmWhYgG3ZLFcJ8XacF8goZxax5kDRBM6RhrGqkGzs+o4bolduLJF96/dgEG2f00vaJz0yZRGtZObzxUwnolI8Y8YLSKjxAoYIHiKNSxIDRscGt9zKMRjoe74pNpxcD/w7YBijp8CSaU6mbqY89HDxoQrRA03c1gOTEQklW714OYTutMJxMcklNtrhIEA93tp6hG5p/vrXViLZP2kx2zt8AXvA1Q321bT4+OLdn7izA51jVjfOPYlnmSZ5erWqSQ9LtucD4XPCKik3Wt0rgv4+kzHjbEjSvbMd15j1ZJNZ/PvwGXURt7e0TCnIW7uJlIuXObTanjwlHqvwPKbBsJpMjL8iJ7ToWOKZ68b34q+C/8vXPU0wjNnjna/NJcUcHqnsxXgskxvul0wyxEeFJUGrVBeFCBXgLz5+Iefj5rphVNytpI6d+2ZLlv/sCga1Vv08W4++jgF0woRwth9tcek4BHCzpccB21Sn+Fp4Au1/e8E9l/kUWf2xSHbdyYgfYoai5Xr6T2B9sa3p6aXwMSrErfNt24FjGO/6e6wDlJWg7oEvv65RZFG70A7eNtUcHo4KTBITvbdLptOcwNKF8cLFnjcYxAS0/hai0rpjPOvfMncv5kUgt4ecssXx710XjciGDTuai6brFxHycbAdoKNwWyoopFsjSuvEgkruFb8nttokJVNfH5aZV6rjOTqkTMfwrOfDwzYzB1YZLyfXPSL5XYXToq1PwUu+LORX3V4BWarwcvrjRqD9HezilN2+l0mVdUVUh5J3nIVsqhBvSWrdBtSCkk5tFws6abfllTEroa/IcOvFO6/N3MKCu4yNe44oMN/EVgrTKf4s7scx6VRVihVI9Oe3DyaXRuGn/es2iCVE+NRNeK9WiNjAu0AotTk+y2bQSvhrQ4Yky7Ro8yYByyHPVIGw6VeNSrSOEgGbsYkid5VTBR6lj3caOj4o1jYnAfP6IZEVyd2vM6RQmz57MKfSUi7rCOa9adUxfSXK7IVh0uAtOGBnzGAUO/hQ0WQ7WgkhePqloQveFX4jHxA/ZBWilOyjAVeHGCMDVQDubizlLLB2wbA30w5yHdFdMWYbIYOlB2zN/x6pOf/Z5Znt+uqGkV6CmDl/czLuekMtpfMMALO4gcEKJtNkQ093In3IbZ3MPeMTbiAMWav3zrVcimT/ARcI2GWr4RRD+qWxXW+sOEquM0VDj4f6cXF+O97OyrVQ8Hr3GGMKb+furycknRIAiQEVA+9R6j9YFgRWvJu0iDNYy3TO0qo8XbIPxv46S/hGcA3lWR6miCwoXyVtGaCcOzbw5ZCoqopFobf/hjDpFWwxgpYAq/r4XUN3RJDrpg5W9L8pA8R2wWE5ffXw61CY0NhAYFTNCn5gV377Az6ozVbNDuaxAedrTX8hBtvjtniI1LUBXgStvf227c2jBN+FVCGiQx0uWAkBpus2WdjY4bqHE7kLE2tHwYas/yOE7NbQrcKP3eu/QEEQJR8PziDaNFbirIwvImmsY9FKxTeWNz826KYQhVgcEYAl2/CTyZ1st44TuASq0u34a4LcO4+BBKreNy889/mMnNYbmWHtjcCMTX0JeyPGXA+h8ZxCjfE3ZsRqb5Q2Vt/IxVkVGu/cJFg+7gL4Z/R0c99YcbioJ3qsu0vzCGNV8Qm0ytDImdpSWqtF8MQexHtjrr5ECcqaGKszyEjYPSDdvPUaylZ/k09f+RkYQIbdtIPnDq/LAWtz1IKU5L2qDu8mD+xYfqBKWpdGtO23GI8jzSKmaujgP00aAAHlurz/zIVt+MEmVRM5gFJx3WcSO9azn1KiryYNlkv7Zip10tW97rdaJmPczzmtGtFElw8UqFRwb9IpL6YE9bOIVaoJbEQCjWhDj5Eug4f4sscVpmG70Hug6wds7zdfkdQOiUnGyKlOAs5NKfeNTJL/zE1uwLcBB+ChsPvRxY7zZcj5kNMY5+lqAfVpuyI6I/WokOefZqKpQPKjKGqOzOJBdrwwD94g7qvzA4QVpRM8sqKZQwc1zmPPma6SYPsEfPwietMnhQbWTwp1PQyE8Pb8jbrr0nKK0c1s66iKxGACnbgfRVw/sF2/AHXJ8TfaMcprxujB+a/f1GiP4f+vyzMuPLsYXjcsH7j2eohSeGXv1v+Yb5/JZmFit5an6nyhxqYAeRDsVRNaoKqHRhpQUxVCLVf04FogkIp+WnznG6kRjTyK6vG/gPRKz+kDqRrFAe7ElsCqIcvMO8/rpfnB2KtQ31cjsQJpLQuA2lBIJ8YTXJ03aM3NO4BBJyCsnCG8RRzYeY47JWkw2bv0PfrYGLT+sxbFX1N5h+EXcmdyRniqKKMIe/j9Z0hKaQW5t8N1UwnqtATR5e7CQZLWT7o4IMfDf6w8C1lemtTA4n1wXft36f+PyyAfV32MGlgC/1P3/unEkEWK2uivYIDQTh4iiYBqMgg8MSA37dDdAM8q1C6HOWmN3v0vGLV4KUJtKf9lfiVZDUUpZQuu6G7u0HtDGX6h/A0Z6mtLft3CJErftLK+9LaUreJgRW60dIgJIF8k+c8eioqDeqxNokesHYZHDZBjmJwv02I6YQZV6guZYnp2szwX+msNK5NezCh4nE+N6nnd4bwrFrH3TvdfzgudIRCWnQF1KzKk3v+iL+IlbWPOvTyBq/SVrJRT5huztGNPMDd0X/sENeX1wXgd12P1y8KNEp7ASSigbLr9BCyxrVIcNAzV8dBZiV4lw3ffgSmwzhY0fI0wPf8LjbqeB7spq0z67qXf7h9/n8cSzEwqkiOg2g+AD6strnBYgl7Xi42d0qH/DBgCCgnVle4vvsJy5oIM3BFkMm9nSTErvxio+uvCgp2u+zqUtMbLd/Wmi4NC1ntWNmJFg2c1wvijtZEHrl9/TLxGCG3iDwEXO4uep18gQXqyTX0abpmZ8dvnorCIjDEwPqoTNJN6iMq/KMbwCXsrBdrtw7LBC1nHJuwLuYLp+sEuJaMCZ7qS+0TLQ1Z+tFJdCL3GgJib4tzvmpgPOZ2hmNlH2bl6uUl7p0eeBEoBcS10s1fDKrn5EPvhZyUo9j9lWrN/SpjOpCoEoLtG/7o+QA9qjzmwNRmhPSGLH8AtlluYJR9vdP0l3HviVXgVOzOq9Px6Sc6l8olU2+ivEoPtSYSnJL/QrPAMSeFh5OzkPAydeXsc88NjuxKswjWOdEkFYyHzujvKF8rl2ZizSSDdVrnPX7jc0TG+XTUVfXoDGgiP11nJZExiuhYx0yfYYqP42ITvWDNd0550d/1IixlEOxqUYxhCTMt02N7GcwZ9LEn2J9N3st0b+5DeJqPGBWT4CkiuLwH/whL8NAGOVBYzP9a/NxVLo845i3bkgRTxAf8+P6PtZn2g+hwKEQzgqHVvNXWV20WYdIg6vDJX7raQ1PVOFplrl0OigmesQvgyLUXIFRrFOIZC3Ts2mRzQpaxQXPxEXPKsKoKt+K6zBVaYfaaY/7Uw9CeUXtFPKmmiCVqBKl9RRV//rmiFwPlH83OB9w0e/4P1h7GJqaV9T1k/orjqutejyhdGuBgij/sOfhDixltSN00aJ3/YSsOoH/r6T24d/OmNaNz/DLV3opa803myQwJGPdnjQrJYa41PThndFUGVVcbUYWFiSpMwzb3yZi+ccJCwlMRXEQkqmZsOEupQj9I2IIO51V/+5Q6ehET1xj2nPfl5/IVuqc6mRhB2pK9x0g+BdaSXMZra4cnAUY6RGcTOcs5kw18v9yKb7Bn23HXv6o8RtGIkbox66YUZYScaHfPy/FAzM9UmNFoHzVOA7Qbe/FtWFr/3keEXG0YzELU5M1UdzQdvsHV42JQemjltsEjpUANT4oZY0FNa0+XYYmlCJnZAtv8zTOFNn2J0AavQW/XU/br/g2yktV+F5Wm82ANQR2cEpulwC4h6r2OWblB5G9gTaOfyNCdsSDSd/7BVSiiA761q2c07+nQdFIuunVq4kqzck2li4bmp3eTY3K99rFxpf2G2noRjPxCdqVFL+EZqMHv8BIkMYPt4p3UduGqyURI/xA8srkIyF1sRzFksrRAzCdNmLD9rBc0pFOz9cHhgwL2rQ68mSvjMfeZyWFwU2ntsqwLmWMXpZFrJUzfIsA8vtxkSy9UYRM4CTlVgkt2FKjCOaUdqcQ9l2DmgZrusXLATdvOfu4gd03T+/aNcutNvm5y7QVJNvSURTtS9FBwywMzHlF1ceCnQja16ZdBIK9t9JvYRWAFKIgNRQujlfqCczIWvoOy+Y18Sef5dWTh1MTdz4AhGt0ccTm8h843PYzckdR6tk7Dm23mSbhIaw0Uak1i1oMk2KWE7WMjZQ9QV4f4EO34q+5n8zh28q7QLJRfZ3gfd6DXfizFkKByNkeDX1SqW/YudvM8afUFtFGeVvY407xNRUavvJR+UkkcAsFA3pE7GHSmfP6TBxuLyMjIZloQgeZfameUvcG/aqqieyF2BbyZJeJF/YofOCf1XZxPMcomycBBzVqcAjQthf9my8C1vIQM99MU8DrQxosrgp6khw5uIPT4S4a+IOK9MuN/4XrnMCl5/bcUQNFG/V05HNLbFAkC/+eBJdzG1BEvwfbJgqVWl7a9rhqZWb37gi9av9v1RprRf5BZUHMxcjq1+9Ugg2ZiXsI9LZh91iu4hyKP8OE8l7yRf/2RoqnDB2ErotJthomi2P/qXENQAi50WRxt0P/UjEq8eFZJ+SPDYoDKtQYai7CqHBx46W+Ia8R5NkkYDWsT6qwTB43Jaas+HToOSR3Ae/lPaOi97SwJ9oZppmEOkkDk6PzlNISTUjft67kdDoP2UyAZfRZ0DYlbWGxQ4YUaZMUp7x+Dp8mlr1ZnujMn5PdBoBSMNOZEtVvZjL/n9B7abJV/0OUQpWGmLV5DdUknQz7dnAbLKX7/FJWtLXhWaoACigtqOJj6cUxZR+CKtYkajs6iwk39JcGqGC4qYvZJWDk3Xl/Tbjymzenm83fzOmn0qE2b/Z83T1p5/yPFWZZMJ+QsnhozgwGVh+167+QEXRFG8Rv+WRb22kuCo/5VbRJlGL9EBd85TrvaubNFLRl8t6jVbqJPt3krGfEjm+VEkBJ/a4o5MmkgYxviSAIHMb85BiO62DdKa9ZP7ghMphUlzLSfhCHi4Xi07IdFc0chLGjOpVYATTP++wz9P3Pb5+wmTcFhnR4v9qgplqkChP2E9F8mk16TspiKIQKpHqWlNEUGuA0a+U45Hi2ANmq3PNd4BWDpVjOBZ3PiI7fKsZj/Dd5/Jm50AyjvPfo7RKoJqaz/BWipWAiLw14z3w6IdV3WXujFNw/pYZcpoSdvwntD6GIfsEwrWETKUb7a02z+RkHY9OgYIe3ocPjhtwnllrRvywXxonZ92zN+ByjBZYgGksyTWnQP8HuSNvCr2iO5jNUMgOuy5QZgZ9c3cJGufc2yBvIwjFj3YMkpKn3Z1K5s9Q/Tt41i2YroZT6teaHl/tZVKiRcVerf/uViBlEbONhBEgxXTj2uS0NIBMwcSoT8DUKDAZizMUhMVlOupDSq8HMAeoktZgdZmcD1MfM/q976pmudJfpoVFfcswxxdT0YjXiF8YbOilki2CoU0wnnd/vJmpMT+xVKrNku9C5oZmGTAXOqqIUQfTx7S2s4ZWrNdySgPytPqRubTDPoqNOoo8egeyhTQE7CoENAB+FMthsTXAt2Ew7U0D7i+tXAYni8rbc00UrYFq3IBNmtam95Gc2betz7FPzW0TrX2nCT3bPoQhVi+NTwpKocQ0ekNgp9pbTHpZInhHMLdOC9jfwCtAJ0j13a2qm31Eb/7swVyee/92/E5sHePptghwIIDIDpSw1FbFDtu6ZKPyOOPAmWp1oUtT4Tc63ImNDwLtQHYFxDu5g7U+6Jws+TIEBkEE4dLauEYTFp/q07IvzGsYtVrMnlbqtgHvMpFWjZe+RZBwHZjgpV+xam1Y4SULcuCqovIXkIcd1urJxvmKxfnE5KK3G/4BKUOmbiF8i/NnZgEkdoz1+tmspqiEbA/ZLf68VQ4u+NY84872SwNx9KncdB74CTnliJX7v6tzncapC9pP1BS7NK1avR4u9d6Y7pOacAsSeKnFbk9Js5UgOKVCPOY52IQlxTmYQLu+9KyVvCK9g8mfdjbBUB+wPQ6vpyItSAK4DjL0gMie0l++pSNV1KUeytNfNFa+fbObu6bwB3ZfpkiWAmFvCGqDGmvoddSRVMiJohaI2DQCfpnkCXCJiQxxvzc1s591niYJHWJ82ARs3nE7Lef9dKl5wtpoFBlQnyns17l6trC4hyl3MouUVeMuO1KX5oavSvhelgI0FbfVFWHJ6Olr4fZs9IxuGeYqP2KHbEuYHeY/PgIw1zMLuIn4yLSJO+sSvrz4m5vMPwzhdbZ0h925Ot8jlSYxnktBxow4ENMBH1ggrgkCuGj2wKCnqY9mmNBkigaeYZXXqAKLtdMloBuryGMB+tHA4t2QWstCKhg2GV9XgaCtBwxBF3BWkWoJqV04CNTNaBeryYCFxZ80o1PohBnOH9EIIJo1N7RdZSrTfSXlxLG/Y+a+yIbyKaZMWKV3kswHcyHIJDJvZ9leoXrchWM2ihXXfbev+wjGY698A03+mm5DDb8dmareEFJjkGmq+Nz6E3SKt2vfak52mpVVgtZhT6WMLkGL+262bTMicTbmBFFXlfgFUqxQBci9ebM2sxWsuXYkRUXSIXFLD+Tu+0qYDwUcpT/rE+8SstIxhSs8lBhTRrXV3fAKD/T/FC8/YVxuSSo0BhP2QMxqs0xhNJrGkYHX05AoOcSDp/Dfw6z4Uy/RpZRRyNlZlOY/zSl56G/eSKK3qbwtgjRdhBruO0j8OBmhwV12CU6Nz3kUAApGgr78TgZIlzvSxbjqtXcJd7dWKwOxdYtCHNwAfLb2EiBvQjV+o+qR1kp5haHi4wvlxvHGsMFt/F4sUCMwKCOeE3tfrWz51hm6tY8Yk+oXBopiwDj9w26Y2ryjydfPsazz0Z2ik8zCR5rAeVaosoeN5k+1Lg5nxqvb+5mIDn9wyUj0qaOhPO5VNOmvk87H49uQuQNLwOjii4jeYbaMks4luDjHGZVVX6v0NEhvXNYlHa+t3B7Pq0Jn3kODHBqK6XKCoqEuzJcJz7oF/pmv2Eq9M2cJh3s2q6iCnnNca4L/rfXXIvqfg25K2dhGITQU8/A8+UjZ5SrXoZgPgKzP2VmmNwg7v+vJUNvVaUgIQcwfLb/nXRD3EJRU3crXQmjyy+qEz9umI1g/8N2z3QBqrFAoSixMRbidb0s5Rj3itk/QltGNOAIEvmhlUfm5Wfps/d9mF882pwSCPgdkPajhxAIZ8FNfAZSPVRZRON9dJNAGHQsoetzHOffSKYBxndYbFESWwa5raKUuhvleFablH0Nzab3rUUyYiqM6QHPFVoMd0EVe4ik90GLlJpMrVFY/qKxtVDArB1wgJAK3rp+0X1URQ/gMeJqeD1L6BZOD+SHg9GHELhDG5Q48fmZz57wC4cZ2uvqPmgnrv+rUySoSFeXp2QtMY9cGdYxMCirziNyHIHV8TJo6xOuqj6Wmd+wK6yIh+NGQ5HoLa1kw3+BiUnDKX9S7+sfH4oy4JZ9O9RtwN2OKVcdtK6S44Hn3/ddRO5qPB1kNpQyuEeWt71tJEaqE8sVSHHa6q29Eoxc7y9jdvuCMjc4sPgZCE0Ivz2hpRJ1L5wy2CWWxGHO1XNqx0Oi59+F2NTzuFWBsGtrXaE2qYTLouPhqnAtoAjQVfFAvy+WIwBG4ngELUhG7zjGNxKlItVPTuGLJlEWtPgQScgVd/ZrDQ9UieigfSBkt1E5nIiG4pV+yQx+iNUtdb4OJdenKZTBjIG1UJhAfV97OLDg52CAxGspi66diuuq/GbDXiMnsFiVXsUXMcxD0QQRQd3fYwhdbqQMnq1emuyN3PbUv1ms5HJuJnNJtqtge2zvMNCXIZz3qBlh5FvYQQ9YuEHiqrYkGWirvMUZPsiqwZN0q4JNgoXW6mY+wEphIjffFBCXHbQC9PGMvTK8lcYgWTiQX1udKl/lSq4jb3cBGcOkBd0/LMEMBnzDid62QlQA3U0XcevhNxFslTww7Mcs95fjCZlRpBGHjHuYLyuNxptkOyRPi/upsU1qdOqX5b3KPSw6u9IeJFYidfNxCmy7prpL9UPShIrLSI62zljcZBGOau0tcfeijbNkng2pK6gzWw5gctaiXPpaQdD9TEuLREy9zKURfmITaqvxoWJy6j05c6z/FBNoF4ZiX4E/LJGb1Qf5urjU4YRIe0KXjzLP9B/d+6/d4Uk7Tg4gQFOuSPXMELegVjRbC8e6f6EyE3faYSOL7HPJel2AQt+negpvGaJtFWVCuUfJlnBhNv7Yv1A/Jyw2NTiUwtExO97fd0Tjs5Tis+X8CBhAsv7RomKDlj1D/YTKgrlfOQZrWOp/3Ohf63IZDzQToG5SUxuqL6MQtVS3aLHCJQrWOFs9PZULRwPs3moia5uAEpqxFNImTSIUAX4krNKrk3Py5XKcbyTXvdqkz9yc06ZLJ2Ebdj7/nXAOj3wchnc9Q8+K0r7RhmoPQLMVAyOc7UwlAuA4F4oV7sX9D/qlGZzxr3d4Q6uuLAB2TMKfiuqWMxJu5IBbnHt41FGKEK0zyRYxGZWPg6oVNGtcB7","v":1}¿nnev
+await script('https://nexus-webdev.github.io/Ruin/addons/peer.js');
+const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+
+struct('Evt', {
+ _this:this,
+ __init__() {
+  def l = new Map();
+ },
+ 
+ on(name, fn) {
+  with(this) {
+   if (!l.has(name)) l.set(name, new Set());
+   l.get(name).add(fn);
+   
+   return() => this.l.get(name).delete(fn);
+  }
+ },
+ 
+ emit(name, data) {
+  const s = this.l.get(name);
+  if (!s) return;
+  
+  for (let fn of s) fn(data);
+ },
+})
+
+"Region-aware ICE presets";
+const ICE_PRESETS = {
+ global: [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:global.stun.twilio.com:3478?transport=udp' },
+ ],
+ 
+ na: [
+  { urls: 'stun:stun1.l.google.com:19302' },
+  { urls: 'turn:us-turn.myrelay.com:3478', username: 'user', credential: 'pass' },
+ ],
+ 
+ eu: [
+  { urls: 'stun:stun3.l.google.com:19302' },
+  { urls: 'turn:eu-turn.myrelay.com:3478', username: 'user', credential: 'pass' },
+ ],
+ 
+ latam: [
+  { urls: 'stun:stun2.l.google.com:19302' },
+  { urls: 'turn:br-turn.myrelay.com:3478', username: 'user', credential: 'pass' },
+ ],
+};
+
+let coords = null;
+async function inferRegion(options = {}) {
+ try {
+  if (!coords && !options.override_saved)
+  {
+   const pos = await new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('no geolocation'));
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+     enableHighAccuracy: true,
+     timeout: 3000,
+    });
+   });
+   
+   coords = pos.coords;
+  }
+
+  const { latitude, longitude } = coords;
+  "Stupidly rough mapping (I'll have to upgrade this)";
+  
+  if (latitude > 0 && longitude < -30) return 'na';
+  if (latitude > 35 && longitude > -10 && longitude < 40) return 'eu';
+  
+  "Trinidad & Tobago / LATAM bias";
+  if (latitude > -60 && latitude < 30 && longitude > -90 && longitude < -30) return 'latam';
+  return 'global';
+ } catch {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  
+  if (tz.includes('America')) return 'na'; "North America default";
+  if (tz.includes('Europe')) return 'eu';
+  
+  if (tz.includes('Atlantic') || tz.includes('America/')) return 'latam';
+  return 'global';
+ }
+}
+
+"Network environment snapshot";
+function networkSnapshot() {
+ const nav = navigator;
+ const info = nav.connection || nav.mozConnection || nav.webkitConnection;
+ 
+ return {
+  effectiveType: info?.effectiveType || 'unknown',
+  downlink: info?.downlink || 0,
+  saveData: !!info?.saveData,
+  rttHint: info?.rtt || 0,
+ };
+}
+
+"Basic compressor (optional)";
+async function maybeCompress(data) {
+ if (typeof data == 'string') return data;
+ if (data instanceof ArrayBuffer || ArrayBuffer.isView(data))
+ {
+  "Use CompressionStream (gzip)";
+  if ('CompressionStream' in window)
+  {
+   const cs = new CompressionStream('gzip');
+   const stream = new Response(new Blob([data]).stream().pipeThrough(cs)).arrayBuffer();
+   
+   return await stream;
+  }
+  
+  return data;
+ }
+ 
+ "JSON payload compression";
+ const json = JSON.stringify(data);
+ return json;
+}
+
+"Decompressor";
+async function maybeDecompress(data) {
+ if (typeof data == 'string')
+ try {
+  return JSON.parse(data);
+ } catch {
+  return data;
+ }
+ 
+ if (data instanceof ArrayBuffer || ArrayBuffer.isView(data))
+ {
+  if ('DecompressionStream' in window)
+  {
+   const ds = new DecompressionStream('gzip');
+   const stream = new Response(new Blob([data]).stream().pipeThrough(ds)).arrayBuffer();
+   
+   try {
+    return await stream;
+   } catch {
+    return data;
+   }
+  }
+   
+  return data;
+ }
+ 
+ return data;
+}
+
+"ChunkRouter: backpressure-aware chunking and reassembly";
+struct('ChunkRouter', {
+ _this:this,
+ __init__(sendFn, opts = {}) {
+  def sendFn = sendFn;
+  def maxChunk = opts.maxChunk || 32 *1024; "default to 32KB";
+  
+  def inFlightLimit = opts.inFlightLimit || 64;
+  def window = new Map();
+  def seq = 0;
+  
+  def buffers = new Map();
+ },
+ 
+ async send(payload) {
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const buff = payload instanceof ArrayBuffer || ArrayBuffer.isView(payload);
+  const data = buff ? payload.buffer || payload : new TextEncoder().encode(JSON.stringify(payload)).buffer;
+  
+  with(this) {
+   const total = Math.ceil(data.byteLength /maxChunk);
+   for (let i = 0; i < total; i ++)
+   {
+    const start = i *maxChunk;
+    const end = Math.min(start +maxChunk, data.byteLength);
+    const chunk = data.slice(start, end);
+    
+    "Backpressure: wait if too many in flight";
+    while (window.size >= inFlightLimit)
+    await sleep(2);
+    
+    const pkt = { t: 'chunk', id, i, total, b: chunk };
+    window.set(`${id}:${i}`, performance.now());
+    sendFn(pkt);
+   }
+   
+   "Finalize marker";
+   sendFn({ t: 'end', id, total });
+  }
+ },
+ 
+ onPacket(pkt, emit) {
+  if (pkt.t == 'chunk')
+  {
+   let entry = this.buffers.get(pkt.id);
+   if (!entry)
+   {
+    entry = { total: pkt.total, received: new Map(), ts: performance.now() };
+    this.buffers.set(pkt.id, entry);
+   }
+   
+   entry.received.set(pkt.i, pkt.b);
+   
+   "ACK for backpressure relief";
+   emit({ t: 'ack', id: pkt.id, i: pkt.i });
+  } else if (pkt.t == 'end')
+  {
+   const entry = this.buffers.get(pkt.id);
+   if (!entry || entry.received.size != entry.total) return; "Wait until completed";
+   const parts = [];
+   
+   for (let i = 0; i < entry.total; i ++)
+   parts.push(entry.received.get(i));
+   
+   const merged = mergeBuffers(parts);
+   this.buffers.delete(pkt.id);
+   
+   emit({ t: 'deliver', id: pkt.id, b: merged });
+  } else if (pkt.t == 'ack') this.window.delete(`${pkt.id}:${pkt.i}`);
+ }
+})
+
+function mergeBuffers(parts) {
+ let total = 0;
+ let offset = 0;
+ 
+ for (let p of parts)
+ total += p.byteLength;
+ 
+ const out = new Uint8Array(total);
+ for (let p of parts)
+ {
+  out.set(new Uint8Array(p), offset);
+  offset += p.byteLength;
+ }
+ 
+ return out.buffer;
+}
+
+"HealthMonitor: aggregates WebRTC stats and environment hints";
+struct('HealthMonitor', {
+ _this:this,
+ __init__(getStatsFn) {
+  def getStatsFn = getStatsFn;
+  def score = 1.0;
+  def last = null;
+ },
+ 
+ async sample() {
+  const report = await this.getStatsFn();
+  const env = networkSnapshot();
+  
+  "Extract key metrics";
+  const metrics = extractMetrics(report);
+  
+  "Composite scoring";
+  const rtt = metrics.rtt || env.rttHint || 50;
+  const pl = metrics.packetLoss || 0;
+  
+  const obps = metrics.outboundBitrate || 0;
+  const ibps = metrics.inboundBitrate || 0;
+  const effective = env.effectiveType;
+  let s = 1.0;
+  
+  if (rtt > 150) s -= 0.2;
+  if (rtt > 300) s -= 0.2;
+  if (pl > 0.02) s -= 0.2;
+  if (pl > 0.05) s -= 0.2;
+  if (obps < 256_000) s -= 0.1;
+  if (ibps < 256_000) s -= 0.1;
+  if (effective == '2g' || effective == 'slow-2g') s -= 0.2;
+  
+  def score = math.max(0, math.min(1, s));
+  def last = { rtt, packetLoss: pl, outboundBitrate: obps, inboundBitrate: ibps, env };
+  return def last;
+ },
+})
+
+function extractMetrics(report) {
+ const m = {};
+ 
+ report.forEach((stat) => {
+  if (stat.type == 'transport')
+  {
+   "could read selectedCandidatePairId (not sure how though)";
+  }
+  
+  if (stat.type == 'candidate-pair' && stat.nominated)
+  {
+   m.rtt = stat.currentRoundTripTime ? stat.currentRoundTripTime *1000 : m.rtt;
+   m.availableOutgoingBitrate = stat.availableOutgoingBitrate || m.availableOutgoingBitrate;
+  }
+  
+  if (stat.type == 'outbound-rtp')
+  {
+   m.outboundBitrate = stat.bytesSent && stat.timestamp && stat.prev
+     ? ((stat.bytesSent -stat.prev.bytesSent) *8) /((stat.timestamp -stat.prev.timestamp) /1000)
+     : m.outboundBitrate;
+  }
+  
+  if (stat.type == 'inbound-rtp')
+  {
+   m.inboundBitrate = stat.bytesReceived && stat.timestamp && stat.prev
+     ? ((stat.bytesReceived -stat.prev.bytesReceived) *8) /((stat.timestamp -stat.prev.timestamp) /1000)
+     : m.inboundBitrate;
+   
+   const lost = stat.packetsLost || 0;
+   const recv = stat.packetsReceived || 0;
+   m.packetLoss = recv > 0 ? lost /(lost +recv) : 0;
+  }
+ });
+ 
+ return m;
+}
+
+"AdaptiveController: tunes ChunkRouter and resend/bitrate policy";
+struct('AdaptiveController', {
+ _this:this,
+ __init__(session, opts = {}) {
+  def session = session;
+  def router = session.router;
+  
+  def health = new HealthMonitor(_ => session.getStats());
+  def allowCompression = !!opts.allowCompression;
+  def timer = null;
+ },
+ 
+ start() {
+  with(this) {
+   if (def timer) return;
+   
+   def timer = setInterval(async _ => {
+    const snapshot = await health.sample();
+    const score = health.score;
+ 
+    "Tune chunk size";
+    let targetChunk = 64 *1024;
+    
+    if (score < .8) targetChunk = 48 *1024;
+    if (score < .6) targetChunk = 32 *1024;
+    if (score < .4) targetChunk = 16 *1024;
+    router.maxChunk = targetChunk;
+ 
+    "Tune in-flight window";
+    let window = 64;
+    
+    if (score < .8) window = 48;
+    if (score < .6) window = 32;
+    if (score < .4) window = 16;
+    router.inFlightLimit = window;
+ 
+    "Decide compression";
+    const useCompression = (snapshot.env.effectiveType == '3g' || snapshot.env.effectiveType == '2g' || score < .6)
+                           && allowCompression;
+    session.useCompression = useCompression;
+ 
+    "Notify";
+    session.evt.emit('adaptation', {
+     compression: useCompression,
+     chunkSize: targetChunk,
+     metrics: snapshot,
+     window,
+     score,
+    });
+   }, 1500);
+  }
+ },
+ 
+ stop() {
+  if (def timer) clearInterval(def timer);
+  def timer = null;
+ },
+})
+
+"PeerSession: single-peer connection";
+struct('PeerSession', {
+ _this:this,
+ __init__(peer, conn) {
+  def peer = peer;
+  def conn = conn;
+  def evt = new Evt();
+  def peerId = conn.peer;
+  
+  def router = new ChunkRouter(pkt => {
+   "Serialize and send raw";
+   const msg = pkt.t == 'chunk' ? { ...pkt, b: pkt.b } : pkt;
+   
+   try {
+    def conn.send(msg);
+   } catch (e) {
+    def evt.emit('error', e);
+   }
+  });
+ 
+  def useCompression = false;
+  def adaptive = new AdaptiveController(this, { allowCompression: true });
+ 
+  def connected = false;
+  def $bind();
+ },
+ 
+ $bind() {
+  with(this) {
+   conn.on('open', _ => {
+    def connected = true;
+    adaptive.start();
+    
+    evt.emit('open', {});
+   });
+  
+   conn.on('data', async pkt => {
+    if (!pkt?.t)
+    {
+     "Legacy direct messages (non-chunked)";
+     evt.emit('message', pkt);
+     
+     return;
+    }
+    
+    router.onPacket(pkt, e => {
+     if (e.t == 'ack') return "Handled by router";
+     if (e.t != 'deliver') return;
+     
+     "Try decode";
+     const raw = e.b;
+     
+     "Best effort decompression +JSON parsing";
+     (async () => {
+      const maybe = await maybeDecompress(raw);
+      "If bytes decode to string JSON";
+      
+      if (maybe instanceof ArrayBuffer)
+      {
+       "Try text decode";
+       const text = new TextDecoder().decode(new Uint8Array(maybe));
+       
+       try {
+        const parsed = JSON.parse(text);
+        evt.emit('message', parsed);
+       } catch {
+        evt.emit('message', maybe); "binary";
+       }
+      } else evt.emit('message', maybe); "json or string";
+     })();
+    });
+   });
+  
+   conn.on('close', _ => {
+    def connected = false;
+    adaptive.stop();
+    
+    evt.emit('close', {});
+   });
+  
+   conn.on('error', error => {
+    evt.emit('error', error);
+   });
+  }
+ },
+ 
+ on(name, fn) {
+  return this.evt.on(name, fn);
+ },
+ 
+ async send(payload) {
+  const data = this.useCompression ? await maybeCompress(payload) : payload;
+  return this.router.send(data);
+ },
+ 
+ async getStats() {
+  "PeerJS exposes underlying RTCPeerConnection via conn.peerConnection in recent versions";
+  "If not available, adaptation will be best-effort";
+  
+  const pc = this.conn.peerConnection || this.conn._pc;
+  if (!pc || !pc.getStats) return new Map();
+  const report = await pc.getStats();
+  
+  "Track previous stats for bitrate calc";
+  report.forEach(stat => { stat.prev = this.$prevStats?.get(stat.id); });
+  this.$prevStats = report;
+  
+  return report;
+ },
+ 
+ async close() {
+  try {
+   this.conn.close();
+  } catch {};
+  
+  this.adaptive.stop();
+ },
+})
+
+"PeerLinkManager: manages identity, region, and sessions";
+struct('PeerLinkManager', {
+ __init__(opts = {}) {
+  def opts = opts;
+  def peer = null;
+  def sessions = new Map();
+  
+  def evt = new Evt();
+  def region = 'global';
+ },
+
+ async init(options) {
+  with(this) {
+   def region = await inferRegion(options);
+   const iceServers = ICE_PRESETS[region] || ICE_PRESETS.global;
+   const peerConfig = {
+    debug: 1,
+    config: { iceServers },
+    ...opts.peerConfig,
+   };
+
+   def peer = new Peer(opts.id || undefined, peerConfig);
+   await new Promise((resolve, reject) => {
+    peer.on('open', id => {
+     evt.emit('open', {
+      region,
+      id,
+     });
+     
+     resolve(id);
+    });
+    
+    peer.on('error', reject);
+   });
+
+   "Accept incoming";
+   peer.on('connection', conn => {
+    const sess = new PeerSession(peer, conn);
+    sessions.set(conn.peer, sess);
+    
+    sess.on('close', _ => sessions.delete(conn.peer));
+    evt.emit('session', sess);
+   });
+
+   "Reconnection strategy";
+   peer.on('disconnected', _ => {
+    $attemptReconnect();
+   });
+  }
+ },
+
+ async connect(remoteId) {
+  with(this) {
+   if (!def peer) throw new Error('Peer not initialized');
+   const conn = peer.connect(remoteId, { reliable: true });
+   const sess = new PeerSession(peer, conn);
+   
+   sessions.set(remoteId, sess);
+   await new Promise((resolve, reject) => {
+    sess.on('open', resolve);
+    sess.on('error', reject);
+   });
+   
+   return sess;
+  }
+ },
+
+ async shutdown() {
+  for (let sess of def sessions.values())
+  await sess.close();
+  
+  def sessions.clear();
+  if (def peer)
+  {
+   try {
+    def peer.destroy();
+   } catch {};
+   
+   def peer = null;
+  }
+ },
+
+ on(name, fn) {
+  return this.evt.on(name, fn);
+ },
+
+ async $attemptReconnect() {
+  let attempts = 0;
+  while (attempts < 5)
+  {
+   attempts ++;
+   
+   try {
+    this.peer.reconnect();
+    await sleep(500 *attempts);
+    
+    if (this.peer && this.peer.open) break;
+   } catch {};
+  }
+ }
+})
+
+RUIN.PeerLinkManager = PeerLinkManager;
