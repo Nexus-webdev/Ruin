@@ -239,6 +239,10 @@ self.$ = ({
  },
  
  _macro_(code) {
+  "Decode from base64 if needed";
+  if ($.GitHub.isBase64(code))
+  code = decodeURIComponent(escape(atob(code)));
+  
   "Replace special keywords with js syntax";
   code = code.replaceAll('def ', 'this.')
              .replaceAll(' err ', ' throw ')
@@ -1099,16 +1103,22 @@ self.bootstrapper = new Promise(async resolve => {
    resolve();
   }
  } else {
-  const url = 'https://nexus-webdev.github.io/Ruin/bootstrapper.$';
-  const response = await fetch(url);
- 
-  if (!response.ok) throw `Failed to read: ${response.status}`;
-  let code = await response.text();
- 
-  if ($.GitHub.isBase64(code))
-  code = decodeURIComponent(escape(atob(code)));
+  const urls = [
+   'https://nexus-webdev.github.io/Ruin/bootstrapper.$',
+  ];
   
-  await $.ruin(code);
+  for (let url of urls) {
+   const response = await fetch(url);
+   if (!response.ok) throw `Failed to read: ${response.status}`;
+   let code = await response.text();
+   
+   if ($.GitHub.isBase64(code))
+   code = decodeURIComponent(escape(atob(code)));
+   
+   $.setup_phase = true;
+   await $.ruin(code);
+  }
+  
   resolve();
  }
 })
