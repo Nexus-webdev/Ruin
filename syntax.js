@@ -244,7 +244,7 @@ self.$ = ({
              .replaceAll(' err ', ' throw ')
              .replaceAll('wait for\`', 'await for_ \`')
              .replaceAll('wait for \`', 'await for_ \`')
-             .replaceAll('import `', 'await meta.mod `',)
+             .replaceAll('import `', '= await meta.mod `',)
              .replaceAll('## ', 'await foxx.run(`\n')
              .replaceAll('!;', '\n`);')
              
@@ -586,15 +586,10 @@ self.$ = ({
     if (key.startsWith('*'))
     {
      key = key.slice(1);
-     __prototype__[Symbol[key]] = property;
-    } else __prototype__[key] = property;
+     constructor.prototype[Symbol[key]] = property;
+    } else constructor[key] = property;
    }
   }
-  
-  constructor.prototype = {
-   ...constructor.prototype,
-   ...(__prototype__ ?? {}),
-  };
   
   if (config?.toLowerCase?.() == 'static') return obj[arg] = new constructor();
   if (config?.toLowerCase?.() == 'return') return constructor;
