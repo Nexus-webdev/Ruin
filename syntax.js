@@ -309,9 +309,9 @@ self.$ = ({
  
  create_macro(pattern, transformer, { ignore_spaces = false } = {}) {
   "Convert placeholders into regex groups";
-  let regexPattern = pattern.replace(/\$expr/g, '(.+?)') "expression placeholder";
-                            .replace(/\$block/g, '\\{') "block start marker";
-                            .replace(/\$([0-9]+)/g, '(.+?)'); "generic numbered placeholders";
+  let regexPattern = pattern.replace(/\$expr/g, '(.+?)')
+                            .replace(/\$block/g, '\\{')
+                            .replace(/\$([0-9]+)/g, '(.+?)');
 
   if (ignore_spaces) regexPattern = regexPattern.replace(/\s+/g, '\\s*');
   const regex = new RegExp(regexPattern, 'gs');
