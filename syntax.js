@@ -308,37 +308,46 @@ self.$ = ({
  },
  
  create_macro(pattern, transformer, { ignore_spaces = false } = {}) {
-  let regexPattern = pattern.replace(/\(/g, '\\(')
-                            .replace(/\)/g, '\\)')
-                            .replace(/\{/g, '\\{')
-                            .replace(/\}/g, '\\}')
-                            .replace(/\$([0-9]+)/g, '([\\s\\S]+?)');
-                            "multiline capture";
+  "Convert placeholders into regex groups";
+  let regexPattern = pattern.replace(/\$expr/g, '(.+?)') "expression placeholder";
+                            .replace(/\$block/g, '\\{') "block start marker";
+                            .replace(/\$([0-9]+)/g, '(.+?)'); "generic numbered placeholders";
 
   if (ignore_spaces) regexPattern = regexPattern.replace(/\s+/g, '\\s*');
-  const regex = new RegExp(regexPattern, "gs");
+  const regex = new RegExp(regexPattern, 'gs');
 
-  return function (code) {
-   "Only replace outermost matches by scanning manually";
+  return(code) => {
    let out = '';
    let lastIndex = 0;
    let match;
 
-   while ((match = regex.exec(code)) != null)
-   {
-    "Ensure we are not inside another match by tracking braces";
-    const [full, ...groups] = match;
-    const start = match.index;
-    const end = regex.lastIndex;
+   while ((match = regex.exec(code)) != null) {
+    const cond = match[1].trim(); "first capture = condition";
+    const blockStart = regex.lastIndex -1; "position of '{'";
+
+    "Find matching closing brace for this block";
+    let depth = 0;
+    let i = blockStart;
+    for (; i < code.length; i ++)
+    {
+     if (code[i] == '{') depth++;
+     else if (code[i] == '}')
+     {
+      -- depth;
+      if (!depth) break;
+     }
+    }
+
+    const blockEnd = i;
+    const blockContent = code.slice(blockStart +1, blockEnd);
 
     "Append untouched code before this match";
-    out += code.slice(lastIndex, start);
+    out += code.slice(lastIndex, match.index);
 
-    "Transform this match";
-    const args = groups.map(s => s.trim());
-    out += transformer(...args);
+    "Transform";
+    out += transformer(cond, blockContent);
 
-    lastIndex = end;
+    lastIndex = blockEnd +1;
    }
 
    "Append remainder";
