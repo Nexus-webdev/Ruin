@@ -225,6 +225,75 @@ Object.defineProperty(String.prototype, 'decompress', {
  writable: true,
 });
 
+function escape(input, { escapeBackslash = true } = {}) {
+ let out = '';
+ const len = input.length;
+ 
+ function isEscaped(pos) {
+  let count = 0;
+  let i = pos -1;
+  while (i >= 0 && input.charCodeAt(i) == 92)
+  {
+   count ++;
+   -- i;
+  }
+  
+  return (count % 2) == 1;
+ }
+
+ for (let i = 0; i < len; i ++)
+ {
+  const ch = input[i];
+  
+  "Optionally double unescaped backslashes to preserve literal meaning";
+  if (ch == '\\')
+  {
+   if (escapeBackslash)
+   {
+    "If this backslash is already escaping something (i.e., it's unescaped itself)";
+    "We still double it to ensure literal backslash in template context";
+    out += '\\\\';
+   } else out += '\\';
+   
+   continue;
+  }
+
+  "Escape unescaped backticks: ` -> \`";
+  if (ch == '`')
+  {
+   "If already escaped (\`), skip escaping";
+   if (!isEscaped(i)) out += '\\`';
+   else out += '`';
+   
+   continue;
+  }
+
+  "Escape unescaped interpolation start: ${ -> \${";
+  if (ch == '$')
+  {
+   const next = input[i + 1];
+   if (next == '{')
+   {
+    "Only escape if the $ is not already escaped";
+    if (!isEscaped(i)) out += '\\$';
+    else out += '$';
+    
+    "Do not consume '{' here; just let it be appended below because we only escape the '$' part";
+    continue;
+   } else {
+    "Plain dollar sign not followed by '{' doesn't need escaping";
+    out += '$';
+    continue;
+   }
+  }
+
+  "Default: copy character";
+  out += ch;
+ }
+
+ return out;
+}
+
 self.$ = ({
  _TYPES_: [],
  _currentCtx_: {},
@@ -238,28 +307,48 @@ self.$ = ({
   }).join('');
  },
  
- _macro_(code) {
+ create_macro(pattern, transformer) {
+  "Convert pattern into regex with capture groups";
+  const regexPattern = pattern.replace(/\(/g, '\\(')
+                              .replace(/\)/g, '\\)')
+                              .replace(/\{/g, '\\{')
+                              .replace(/\}/g, '\\}')
+                              .replace(/\$([0-9]+)/g, '(.+?)');
+                              "$n → capture group";
+
+  const regex = new RegExp(regexPattern, 'gs');
+  return(code) => {
+   return code.replace(regex, (...matches) => {
+    const args = [];
+    argLoop: for (let match of matches.slice(1))
+    {
+     if (typeof match != 'string') break argLoop;
+     args.push(match.trim());
+    }
+    
+    return transformer(...args);
+   });
+  };
+ },
+ 
+ _master_macro_(code) {
   "Decode from base64 if needed";
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
   
-  "Replace special keywords with js syntax";
-  code = code.replaceAll('def ', 'this.')
-             .replaceAll(' err ', ' throw ')
-             .replaceAll('wait for\`', 'await for_ \`')
-             .replaceAll('wait for \`', 'await for_ \`')
-             .replaceAll('import `', '= await meta.mod `',)
-             .replaceAll('## ', 'await foxx.run(`\n')
-             .replaceAll('!;', '\n`);')
-             
-             .replace(/\^import\s+([^;]+);/g, (match, obj) => {
-              return `= module.import_ \`${obj.trim()}\`;`;
-             });
+  "Create macros";
+  const delay = $.create_macro('delay $1;', time => `await for_ \`${time}\`;`);
+  const import_ = $.create_macro('$1 import `$2`;', (a, b) => `const ${a} = module.import_\`${b}\`;`);
+  const _import = $.create_macro('$1 import $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`);
+  const fl = $.create_macro('flux {$1}', code => `RUIN.flux.run(\`${escape(code)}\`)`);
+  const unless = $.create_macro('unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`);
+  const struct = $.create_macro('struct $1 {$2}', (name, body) => `RUIN.struct('${name}', {${body}})`);
   
-  for (let type of $._TYPES_)
-  code = code.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
+  const macros = [delay, import_, _import, fl, unless, struct];
+  for (let macro of macros) code = macro(code);
   
-  return code;
+  for (let type of $._TYPES_) code = code.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
+  return code.replaceAll('def ', 'this.');
  },
 
  extract(inputString, pattern) {
@@ -374,7 +463,7 @@ self.$ = ({
    const result = await (new Function(`return (async() => {
  with(this) {
   RUIN._currentCtx_ = this;
-  ${$._macro_(code)}
+  ${$._master_macro_(code)}
  }
 })();`)).call({
     ...context,
@@ -386,6 +475,11 @@ self.$ = ({
    $.setup_phase = false;
    resolve(result);
   })
+ },
+ 
+ setup(code) {
+  $.setup_phase = true;
+  return $.ruin(code);
  },
  
  _: undefined,
@@ -1082,43 +1176,52 @@ $.__local__ = self.urlData && urlData().local == 'true';
 
 self.bootstrapper = new Promise(async resolve => {
  if (!self.bootstrap) return resolve();
+ const urls = [
+  'bootstrapper.$',
+ ];
+ 
  if ($.__local__)
  {
   let started;
   const id = '__bootstrapper__';
-  document.addEventListener('click', e => load_bootstrapper());
-  document.addEventListener('keydown', e => {
-   if (e.key == 'Enter') load_bootstrapper();
-  });
+  
+  if (await get(id)) load_bootstrapper();
+  else {
+   document.addEventListener('click', e => load_bootstrapper());
+   document.addEventListener('keydown', e => {
+    if (e.key == 'Enter') load_bootstrapper();
+   });
+  }
   
   async function load_bootstrapper() {
    if (started) return;
    started = true;
    
    $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
-   const code = await getFileText('bootstrapper.$');
+   
+   for (let url of urls)
+   {
+    const code = await getFileText(url);
+    await $.setup(code);
+   }
    
    set(id, $.__RUIN_DIR__);
-   await $.ruin(code); 
-   resolve();
-  }
- } else {
-  const urls = [
-   'https://nexus-webdev.github.io/Ruin/bootstrapper.$',
-  ];
-  
-  for (let url of urls) {
-   const response = await fetch(url);
-   if (!response.ok) throw `Failed to read: ${response.status}`;
-   let code = await response.text();
-   
-   if ($.GitHub.isBase64(code))
-   code = decodeURIComponent(escape(atob(code)));
-   
-   $.setup_phase = true;
-   await $.ruin(code);
+   resolve($);
   }
   
-  resolve();
+  return;
  }
+ 
+ for (let url of urls)
+ {
+  const response = await fetch(`https://nexus-webdev.github.io/Ruin/${url}`);
+  if (!response.ok) throw `Failed to read: ${response.status}`;
+  let code = await response.text();
+  
+  if ($.GitHub.isBase64(code))
+  code = decodeURIComponent(escape(atob(code)));
+  await $.setup(code);
+ }
+ 
+ resolve($);
 })
