@@ -307,28 +307,68 @@ self.$ = ({
   }).join('');
  },
  
- create_macro(pattern, transformer) {
-  "Convert pattern into regex with capture groups";
-  const regexPattern = pattern.replace(/\(/g, '\\(')
-                              .replace(/\)/g, '\\)')
-                              .replace(/\{/g, '\\{')
-                              .replace(/\}/g, '\\}')
-                              .replace(/\$([0-9]+)/g, '(.+?)');
-                              "$n → capture group";
+ create_macro(pattern, transformer, { ignore_spaces = false } = {}) {
+  let regexPattern = pattern.replace(/\(/g, '\\(')
+                            .replace(/\)/g, '\\)')
+                            .replace(/\{/g, '\\{')
+                            .replace(/\}/g, '\\}')
+                            .replace(/\$([0-9]+)/g, '([\\s\\S]+?)');
+                            "multiline capture";
 
-  const regex = new RegExp(regexPattern, 'gs');
-  return(code) => {
-   return code.replace(regex, (...matches) => {
-    const args = [];
-    argLoop: for (let match of matches.slice(1))
-    {
-     if (typeof match != 'string') break argLoop;
-     args.push(match.trim());
-    }
-    
-    return transformer(...args);
-   });
+  if (ignore_spaces) regexPattern = regexPattern.replace(/\s+/g, '\\s*');
+  const regex = new RegExp(regexPattern, "gs");
+
+  return function (code) {
+   "Only replace outermost matches by scanning manually";
+   let out = '';
+   let lastIndex = 0;
+   let match;
+
+   while ((match = regex.exec(code)) != null)
+   {
+    "Ensure we are not inside another match by tracking braces";
+    const [full, ...groups] = match;
+    const start = match.index;
+    const end = regex.lastIndex;
+
+    "Append untouched code before this match";
+    out += code.slice(lastIndex, start);
+
+    "Transform this match";
+    const args = groups.map(s => s.trim());
+    out += transformer(...args);
+
+    lastIndex = end;
+   }
+
+   "Append remainder";
+   out += code.slice(lastIndex);
+   return out;
   };
+ },
+
+ apply_macros(code, macros, { maxPasses = 10 } = {}) {
+  let out = code;
+  let passes = 0;
+  let changed = true;
+
+  while (changed && passes < maxPasses)
+  {
+   changed = false;
+   for (const m of macros)
+   {
+    const newOut = m(out);
+    if (newOut != out)
+    {
+     out = newOut;
+     changed = true;
+    }
+   }
+   
+   passes ++;
+  }
+  
+  return out;
  },
  
  _master_macro_(code) {
@@ -336,16 +376,22 @@ self.$ = ({
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
   
+  "Define config objects for the macros";
+  const i_space = { ignore_spaces: true };
+  
   "Create macros";
   const delay = $.create_macro('delay $1;', time => `await for_ \`${time}\`;`);
-  const import_ = $.create_macro('$1 import `$2`;', (a, b) => `const ${a} = module.import_\`${b}\`;`);
-  const _import = $.create_macro('$1 import $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`);
-  const fl = $.create_macro('flux {$1}', code => `RUIN.flux.run(\`${escape(code)}\`)`);
-  const unless = $.create_macro('unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`);
-  const struct = $.create_macro('struct $1 {$2}', (name, body) => `RUIN.struct('${name}', {${body}})`);
+  const import_ = $.create_macro('import `$1 as $2`;', (b, a) => `(const ${a} = module.import_\`${b}\`;`);
+  const _import = $.create_macro('import $1 as $2;', (b, a) => `const ${a} = await meta.mod\`${b}\`;`);
   
-  const macros = [delay, import_, _import, fl, unless, struct];
-  for (let macro of macros) code = macro(code);
+  const unless = $.create_macro('unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`, i_space);
+  const repeat = $.create_macro('repeat ($1) {$2}', (i, block) => `for (let i = 0; i < ${i}; i ++) {${block}}`, i_space);
+  
+  const struct = $.create_macro('struct $1 {$2}', (name, body) => `RUIN.struct('${name}', {${body}})`);
+  const fl = $.create_macro('flux {$1}', code => `RUIN.flux.run(\`${escape(code)}\`)`, i_space);
+  
+  "Apply the created macros";
+  code = $.apply_macros(code, [delay, import_, _import, fl, unless, struct]);
   
   for (let type of $._TYPES_) code = code.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
   return code.replaceAll('def ', 'this.');
