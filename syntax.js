@@ -307,52 +307,27 @@ self.$ = ({
   }).join('');
  },
  
- create_macro(pattern, transformer, { ignore_spaces = false } = {}) {
-  "Convert placeholders into regex groups";
-  let regexPattern = pattern.replace(/\$expr/g, '(.+?)')
-                            .replace(/\$block/g, '\\{')
-                            .replace(/\$([0-9]+)/g, '(.+?)');
+ create_macro(pattern, transformer) {
+  "Convert pattern into regex with capture groups";
+  const regexPattern = pattern.replace(/\(/g, '\\(')
+                              .replace(/\)/g, '\\)')
+                              .replace(/\{/g, '\\{')
+                              .replace(/\}/g, '\\}')
+                              .replace(/\$([0-9]+)/g, '(.+?)');
+                              "$n → capture group";
 
-  if (ignore_spaces) regexPattern = regexPattern.replace(/\s+/g, '\\s*');
   const regex = new RegExp(regexPattern, 'gs');
-
   return(code) => {
-   let out = '';
-   let lastIndex = 0;
-   let match;
-
-   while ((match = regex.exec(code)) != null) {
-    const cond = match[1].trim(); "first capture = condition";
-    const blockStart = regex.lastIndex -1; "position of '{'";
-
-    "Find matching closing brace for this block";
-    let depth = 0;
-    let i = blockStart;
-    for (; i < code.length; i ++)
+   return code.replace(regex, (...matches) => {
+    const args = [];
+    argLoop: for (let match of matches.slice(1))
     {
-     if (code[i] == '{') depth++;
-     else if (code[i] == '}')
-     {
-      -- depth;
-      if (!depth) break;
-     }
+     if (typeof match != 'string') break argLoop;
+     args.push(match.trim());
     }
-
-    const blockEnd = i;
-    const blockContent = code.slice(blockStart +1, blockEnd);
-
-    "Append untouched code before this match";
-    out += code.slice(lastIndex, match.index);
-
-    "Transform";
-    out += transformer(cond, blockContent);
-
-    lastIndex = blockEnd +1;
-   }
-
-   "Append remainder";
-   out += code.slice(lastIndex);
-   return out;
+    
+    return transformer(...args);
+   });
   };
  },
 
@@ -400,7 +375,7 @@ self.$ = ({
   const fl = $.create_macro('flux {$1}', code => `RUIN.flux.run(\`${escape(code)}\`)`, i_space);
   
   "Apply the created macros";
-  code = $.apply_macros(code, [delay, import_, _import, fl, unless, struct]);
+  code = $.apply_macros(code, [delay, import_, _import]);
   
   for (let type of $._TYPES_) code = code.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
   return code.replaceAll('def ', 'this.');
