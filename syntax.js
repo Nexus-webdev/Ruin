@@ -1229,7 +1229,6 @@ self.bootstrapper = new Promise(async resolve => {
    started = true;
    
    $.__RUIN_DIR__ = (await get(id)) ?? (await window.showDirectoryPicker());
-   
    for (let url of urls)
    {
     const code = await getFileText(url);
@@ -1243,7 +1242,7 @@ self.bootstrapper = new Promise(async resolve => {
   return;
  }
  
- for (let url of urls)
+ for await (let url of urls)
  {
   const response = await fetch(`https://nexus-webdev.github.io/Ruin/${url}`);
   if (!response.ok) throw `Failed to read: ${response.status}`;
