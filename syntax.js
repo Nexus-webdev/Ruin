@@ -1208,6 +1208,7 @@ self.bootstrapper = new Promise(async resolve => {
  if (!self.bootstrap) return resolve();
  const urls = [
   'bootstrapper.$',
+  'flux.$',
  ];
  
  if ($.__local__)
