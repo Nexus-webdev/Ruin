@@ -168,7 +168,7 @@ Object.defineProperty(String.prototype, 'decompress', {
   compressed = compressed.join('~');
   length = Number(length);
   
-  if (!compressed || compressed == '') return '';
+  if (!compressed || compressed == '' || !length) return this.toString();
 
   let index = 0;
   let bits_per_code = compressed.charCodeAt(index ++);
@@ -224,75 +224,6 @@ Object.defineProperty(String.prototype, 'decompress', {
  configurable: true,
  writable: true,
 });
-
-function escape(input, { escapeBackslash = true } = {}) {
- let out = '';
- const len = input.length;
- 
- function isEscaped(pos) {
-  let count = 0;
-  let i = pos -1;
-  while (i >= 0 && input.charCodeAt(i) == 92)
-  {
-   count ++;
-   -- i;
-  }
-  
-  return (count % 2) == 1;
- }
-
- for (let i = 0; i < len; i ++)
- {
-  const ch = input[i];
-  
-  "Optionally double unescaped backslashes to preserve literal meaning";
-  if (ch == '\\')
-  {
-   if (escapeBackslash)
-   {
-    "If this backslash is already escaping something (i.e., it's unescaped itself)";
-    "We still double it to ensure literal backslash in template context";
-    out += '\\\\';
-   } else out += '\\';
-   
-   continue;
-  }
-
-  "Escape unescaped backticks: ` -> \`";
-  if (ch == '`')
-  {
-   "If already escaped (\`), skip escaping";
-   if (!isEscaped(i)) out += '\\`';
-   else out += '`';
-   
-   continue;
-  }
-
-  "Escape unescaped interpolation start: ${ -> \${";
-  if (ch == '$')
-  {
-   const next = input[i + 1];
-   if (next == '{')
-   {
-    "Only escape if the $ is not already escaped";
-    if (!isEscaped(i)) out += '\\$';
-    else out += '$';
-    
-    "Do not consume '{' here; just let it be appended below because we only escape the '$' part";
-    continue;
-   } else {
-    "Plain dollar sign not followed by '{' doesn't need escaping";
-    out += '$';
-    continue;
-   }
-  }
-
-  "Default: copy character";
-  out += ch;
- }
-
- return out;
-}
 
 self.$ = ({
  _TYPES_: [],
@@ -1110,11 +1041,11 @@ $.struct('Cipher: static', {
   const iv = crypto.getRandomValues(new Uint8Array(12));
 
   const key = await this.$deriveKey(passphrase, salt);
-  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, this.$enc.encode(txt));
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, this.$enc.encode(txt.compress()));
   const payload = {
-   s: this.toBase64(salt.buffer),
-   i: this.toBase64(iv.buffer),
-   c: this.toBase64(ciphertext),
+   s: this.toBase64(salt.buffer).compress(),
+   i: this.toBase64(iv.buffer).compress(),
+   c: this.toBase64(ciphertext).compress(),
    v: 1,
   };
 
@@ -1123,15 +1054,15 @@ $.struct('Cipher: static', {
 
  async decrypt(payloadJson, passphrase) {
   const payload = JSON.parse(payloadJson);
-  const salt = new Uint8Array(this.fromBase64(payload.s));
-  const iv = new Uint8Array(this.fromBase64(payload.i));
+  const salt = new Uint8Array(this.fromBase64(payload.s.decompress()));
+  const iv = new Uint8Array(this.fromBase64(payload.i.decompress()));
   
-  const ciphertext = this.fromBase64(payload.c);
+  const ciphertext = this.fromBase64(payload.c.decompress());
   const key = await this.$deriveKey(passphrase, salt);
   
   try {
    const plaintextBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
-   return this.$dec.decode(plaintextBuf);
+   return this.$dec.decode(plaintextBuf).decompress();
   } catch(err) {
    throw new Error('Decryption failed: invalid passphrase or corrupted data.');
   }
@@ -1153,51 +1084,6 @@ function getFileText(name, dir = $.__RUIN_DIR__) {
 function getDir(name, dir = $.__RUIN_DIR__) {
  return new Promise(async resolve => {
   resolve(await dir.getDirectoryHandle(name));
- })
-}
-
-function importScripts(paths, dir = $.__RUIN_DIR__) {
- return new Promise(async resolve => {
-  const prev_path = [];
-  const scripts = [];
-  
-  for (let path of paths)
-  {
-   const fullpath = path.split('/').map((n, i) => {
-    if (n.trim() == '~') return prev_path[i];
-    return n.trim();
-   });
-   
-   const filename = fullpath.pop();
-   const extension = filename.split('.')[1].trim();
-   
-   for (let part of fullpath)
-   dir = await getDir(part, dir);
-   
-   const file = await getFile(filename, dir);
-   const script = meta.opt(extension, {
-    '$': x => {
-     RUIN.setup_phase = true;
-     return ruin(x);
-    },
-    
-    fx(x) {
-     if (!RUIN.foxx) throw 'Please import the foxx dependency.';
-     return foxx.run(x);
-    },
-    
-    js(x) {
-     RUIN.js(x);
-    },
-   })(data.content);
-   
-   prev_path.length = 0;
-   prev_path.push(...fullpath);
-   
-   scripts.push(script);
-  }
-  
-  resolve(scripts);
  })
 }
 

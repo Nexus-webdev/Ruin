@@ -10,7 +10,7 @@ log($float foo, $bool foo); "log writes multiple values to the console instead o
 log('Hello, World! <css> color: red'); "log can also style messages";
 
 "To import the DOM addon for flux using the built-in 'importScripts' function";
-await importScripts('https://nexus-webdev.github.io/Ruin/dom_flux.$');
+await importScripts('https://nexus-webdev.github.io/Ruin/addons/dom_flux.$');
 
 "Flux is run like so:";
 const data = await flux.run(`print 'Hello, World 2!'`);

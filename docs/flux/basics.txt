@@ -1,0 +1,86 @@
+# basics of flux;
+
+# Set the flux driver's root directory;
+fs-enable meta/TestingGround/nested/Sandbox;
+
+# Databases;
+db-open test_db;
+test_db-write 'foo', 5;
+
+# FileSystem;
+fs-write 'foo.txt', '5';
+
+# Defining variables;
+let foo, test_db-read 'foo';
+let foo2, fs-read 'foo.txt';
+
+# Declaring a function;
+func lerp, a, b, scale = .5, {
+ out a +(b -a) *scale;
+};
+
+# Printing values to the console (when using function calls as arguments wrap them in parens);
+print 'Foo (test_db): ', foo;
+print 'Foo (Sandbox): ', foo2;
+print 'Interpolated Value: ', (lerp 0, 10);
+
+
+# Loops;
+# range params: (end|start), end, step;
+let arr, (range 0, 12, 2);
+for item, arr, {
+ print item;
+};
+
+# Loops: Custom;
+let i, 0;
+marker count_to_5;
+
+ # Indentation is optional (I use it for clarity);
+ let i, i +1;
+ print 'I: ', i;
+
+cjump count_to_5, i < 5;
+
+
+# Enable Backend: Imports APCS (a dependency needed for cross-device communication).
+  This is an example usage, and should be implemented across devices;
+backend-enable;
+
+# Create a server and client. Port is optional (2nd argument);
+let server, backend-server 'test', 300;
+let client, backend-client 'test', 300;
+
+# Create a connection to the 'test' server;
+let conn, client-connect 'test';
+
+# Listen for upcoming messages;
+server-onecho {
+ print 'Server Received: ', echo.value;
+ echo-respond echo.value **2;
+};
+
+conn-onecho {
+ print 'Server Responded With: ', echo.value;
+};
+
+# Echo to the server;
+conn-echo 7;
+
+
+# Declare a class 'Person';
+class Person, name, {
+ self.name = name;
+ 
+ # Declare a method 'greet';
+ func greet, person, {
+  print 'Hello f{person.name}/comma I am f{self.name}';
+ };
+};
+
+# Create instances of Person, 'john' and 'jane';
+let john, (new Person, 'John');
+let jane, (new Person, 'Jane');
+
+# Have john greet jane;
+john-greet jane;

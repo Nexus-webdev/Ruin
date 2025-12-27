@@ -9,12 +9,12 @@ const mods = {
   $.meta.htmlTarget.appendChild(script);
  },
  
- html(code) {
+ html(code, target) {
   if (typeof code != 'string') throw `Html code must be of type 'string'`;
   
   const range = document.createRange();
   const fragment = range.createContextualFragment(code);
-  $.meta.htmlTarget.appendChild(fragment);
+  (target ?? $.meta.htmlTarget).appendChild(fragment);
  },
 
  css(code) {
