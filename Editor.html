@@ -248,7 +248,7 @@
      const [txt, _ = ''] = [encodedText.slice(0, i), encodedText.slice(i)];
      
      if (i == -1 || _.length > 20 || _.length == 0) return encodedText;
-     let key = urlData.encoding ?? '';
+     let key = urlData.encoding || ''; ''; $.log(key);
      return $.Cipher.decrypt(txt, key);
     };
     
