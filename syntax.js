@@ -1036,33 +1036,47 @@ $.struct('Cipher: static', {
   ]);
  },
  
- async encrypt(txt, passphrase) {
+ async encrypt(txt, passphrase, compress = false) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
+  txt = compress ? txt.compress() : txt;
 
   const key = await this.$deriveKey(passphrase, salt);
-  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, this.$enc.encode(txt.compress()));
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, this.$enc.encode(txt));
+  
+  const s = this.toBase64(salt.buffer);
+  const i = this.toBase64(iv.buffer);
+  const c = this.toBase64(ciphertext);
+  
   const payload = {
-   s: this.toBase64(salt.buffer).compress(),
-   i: this.toBase64(iv.buffer).compress(),
-   c: this.toBase64(ciphertext).compress(),
+   s: compress ? s.compress() : s,
+   i: compress ? i.compress() : i,
+   c: compress ? c.compress() : c,
    v: 1,
   };
 
   return JSON.stringify(payload);
  },
 
- async decrypt(payloadJson, passphrase) {
+ async decrypt(payloadJson, passphrase, decompress = false) {
   const payload = JSON.parse(payloadJson);
-  const salt = new Uint8Array(this.fromBase64(payload.s.decompress()));
-  const iv = new Uint8Array(this.fromBase64(payload.i.decompress()));
+  if (decompress)
+  {
+   payload.s = payload.s.decompress();
+   payload.i = payload.i.decompress();
+   payload.c = payload.c.decompress();
+  }
   
-  const ciphertext = this.fromBase64(payload.c.decompress());
+  const salt = new Uint8Array(this.fromBase64(payload.s));
+  const iv = new Uint8Array(this.fromBase64(payload.i));
+  
+  const ciphertext = this.fromBase64(payload.c);
   const key = await this.$deriveKey(passphrase, salt);
   
   try {
    const plaintextBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
-   return this.$dec.decode(plaintextBuf).decompress();
+   const decoded = this.$dec.decode(plaintextBuf);
+   return decompressed ? decoded.decompress() : decoded;
   } catch(err) {
    throw new Error('Decryption failed: invalid passphrase or corrupted data.');
   }
