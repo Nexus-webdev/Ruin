@@ -1036,10 +1036,10 @@ $.struct('Cipher: static', {
   ]);
  },
  
- async encrypt(txt, passphrase, compress = false) {
+ async encrypt(txt, passphrase, comp = false) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  txt = compress ? txt.compress() : txt;
+  txt = comp ? txt.compress() : txt;
 
   const key = await this.$deriveKey(passphrase, salt);
   const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, this.$enc.encode(txt));
@@ -1049,18 +1049,18 @@ $.struct('Cipher: static', {
   const c = this.toBase64(ciphertext);
   
   const payload = {
-   s: compress ? s.compress() : s,
-   i: compress ? i.compress() : i,
-   c: compress ? c.compress() : c,
+   s: comp ? s.compress() : s,
+   i: comp ? i.compress() : i,
+   c: comp ? c.compress() : c,
    v: 1,
   };
 
   return JSON.stringify(payload);
  },
 
- async decrypt(payloadJson, passphrase, decompress = false) {
+ async decrypt(payloadJson, passphrase, decomp = false) {
   const payload = JSON.parse(payloadJson);
-  if (decompress)
+  if (decomp)
   {
    payload.s = payload.s.decompress();
    payload.i = payload.i.decompress();
@@ -1076,7 +1076,7 @@ $.struct('Cipher: static', {
   try {
    const plaintextBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
    const decoded = this.$dec.decode(plaintextBuf);
-   return decompressed ? decoded.decompress() : decoded;
+   return decomp ? decoded.decompress() : decoded;
   } catch(err) {
    throw new Error('Decryption failed: invalid passphrase or corrupted data.');
   }
