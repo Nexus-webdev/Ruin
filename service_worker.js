@@ -1,55 +1,53 @@
-const cache_name = 'ruin_cache_v1';
-const assets = [
+const CACHE_NAME = 'ruin_cache_v1';
+const ASSETS = [
  '/Ruin/',
  '/Ruin/index.html',
  '/Ruin/Output.html',
  '/Ruin/Manager.html',
  '/Ruin/Editor.html',
  '/Ruin/file_opener.html',
- 
+
  '/Ruin/manager-styles.css',
  '/Ruin/editor-styles.css',
  '/Ruin/output-styles.css',
- 
+
  '/Ruin/syntax.js',
  '/Ruin/page.js',
- 
+
+ '/Ruin/addons/dom_flux.$',
  '/Ruin/bootstrapper.$',
- '/Ruin/addons/foxx@dom.$',
- '/Ruin/addons/foxx.$',
- 
+ '/Ruin/flux.$',
+
  '/Ruin/icons/rre.png',
 ];
 
-async function online() {
- if (!navigator.onLine) return false;
- try {
-  const response = await fetch('https://nexus-webdev.github.io/Ruin/ping.txt');
-  return response.ok;
- } catch (err) {
-  return false;
- }
-}
-
 "Install event: cache files";
-self.addEventListener('install', e => {
- e.waitUntil(caches.open(cache_name).then(cache => {
-  return cache.addAll(assets);
- }));
+self.addEventListener('install', event => {
+ event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
 });
 
-"Fetch event: serve cached files";
-self.addEventListener('fetch', e => {
- const url = new URL(e.request.url);
- "Strip query params for matching";
- const request = new Request(url.origin +url.pathname);
- 
- e.respondWith(caches.match(request).then(res => {
-  return new Promise(async resolve => {
-   const status = await online();
-   const response = await (status || !res ? fetch(request) : res);
+"Activate event: cleanup old caches";
+self.addEventListener('activate', event => {
+ event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key != CACHE_NAME).map(key => caches.delete(key)))));
+});
+
+"Fetch event: serve cached files ignoring query params";
+self.addEventListener('fetch', event => {
+ const url = new URL(event.request.url);
+ const stripped = new Request(url.origin +url.pathname, { method: event.request.method, headers: event.request.headers });
+
+ event.respondWith(caches.match(stripped).then(cached => {
+  if (cached)
+  {
+   fetch(event.request).then(response => {
+    if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put(stripped, response.clone()));
+   });
    
-   resolve(response);
-  }) 
+   return cached;
+  }
+  
+  return fetch(event.request).catch(x => {
+   if (event.request.destination == 'document') return caches.match('/Ruin/index.html');
+  });
  }));
 });
