@@ -13,6 +13,7 @@ fs-write 'foo.txt', '5';
 # Defining variables;
 let foo, test_db-read 'foo';
 let foo2, fs-read 'foo.txt';
+foo2 = Number(foo2) || foo2;
 
 # Declaring a function;
 func lerp, a, b, scale = .5, {
@@ -23,49 +24,26 @@ func lerp, a, b, scale = .5, {
 print 'Foo (test_db): ', foo;
 print 'Foo (Sandbox): ', foo2;
 print 'Interpolated Value: ', (lerp 0, 10);
+print '';
 
 
 # Loops;
 # range params: (end|start), end, step;
 let arr, (range 0, 12, 2);
 for item, arr, {
- print item;
+ print 'Item: ', item;
 };
 
 # Loops: Custom;
+print '';
 let i, 0;
-marker count_to_5;
+loop_marker count_to_5;
 
  # Indentation is optional (I use it for clarity);
- let i, i +1;
  print 'I: ', i;
-
+ i ++;
+ 
 cjump count_to_5, i < 5;
-
-
-# Enable Backend: Imports APCS (a dependency needed for cross-device communication).
-  This is an example usage, and should be implemented across devices;
-backend-enable;
-
-# Create a server and client. Port is optional (2nd argument);
-let server, backend-server 'test', 300;
-let client, backend-client 'test', 300;
-
-# Create a connection to the 'test' server;
-let conn, client-connect 'test';
-
-# Listen for upcoming messages;
-server-onecho {
- print 'Server Received: ', echo.value;
- echo-respond echo.value **2;
-};
-
-conn-onecho {
- print 'Server Responded With: ', echo.value;
-};
-
-# Echo to the server;
-conn-echo 7;
 
 
 # Declare a class 'Person';
@@ -81,6 +59,35 @@ class Person, name, {
 # Create instances of Person, 'john' and 'jane';
 let john, (new Person, 'John');
 let jane, (new Person, 'Jane');
+print john, jane;
 
 # Have john greet jane;
 john-greet jane;
+print '';
+
+
+# Enable Backend: Imports APCS (a dependency needed for cross-device communication).
+  This is an example usage, and should be implemented across devices;
+backend-enable;
+
+# Create a server and client. Port is optional (2nd argument);
+let server, backend-server 'test', 300;
+let client, backend-client 'test', 300;
+print client, server;
+
+# Create a connection to the 'test' server;
+let conn, client-connect 'test';
+print conn;
+
+# Listen for upcoming messages;
+server-onecho {
+ print 'Server Received: ', echo.value;
+ echo-respond echo.value **2;
+};
+
+conn-onecho {
+ print 'Server Responded With: ', echo.value;
+};
+
+# Echo to the server;
+conn-echo 7;
