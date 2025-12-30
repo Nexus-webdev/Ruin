@@ -1,56 +1,71 @@
 <!DOCTYPE html>
 <html lang='en'>
  <head>
-  <meta charset='UTF-8' content-type='utf-8'>
+  <meta charset='UTF-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <meta name='description' content='Decides whether the Ruin Manager or Output page is used.'>
   <link rel='manifest' href='manifest.json'>
-  
   <link rel='icon' href='icons/rre.png' type='image/png'>
+ </head>
+ <body>
   <p>Press Shift To Change</p>
   <p>Press Enter To Confirm</p>
   <p>Or Install As An App</p>
-  
+
+  <!-- hidden select initially -->
+  <select id='siteSelect' style='display:none;'>
+   <option value='default'>Default</option>
+   <option value='runtime'>Runtime</option>
+   <option value='manager'>Manager</option>
+   <option value='docs'>Docs</option>
+  </select>
+
   <script>
    let type = urlData()?.type?.toLowerCase?.();
    const urls = {
     default: 'https://nexus-webdev.github.io/Ruin',
     runtime: 'https://nexus-webdev.github.io/Ruin/Output.html?',
     manager: 'https://nexus-webdev.github.io/Ruin/Manager.html?',
+    docs: 'https://nexus-webdev.github.io/Ruin/documentation.html',
    };
-   
-   const site_names = `(${Object.keys(urls).join('|')})`;
+
+   const site_names = Object.keys(urls);
    const validSite = site_names.includes(type);
    if (!type || !validSite) ask();
-   
+
    document.addEventListener('keydown', e => {
     if (e.shiftKey) ask();
     if (e.key == 'Enter')
     {
      const validSite = site_names.includes(type);
      const site_url = urls[validSite ? type : 'default'];
+     
      location.href = site_url;
     }
-   })
-   
+   });
+
    const path = './service_worker.js';
    if ('serviceWorker' in navigator && location.href.includes('https'))
-   navigator.serviceWorker.register(path).then(_ => _).catch(err => {
-    console.error(`Service Worker '${path}' failed`, err);
-   });
-   
-   function ask() {
-    type = prompt('Enter the desired site ' +site_names, type || '')?.trim?.()?.toLowerCase?.();
+   {
+    navigator.serviceWorker.register(path).catch(err => {
+     console.error(`Service Worker '${path}' failed`, err);
+    });
    }
-   
+
+   function ask() {
+    const select = document.getElementById('siteSelect');
+    select.onchange = x => (type = select.value.toLowerCase());
+    
+    select.style.display = 'inline';
+    select.value = type || 'default';
+   }
+
    function urlData() {
     const Params = new URLSearchParams(window.location.search).entries();
     const data = {};
-    
-    for (let param of Params)
-    data[param[0]] = param[1];
+    for (let param of Params) data[param[0]] = param[1];
     return data;
    }
   </script>
- </head>
+ </body>
 </html>
