@@ -643,30 +643,51 @@ self.addEventListener('fetch', e => {
 });`;
 }
 
+function ensure_file_type_is_valid(type) {
+ type = type.trim();
+ type = Object.keys(exts).includes(type) ? type : '$';
+ 
+ type = $.meta.opt(type, {
+  default: type,
+  flux: 'fl',
+  
+  viscript: 'vs',
+  javascript: 'js',
+ })
+ 
+ return type;
+};
+
 class RuinScript extends HTMLElement {
  async connectedCallback() {
-  let code = '';
+  const exts = $.meta.supported_exts;
+  let code, type = '$';
+  
+  if (this.hasAttribute('type'))
+  type = ensure_file_type_is_valid(this.getAttribute('type'));
+  const f = exts[ensure_file_type_is_valid(type)];
+  
   if (this.hasAttribute('src'))
   {
    const src = this.getAttribute('src');
-   const from_git = src.startsWith('https://github.com/') || src.includes('.github.io');
+   try {
+    const res = await $.fetch(src);
+    code = await res.text();
+   } catch(e) {
+    if ($.FileSystem.origin) code = await $.FileSystem.read(src);
+    else throw new Error('FileSystem origin must be a directory');
+   }
    
-   if (from_git)
-   {
-    const [owner, repo, ...path] = src.split('/');
-    const { owner: og_owner, repo: og_repo } = GitHub;
-    
-    GitHub.repo(owner.trim(), repo.trim());
-    code = await $.GitHub.read(src);
-    GitHub.repo(og_owner, og_repo);
-   } else if ($.FileSystem.origin) code = await $.FileSystem.read(src);
-  } else code = this.textContent.trim();
- 
-  if (code) $.ruin(code);
+   const ext = exts[ensure_file_type_is_valid(url.split('.').pop())];
+   await ext(code);
+  };
+  
+  const content = this.textContent.trim();
+  if (content) await f(content);
  }
 }
 
-customElements.define('ruin-script', RuinScript);
+customElements.define('r-script', RuinScript);
 window.addEventListener('storage', _ => {
  for (let key of watch)
  if (localStorage[key] != current[key] && $.meta.autoReload)
@@ -674,20 +695,25 @@ window.addEventListener('storage', _ => {
 });
 
 (async _ => {
- let code = sessionStorage['__PROGRAM__'] ?? sessionStorage[program.name] ?? localStorage[program.name];
+ const code = sessionStorage['__PROGRAM__'] ?? sessionStorage[program.name] ?? localStorage[program.name];
  const useFile = sessionStorage['file-mode'] == 'true';
+ $.meta.htmlTarget = document.body;
+ 
  if (useFile)
  {
+  const ext = $.meta.supported_exts[ensure_file_type_is_valid(program.name.split('.').pop())];
   const script_files = new $.Database('ScriptFiles');
   const handle = await script_files.get(program.name);
+  
   if (handle)
   {
    const file = await handle.getFile();
-   code = await file.text();
+   return ext(await file.text());
   }
  }
  
- $.meta.htmlTarget = document.body;
- $.ruin(code);
-})();
+ return $.ruin(code);
+})().then(result => {
+ window.result = result;
+});
 
