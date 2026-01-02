@@ -1,4 +1,5 @@
 const CACHE_NAME = 'ruin_cache_v1';
+let offline = false;
 const ASSETS = [
  '/Ruin/',
  '/Ruin/index.html',
@@ -39,9 +40,18 @@ self.addEventListener('fetch', event => {
  event.respondWith(caches.match(stripped).then(cached => {
   if (cached)
   {
-   fetch(event.request).then(response => {
-    if (response.ok) caches.open(CACHE_NAME).then(cache => cache.put(stripped, response.clone()));
-   });
+   try {
+    fetch(event.request).then(response => {
+     if (response.ok)
+     {
+      caches.open(CACHE_NAME).then(cache => cache.put(stripped, response.clone()));
+      offline = false;
+     }
+    });
+   } catch {
+    if (!offline) console.log('User Offline, falling back to cached resources');
+    offline = true;
+   }
    
    return cached;
   }
