@@ -645,7 +645,7 @@ self.addEventListener('fetch', e => {
 
 function ensure_file_type_is_valid(type) {
  type = type.trim();
- type = Object.keys(exts).includes(type) ? type : '$';
+ type = Object.keys($.meta.supported_exts).includes(type) ? type : '$';
  
  type = $.meta.opt(type, {
   default: type,
