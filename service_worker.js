@@ -40,18 +40,21 @@ self.addEventListener('fetch', event => {
  event.respondWith(caches.match(stripped).then(cached => {
   if (cached)
   {
-   try {
-    fetch(event.request).then(response => {
-     if (response.ok)
-     {
-      caches.open(CACHE_NAME).then(cache => cache.put(stripped, response.clone()));
-      offline = false;
-     }
-    });
-   } catch {
-    if (!offline) console.log('User Offline, falling back to cached resources');
+   fetch(event.request).then(response => {
+    if (response.ok)
+    {
+     caches.open(CACHE_NAME).then(cache => cache.put(stripped, response.clone()));
+     offline = false;
+    }
+   }).catch(e => {
+    if (!offline)
+    {
+     console.log('User Offline, falling back to cached resources');
+     console.log(`%cEncountered Error: ${e.message}`, 'color: red');
+    }
+    
     offline = true;
-   }
+   })
    
    return cached;
   }
