@@ -464,7 +464,7 @@ return new Promise(async (resolve, reject) => {
    resolve();
   }
  } catch (e) {
-  reject(new this.RuinError(e, '${url}', __line_offset__));
+  reject(new this.RuinError(e, '${url}', this.__line_offset__));
  }
 });`;
   
