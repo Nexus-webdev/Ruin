@@ -445,7 +445,7 @@ self.$ = ({
   
   const ext = $?.module?.ext;
   let code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-  const url = `${$.__n__ ++}. ${name ?? $?.module?.namespace ?? 'unknown'}${ext ? '-' +ext : ''}`;
+  const url = `${$.__n__ ++}.${name ?? $?.module?.namespace ?? 'unknown'}${ext ? '-' +ext : ''}`;
   
   (new Function(`/*${code}*/
 //# sourceURL=${url}.$`))();
