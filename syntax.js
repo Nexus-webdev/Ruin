@@ -431,6 +431,7 @@ self.$ = ({
   }
  },
  
+ __n__: 0,
  async ruin(encodedText = ``, context = {}, name) {
   const prevCtx = $._currentCtx_;
   const i = encodedText.lastIndexOf('¿');
@@ -442,9 +443,9 @@ self.$ = ({
    key = null;
   }
   
+  const ext = $?.module?.ext;
   let code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-  name = name ?? $?.module?.name ?? $?.module?.namespace;
-  const url = name ?? `ruin-anon-${Date.now()}`;
+  const url = `${$.__n__ ++}. ${name ?? $?.module?.namespace ?? 'unknown'}${ext ? '-' +ext : ''}`;
   
   (new Function(`/*${code}*/
 //# sourceURL=${url}.$`))();

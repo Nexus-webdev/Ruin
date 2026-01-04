@@ -702,7 +702,7 @@ window.addEventListener('storage', _ => {
  
  if (useFile)
  {
-  const ext = $.meta.supported_exts[ensure_file_type_is_valid(type))];
+  const ext = $.meta.supported_exts[ensure_file_type_is_valid(type)];
   const script_files = new $.Database('ScriptFiles');
   const handle = await script_files.get(program.name);
   
