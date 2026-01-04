@@ -409,32 +409,74 @@ self.$ = ({
  },
  
  setup_phase: true,
- ruin(encodedText = ``, context = {}) {
+ RuinError: class extends Error {
+  constructor(e, sourceUrl = 'ruin', offset = 0) {
+   super(e.message);
+   this.name = e.name || 'RuinError';
+   
+   "Get the line and column the error occured on";
+   const match = e.stack.match(/:(\d+):(\d+)/);
+   this.line = match ? parseInt(match[1], 10) : 0;
+   this.col = match ? parseInt(match[2], 10) : 0;
+   
+   "Remap: subtract wrapper offset to get user input line";
+   this.offset_line = Math.max(1, this.line -offset);
+   this.sourceUrl = sourceUrl;
+  }
+
+  toString() {
+    return `${this.name}: ${this.message}\n`
+           +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col}\n`
+           +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}`;
+  }
+ },
+ 
+ async ruin(encodedText = ``, context = {}, name) {
   const prevCtx = $._currentCtx_;
-  return new Promise(async resolve => {
-   const i = encodedText.lastIndexOf('¿');
-   let [txt, key, length] = [encodedText.slice(0, i), encodedText.slice(i +1)];
-   if (i != -1) key = $.shift(key, -(Number(key.length) **2).toString());
-   else {
-    txt = encodedText;
-    key = null;
-   }
+  const i = encodedText.lastIndexOf('¿');
+  
+  let [txt, key, length] = [encodedText.slice(0, i), encodedText.slice(i +1)];
+  if (i != -1) key = $.shift(key, -(Number(key.length) **2).toString());
+  else {
+   txt = encodedText;
+   key = null;
+  }
+  
+  let code = await (key ? $.Cipher.decrypt(txt, key) : txt);
+  name = name ?? $?.module?.name ?? $?.module?.namespace;
+  const url = name ?? `ruin-anon-${Date.now()}`;
+  
+  (new Function(`/*${code}*/
+//# sourceURL=${url}.$`))();
+  
+  code = `//# sourceURL=${url}.js
+return new Promise(async (resolve, reject) => {
+ try {
+  with(this) {
+   RUIN._currentCtx_ = this;
    
-   const code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-   const result = await (new Function(`return (async() => {
- with(this) {
-  RUIN._currentCtx_ = this;
-  ${$._master_macro_(code)}
+   // sof;
+   ${$._master_macro_(code)}
+   // eof;
+   
+   resolve();
+  }
+ } catch (e) {
+  reject(new RuinError(e, '${url}', __line_offset__));
  }
-})();`)).call({
-    ...context,
-    context,
-    ...$,
-   });
-   
+});`;
+  
+  const __line_offset__ = code.split('// sof;')[0].split('\n').length;
+  const ctx = {
+   __line_offset__,
+   ...context,
+   context,
+   ...$,
+  };
+  
+  return (new Function(code)).call(ctx).then(x => {
    $._currentCtx_ = prevCtx;
    $.setup_phase = false;
-   resolve(result);
   })
  },
  
