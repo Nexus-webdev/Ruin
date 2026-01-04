@@ -410,9 +410,16 @@ self.$ = ({
  
  setup_phase: true,
  RuinError: class extends Error {
-  constructor(e, sourceUrl = 'ruin', offset = 0) {
+  constructor(e, { sourceUrl = 'ruin', offset = 0, kind = 'runtime', name } = {}) {
    super(e.message);
-   this.name = e.name || 'RuinError';
+   if (e instanceof SyntaxError)
+   {
+    this.name = 'RuinSyntaxError';
+    this.kind = 'syntax evaluation';
+   } else {
+    this.name = name ?? e.name ?? 'RuinError';
+    this.kind = kind;
+   }
    
    "Get the line and column the error occured on";
    const match = e.stack.match(/:(\d+):(\d+)/);
@@ -422,12 +429,17 @@ self.$ = ({
    "Remap: subtract wrapper offset to get user input line";
    this.offset_line = Math.max(1, this.line -offset);
    this.sourceUrl = sourceUrl;
+   
+   this.stack = this.toString();
   }
 
   toString() {
-    return `${this.name}: ${this.message}\n`
-           +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col}\n`
-           +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}`;
+   this.stack = `${this.name}: ${this.message}\n`
+                +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col}\n`
+                +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}`
+                +`  @ ${this.kind}`;
+                
+   return this.stack;
   }
  },
  
@@ -464,7 +476,13 @@ return new Promise(async (resolve, reject) => {
    resolve();
   }
  } catch (e) {
-  reject(new this.RuinError(e, '${url}', this.__line_offset__));
+  const error = new this.RuinError(e, {
+   sourceUrl: '${url}',
+   offset: this.__line_offset__,
+   kind: 'runtime',
+  });
+  
+  reject(error);
  }
 });`;
   
@@ -476,9 +494,25 @@ return new Promise(async (resolve, reject) => {
    ...$,
   };
   
-  return (new Function(code)).call(ctx).then(x => {
+  try {
+   const script = new Function(code);
+  } catch (e) {
+   throw new $.RuinError(e, {
+    sourceUrl: url,
+    offset: __line_offset__,
+    kind: 'evaluation',
+   });
+  }
+  
+  script.call(ctx).then(x => {
    $._currentCtx_ = prevCtx;
    $.setup_phase = false;
+  }).catch(e => {
+   throw new $.RuinError(e, {
+    sourceUrl: url,
+    offset: __line_offset__,
+    kind: 'evaluation',
+   });
   })
  },
  
