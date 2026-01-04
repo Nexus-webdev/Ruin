@@ -445,7 +445,7 @@ self.$ = ({
   
   const ext = $?.module?.ext;
   let code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-  const url = `${$.__n__ ++}.${name ?? $?.module?.namespace ?? 'unknown'}${ext ? '-' +ext : ''}`;
+  const url = `${$.__n__ ++}--${name ?? $?.module?.namespace ?? 'unknown'}${ext ? '-' +ext : ''}`;
   
   (new Function(`/*${code}*/
 //# sourceURL=${url}.$`))();
@@ -463,7 +463,7 @@ return new Promise(async (resolve, reject) => {
    resolve();
   }
  } catch (e) {
-  reject(new RuinError(e, '${url}', __line_offset__));
+  reject(new this.RuinError(e, '${url}', __line_offset__));
  }
 });`;
   
