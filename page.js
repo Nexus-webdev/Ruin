@@ -697,11 +697,12 @@ window.addEventListener('storage', _ => {
 (async _ => {
  const code = sessionStorage['__PROGRAM__'] ?? sessionStorage[program.name] ?? localStorage[program.name];
  const useFile = sessionStorage['file-mode'] == 'true';
+ const [, type] = program.name.split('.');
  $.meta.htmlTarget = document.body;
  
  if (useFile)
  {
-  const ext = $.meta.supported_exts[ensure_file_type_is_valid(program.name.split('.').pop())];
+  const ext = $.meta.supported_exts[ensure_file_type_is_valid(type))];
   const script_files = new $.Database('ScriptFiles');
   const handle = await script_files.get(program.name);
   
@@ -712,7 +713,7 @@ window.addEventListener('storage', _ => {
   }
  }
  
- return $.ruin(code);
+ return $.ruin(code, window, 'main');
 })().then(result => {
  window.result = result;
 });

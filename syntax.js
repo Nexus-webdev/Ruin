@@ -480,9 +480,9 @@ return new Promise(async (resolve, reject) => {
   })
  },
  
- setup(code) {
+ setup(code, ctx, name) {
   $.setup_phase = true;
-  return $.ruin(code);
+  return $.ruin(code, ctx, name);
  },
  
  _: undefined,
@@ -1192,7 +1192,7 @@ self.bootstrapper = new Promise(async resolve => {
   
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
-  await $.setup(code);
+  await $.setup(code, {}, url);
  }
  
  resolve($);
