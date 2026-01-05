@@ -466,7 +466,7 @@ self.$ = ({
   
   code = `//# sourceURL=${url}.js
 return (async() => {
- // try {
+ try {
   with(this) {
    RUIN._currentCtx_ = this;
    
@@ -474,6 +474,9 @@ return (async() => {
    ${$._master_macro_(code)}
    // eof;
   }
+ } catch (e) {
+  return e;
+ }
 })();`;
   
   const __line_offset__ = code.split('// sof;')[0].split('\n').length;
@@ -497,15 +500,24 @@ return (async() => {
   }
   
   try {
-   return (ruin_script ?? (x => x)).call(ctx).then(x => {
+   return (ruin_script ?? (x => x)).call(ctx).then(e => {
     $._currentCtx_ = prevCtx;
     $.setup_phase = false;
+    
+    if (!(e instanceof Error)) return e;
+    const err = new this.RuinError(e, {
+     sourceUrl: url,
+     offset: __line_offset__,
+     kind: 'runtime',
+    });
+    
+    console.error(err.represent());
    });
   } catch (e) {
    const err = new $.RuinError(e, {
     sourceUrl: url,
     offset: __line_offset__,
-    kind: 'evaluation',
+    kind: 'runtime',
    });
    
    console.error(err.represent());
