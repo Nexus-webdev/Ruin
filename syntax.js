@@ -456,7 +456,7 @@ self.$ = ({
   }
   
   const ext = $?.module?.ext;
-  let code = await (key ? $.Cipher.decrypt(txt, key) : txt);
+  let ruin_script, code = await (key ? $.Cipher.decrypt(txt, key) : txt);
   url = (url ?? $?.module?.namespace ?? 'unknown').split('.')[0];
   url = `${$.__n__ ++}--${url}${ext ? '-' +ext : ''}`;
   
@@ -495,7 +495,7 @@ return new Promise(async (resolve, reject) => {
   };
   
   try {
-   const script = new Function(code);
+   ruin_script = new Function(code);
   } catch (e) {
    throw new $.RuinError(e, {
     sourceUrl: url,
@@ -504,7 +504,7 @@ return new Promise(async (resolve, reject) => {
    });
   }
   
-  script.call(ctx).then(x => {
+  (ruin_script ?? (x => x)).call(ctx).then(x => {
    $._currentCtx_ = prevCtx;
    $.setup_phase = false;
   }).catch(e => {
@@ -1222,7 +1222,6 @@ self.bootstrapper = new Promise(async resolve => {
  
  for await (let url of urls)
  {
-  console.log({ url, urls });
   const response = await fetch(`https://nexus-webdev.github.io/Ruin/${url}`);
   if (!response.ok) throw `Failed to read: ${response.status}`;
   let code = await response.text();
