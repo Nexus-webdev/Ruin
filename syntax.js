@@ -409,9 +409,8 @@ self.$ = ({
  },
  
  setup_phase: true,
- RuinError: class extends Error {
+ RuinError: class {
   constructor(e, { sourceUrl = 'ruin', offset = 0, kind = 'runtime', name } = {}) {
-   super(e.message);
    if (e instanceof SyntaxError)
    {
     this.name = 'RuinSyntaxError';
@@ -430,10 +429,10 @@ self.$ = ({
    this.offset_line = Math.max(1, this.line -offset);
    this.sourceUrl = sourceUrl;
    
-   this.stack = `${this.name}: ${this.message}\n`
+   this.stack = `${this.name}: ${e.message}\n`
                 +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col}\n`
-                +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}`
-                +`  @ ${this.kind}`;
+                +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}\n`
+                +`  [${this.kind}]`;
   }
   
   toString() {
