@@ -444,7 +444,7 @@ self.$ = ({
  },
  
  __n__: 0,
- async ruin(encodedText = ``, context = {}, name) {
+ async ruin(encodedText = ``, context = {}, url) {
   const prevCtx = $._currentCtx_;
   const i = encodedText.lastIndexOf('¿');
   
@@ -457,8 +457,8 @@ self.$ = ({
   
   const ext = $?.module?.ext;
   let code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-  name = (name ?? $?.module?.namespace ?? 'unknown').split('.')[0];
-  const url = `${$.__n__ ++}--${name}${ext ? '-' +ext : ''}`;
+  url = (url ?? $?.module?.namespace ?? 'unknown').split('.')[0];
+  url = `${$.__n__ ++}--${url}${ext ? '-' +ext : ''}`;
   
   (new Function(`/*${code}*/
 //# sourceURL=${url}.$`))();
@@ -1222,6 +1222,7 @@ self.bootstrapper = new Promise(async resolve => {
  
  for await (let url of urls)
  {
+  console.log({ url, urls });
   const response = await fetch(`https://nexus-webdev.github.io/Ruin/${url}`);
   if (!response.ok) throw `Failed to read: ${response.status}`;
   let code = await response.text();
