@@ -430,7 +430,7 @@ self.$ = ({
    this.sourceUrl = sourceUrl;
    
    this.stack = `${this.name}: ${e.message}\n`
-                +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col}\n`
+                +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col} (ln ${this.offset_line -2})\n`
                 +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}\n`
                 +`  [${this.kind}]`;
   }
