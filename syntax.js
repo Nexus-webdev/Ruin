@@ -475,7 +475,13 @@ return (async() => {
    // eof;
   }
  } catch (e) {
-  return e;
+  const err = new this.RuinError(e, {
+   sourceUrl: '${url}',
+   offset: this.__line_offset__,
+   kind: 'runtime',
+  });
+  
+  console.error(err.represent());
  }
 })();`;
   
@@ -499,29 +505,10 @@ return (async() => {
    console.error(err.represent());
   }
   
-  try {
-   return (ruin_script ?? (x => x)).call(ctx).then(e => {
-    $._currentCtx_ = prevCtx;
-    $.setup_phase = false;
-    
-    if (!(e instanceof Error)) return e;
-    const err = new this.RuinError(e, {
-     sourceUrl: url,
-     offset: __line_offset__,
-     kind: 'runtime',
-    });
-    
-    console.error(err.represent());
-   });
-  } catch (e) {
-   const err = new $.RuinError(e, {
-    sourceUrl: url,
-    offset: __line_offset__,
-    kind: 'runtime',
-   });
-   
-   console.error(err.represent());
-  }
+  return (ruin_script ?? (x => x)).call(ctx).then(x => {
+   $._currentCtx_ = prevCtx;
+   $.setup_phase = false;
+  })
  },
  
  setup(code, ctx, name) {
