@@ -430,15 +430,17 @@ self.$ = ({
    this.offset_line = Math.max(1, this.line -offset);
    this.sourceUrl = sourceUrl;
    
-   this.stack = this.toString();
-  }
-
-  toString() {
    this.stack = `${this.name}: ${this.message}\n`
                 +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col}\n`
                 +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}`
                 +`  @ ${this.kind}`;
-                
+  }
+  
+  toString() {
+   return this.stack;
+  }
+
+  represent() {        
    return this.stack;
   }
  },
@@ -464,7 +466,7 @@ self.$ = ({
 //# sourceURL=${url}.$`))();
   
   code = `//# sourceURL=${url}.js
-return new Promise(async (resolve, reject) => {
+return (async() => {
  try {
   with(this) {
    RUIN._currentCtx_ = this;
@@ -472,19 +474,17 @@ return new Promise(async (resolve, reject) => {
    // sof;
    ${$._master_macro_(code)}
    // eof;
-   
-   resolve();
   }
  } catch (e) {
-  const error = new this.RuinError(e, {
+  const err = new this.RuinError(e, {
    sourceUrl: '${url}',
    offset: this.__line_offset__,
    kind: 'runtime',
   });
   
-  reject(error);
+  console.error(err.represent());
  }
-});`;
+})();`;
   
   const __line_offset__ = code.split('// sof;')[0].split('\n').length;
   const ctx = {
@@ -497,23 +497,19 @@ return new Promise(async (resolve, reject) => {
   try {
    ruin_script = new Function(code);
   } catch (e) {
-   throw new $.RuinError(e, {
+   const err = new $.RuinError(e, {
     sourceUrl: url,
     offset: __line_offset__,
     kind: 'evaluation',
    });
+   
+   console.error(err.represent());
   }
   
   (ruin_script ?? (x => x)).call(ctx).then(x => {
    $._currentCtx_ = prevCtx;
    $.setup_phase = false;
-  }).catch(e => {
-   throw new $.RuinError(e, {
-    sourceUrl: url,
-    offset: __line_offset__,
-    kind: 'evaluation',
-   });
-  })
+  });
  },
  
  setup(code, ctx, name) {
