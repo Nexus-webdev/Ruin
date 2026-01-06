@@ -227,6 +227,7 @@ Object.defineProperty(String.prototype, 'decompress', {
 
 self.$ = ({
  _currentCtx_: {},
+ enableTypeControl(){},
  _TYPES_: {
   float: x => typeof x == 'number' && x.toString().includes('.'),
   int: x => typeof x == 'number' && !x.toString().includes('.'),
