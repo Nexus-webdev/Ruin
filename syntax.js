@@ -226,8 +226,28 @@ Object.defineProperty(String.prototype, 'decompress', {
 });
 
 self.$ = ({
- _TYPES_: [],
  _currentCtx_: {},
+ _TYPES_: {
+  float: x => typeof x == 'number' && x.toString().includes('.'),
+  int: x => typeof x == 'number' && !x.toString().includes('.'),
+  num: x => typeof x == 'number',
+  
+  string: x => typeof x == 'string',
+  bool: x => [true, false, 1, 0].includes(x),
+  
+  array: x => Array.isArray(x),
+  object: x => typeof x == 'object' && !Array.isArray(x),
+ },
+ 
+ checkForType(type, value) {
+  const f = $._TYPES_[type];
+  if (!f) throw new ReferenceError(`Invalid Type ${type}`);
+  
+  const valid = f(value);
+  if (valid) return value;
+  
+  throw new TypeError(`${value?.toString?.() || 'value'} is not of type ${type}`);
+ },
  
  scramble(txt, key) {
   if (!key || typeof key != 'number') return txt;
@@ -238,16 +258,18 @@ self.$ = ({
   }).join('');
  },
  
- create_macro(pattern, transformer) {
+ create_macro(pattern, transformer, ignore_spaces) {
   "Convert pattern into regex with capture groups";
-  const regexPattern = pattern.replace(/\(/g, '\\(')
-                              .replace(/\)/g, '\\)')
-                              .replace(/\{/g, '\\{')
-                              .replace(/\}/g, '\\}')
-                              .replace(/\$([0-9]+)/g, '(.+?)');
-                              "$n → capture group";
-
-  const regex = new RegExp(regexPattern, 'gs');
+  let pattern = pattern.replace(/\(/g, '\\(')
+                       .replace(/\)/g, '\\)')
+                       .replace(/\{/g, '\\{')
+                       .replace(/\}/g, '\\}')
+                       .replace(/\$([0-9]+)/g, '(.+?)');
+                       "$n → capture group";
+  
+  if (ignore_spaces) pattern = pattern.replace(/\s+/g, '\\s*');
+  const regex = new RegExp(pattern, 'gs');
+  
   return(code) => {
    return code.replace(regex, (...matches) => {
     const args = [];
@@ -262,7 +284,7 @@ self.$ = ({
   };
  },
 
- apply_macros(code, macros, { maxPasses = 10 } = {}) {
+ apply_macros(code, macros, maxPasses = 10) {
   let out = code;
   let passes = 0;
   let changed = true;
@@ -291,24 +313,33 @@ self.$ = ({
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
   
-  "Define config objects for the macros";
-  const i_space = { ignore_spaces: true };
-  
   "Create macros";
   const delay = $.create_macro('delay $1;', time => `await for_ \`${time}\`;`);
-  const import_ = $.create_macro('import `$1 as $2`;', (b, a) => `(const ${a} = module.import_\`${b}\`;`);
-  const _import = $.create_macro('import $1 as $2;', (b, a) => `const ${a} = await meta.mod\`${b}\`;`);
+  const import_ = $.create_macro('import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`);
+  const _import = $.create_macro('<import $1 from $2>', (a, b) => `const ${a} = await meta.mod\`${b}\`;`);
   
-  const unless = $.create_macro('unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`, i_space);
-  const repeat = $.create_macro('repeat ($1) {$2}', (i, block) => `for (let i = 0; i < ${i}; i ++) {${block}}`, i_space);
+  const unless = $.create_macro('unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`, true);
+  const repeat = $.create_macro('repeat ($1) {$2}', (i, block) => `for (let i = 0; i < ${i}; i ++) {${block}}`, true);
   
-  const struct = $.create_macro('struct $1 {$2}', (name, body) => `RUIN.struct('${name}', {${body}})`);
-  const fl = $.create_macro('flux {$1}', code => `RUIN.flux.run(\`${escape(code)}\`)`, i_space);
+  const struct = $.create_macro('struct $1 {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`);
+  const fl = $.create_macro('flux {$1}!', body => `RUIN.flux.run(\`${escape(body)}\`)`, true);
+  const fl2 = $.create_macro('flux ($1) {$2}!', (ctx, body) => `RUIN.flux.run(\`${escape(body)}\`, ${ctx || '{}'})`, true);
+  const vs = $.create_macro('viscript ($1) {$2}!', (ctx, body) => {
+   return `RUIN.viscript.run(\`${escape(body)}\`, ${ctx || '{}'})`;
+  }, true);
   
   "Apply the created macros";
-  code = $.apply_macros(code, [delay, import_, _import]);
+  const macros = [delay, import_, _import, unless, repeat, struct, fl, fl2, vs];
+  for (let type in $._TYPES_)
+  {
+   const macro = $.create_macro(`var ${type}: $1 = $2;`, (id, value) => {
+    return `let ${id} = checkForType('${type}', ${value})`;
+   }, true);
+   
+   macros.push(macro);
+  }
   
-  for (let type of $._TYPES_) code = code.replaceAll(`$${type}`, `this._VAR_TYPE_CONTROL_.${type}.`);
+  code = $.apply_macros(code, macros, 50);
   return code.replaceAll('def ', 'this.');
  },
 
