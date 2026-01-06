@@ -227,7 +227,6 @@ Object.defineProperty(String.prototype, 'decompress', {
 
 self.$ = ({
  _currentCtx_: {},
- enableTypeControl(){},
  _TYPES_: {
   float: x => typeof x == 'number' && x.toString().includes('.'),
   int: x => typeof x == 'number' && !x.toString().includes('.'),
@@ -317,7 +316,7 @@ self.$ = ({
   "Create macros";
   const delay = $.create_macro('delay $1;', time => `await for_ \`${time}\`;`);
   const import_ = $.create_macro('import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`);
-  const _import = $.create_macro('<import $1 from $2>', (a, b) => `const ${a} = await meta.mod\`${b}\`;`);
+  const _import = $.create_macro('<import> $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`);
   
   const unless = $.create_macro('unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`, true);
   const repeat = $.create_macro('repeat ($1) {$2}', (i, block) => `for (let i = 0; i < ${i}; i ++) {${block}}`, true);
