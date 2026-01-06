@@ -260,12 +260,12 @@ self.$ = ({
  
  create_macro(pattern, transformer, ignore_spaces) {
   "Convert pattern into regex with capture groups";
-  let pattern = pattern.replace(/\(/g, '\\(')
-                       .replace(/\)/g, '\\)')
-                       .replace(/\{/g, '\\{')
-                       .replace(/\}/g, '\\}')
-                       .replace(/\$([0-9]+)/g, '(.+?)');
-                       "$n → capture group";
+  pattern = pattern.replace(/\(/g, '\\(')
+                    .replace(/\)/g, '\\)')
+                    .replace(/\{/g, '\\{')
+                    .replace(/\}/g, '\\}')
+                    .replace(/\$([0-9]+)/g, '(.+?)');
+                    "$n → capture group";
   
   if (ignore_spaces) pattern = pattern.replace(/\s+/g, '\\s*');
   const regex = new RegExp(pattern, 'gs');
