@@ -460,7 +460,7 @@ self.$ = ({
   ].map(args => $.create_macro(...args)));
   
   console.log({ macros });
-  "Apply the created macros";
+  "Apply the created macros"; return '';
   code = $.apply_macros(code, macros, max_passes);
   
   "Add indentation";
