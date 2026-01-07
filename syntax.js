@@ -346,8 +346,8 @@ self.$ = ({
  
  __n__: 0,
  async ruin(source_code = '', context = {}, url) {
-  const prevCtx = $._currentCtx_;
   const { code } = await $.__transpile__(source_code, url);
+  const prevCtx = $._currentCtx_;
   let ruin_script;
   
   const __line_offset__ = code.split('// sof;')[0].split('\n').length;
@@ -385,11 +385,12 @@ self.$ = ({
   "Decode from base64 if needed";
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
-  const i = code.lastIndexOf('¿');
-  const macros = [];
-  let key, max = 20;
   
-  [code, key] = [code.slice(0, i), code.slice(i +1)];
+  const i = code.lastIndexOf('¿');
+  let key = code.slice(i +1), max_passes = 10;
+  const macros = [];
+  
+  code = i != -1 ? code.slice(0, i) : code;
   key = i != -1 ? $.shift(key, -(Number(key.length) **2).toString()) : null;
   
   const ext = $?.module?.ext;
@@ -399,18 +400,18 @@ self.$ = ({
   
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
-   $.create_macro('##passes $1', num => {
-    return `// Maximum Transpiler Passes: ${max = Number(num)}`;
+   $.create_macro('tpiler-passes $1', num => {
+    return `// Maximum Transpiler Passes: ${max = Number(num)};`;
    }),
    
-   $.create_macro('##define $1 >>> $2!;', (pattern, transform) => {
+   $.create_macro('tpiler-define $1 >>> $2!;', (pattern, transform) => {
     const f = $.assess(transform);
     if (!f) return '';
     
     macros.push($.create_macro(pattern, (...args) => f(...args)));
     return `// Macro: pattern: ${pattern}, transform: ${transform};`; 
    }, true),
-  ], 50);
+  ], 5);
   
   "Create macros";
   macros.unshift(...[
@@ -455,7 +456,7 @@ self.$ = ({
   ].map(args => $.create_macro(...args)));
   
   "Apply the created macros";
-  code = $.apply_macros(code, macros, max);
+  code = $.apply_macros(code, macros, max_passes);
   
   "Add indentation";
   code = code.split('\n')
