@@ -387,7 +387,7 @@ self.$ = ({
   code = decodeURIComponent(escape(atob(code)));
   const i = code.lastIndexOf('¿');
   const macros = [];
-  let key, max = 50;
+  let key, max = 20;
   
   [code, key] = [code.slice(0, i), code.slice(i +1)];
   key = i != -1 ? $.shift(key, -(Number(key.length) **2).toString()) : null;
