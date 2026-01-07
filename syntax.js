@@ -392,11 +392,13 @@ self.$ = ({
   
   code = i != -1 ? code.slice(0, i) : code;
   key = i != -1 ? $.shift(key, -(Number(key.length) **2).toString()) : null;
+  console.log({ key, code, max_passes });
   
   const ext = $?.module?.ext;
-  code = key ? await $.Cipher.decrypt(code, key) : code;
+  code = key ? (await $.Cipher.decrypt(code, key)) : code;
   url = (url ?? $?.module?.namespace ?? 'unknown').split('.')[0];
   url = `${$.__n__ ++}--${url}${ext ? '-' +ext : ''}`;
+  console.log({ url, code });
   
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
@@ -413,6 +415,7 @@ self.$ = ({
    }, true),
   ], 5);
   
+  console.log(code);
   "Create macros";
   macros.unshift(...[
    ['flux {$1}!', body => `RUIN.flux.run(\`${escape(body)}\`)`, true],
@@ -455,6 +458,7 @@ self.$ = ({
    }, true],
   ].map(args => $.create_macro(...args)));
   
+  console.log({ macros });
   "Apply the created macros";
   code = $.apply_macros(code, macros, max_passes);
   
@@ -464,6 +468,7 @@ self.$ = ({
              .join('\n')
              .replaceAll('def ', 'this.');
   
+  console.log(code);
   "Wrap The code in the ruin context";
   code = `//# sourceURL=${url}.js
 return (async() => {
@@ -486,7 +491,8 @@ return (async() => {
  }
 })();`;
   
-  return { code };
+  console.log(code);
+  return code;
  },
 
  extract(inputString, pattern) {
