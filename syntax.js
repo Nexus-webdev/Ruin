@@ -284,28 +284,19 @@ self.$ = ({
   };
  },
 
- apply_macros(code, macros, maxPasses = 10) {
-  let out = code;
-  let passes = 0;
-  let changed = true;
-
-  while (changed && passes < maxPasses)
+ apply_macros(code, macros, maximum_passes = 10) {
+  if (!Number(maximum_passes)) maximum_passes = 10;
+  for (let i = 0; i < maximum_passes; i ++)
   {
-   changed = false;
-   for (const m of macros)
+   for (let m of macros)
    {
-    const newOut = m(out);
-    if (newOut != out)
-    {
-     out = newOut;
-     changed = true;
-    }
+    const modified_code = m(code);
+    if (modified_code == code) break;
+    code = modified_code;
    }
-   
-   passes ++;
   }
   
-  return out;
+  return code;
  },
  
  setup_phase: true,
@@ -459,10 +450,11 @@ self.$ = ({
    }, true],
   ].map(args => $.create_macro(...args)));
   
+  "Apply the created macros";
   console.log({ macros });
-  "Apply the created macros"; return '';
   code = $.apply_macros(code, macros, max_passes);
   
+  console.log(code);
   "Add indentation";
   code = code.split('\n')
              .map(ln => '   ' +ln)
