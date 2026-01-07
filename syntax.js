@@ -346,7 +346,7 @@ self.$ = ({
  
  __n__: 0,
  async ruin(source_code = '', context = {}, url) {
-  const { code, url } = await $.__transpile__(source_code, url);
+  const { code, url: sourceUrl } = await $.__transpile__(source_code, url);
   const prevCtx = $._currentCtx_;
   let ruin_script;
   
@@ -362,9 +362,9 @@ self.$ = ({
    ruin_script = new Function(code);
   } catch (e) {
    const err = new $.RuinError(e, {
-    sourceUrl: url,
     offset: __line_offset__,
     kind: 'evaluation',
+    sourceUrl,
    });
    
    console.error(err.represent());
