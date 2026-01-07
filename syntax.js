@@ -241,12 +241,12 @@ self.$ = ({
  
  checkForType(type, value) {
   const f = $._TYPES_[type];
-  if (!f) throw new ReferenceError(`Invalid Type ${type}`);
+  if (!f) return { error: ReferenceError, message: `Undefined Type ${type}` };
   
   const valid = f(value);
   if (valid) return value;
   
-  throw new TypeError(`${value?.toString?.() || 'value'} is not of type ${type}`);
+  return { error: TypeError, message: `${value?.toString?.() || 'value'} is not of type ${type}` };
  },
  
  scramble(txt, key) {
@@ -308,39 +308,184 @@ self.$ = ({
   return out;
  },
  
- _master_macro_(code) {
+ setup_phase: true,
+ RuinError: class {
+  constructor(e, { sourceUrl = 'ruin', offset = 0, kind = 'runtime', name } = {}) {
+   if (e instanceof SyntaxError)
+   {
+    this.name = 'RuinSyntaxError';
+    this.kind = 'syntax evaluation';
+   } else {
+    this.name = name ?? e.name ?? 'RuinError';
+    this.kind = kind;
+   }
+   
+   "Get the line and column the error occured on";
+   const match = e.stack.match(/:(\d+):(\d+)/);
+   this.line = match ? parseInt(match[1], 10) : 0;
+   this.col = match ? parseInt(match[2], 10) : 0;
+   
+   "Remap: subtract wrapper offset to get user input line";
+   this.offset_line = Math.max(1, this.line -offset);
+   this.sourceUrl = sourceUrl;
+   
+   this.stack = `${this.name}: ${e.message}\n`
+                +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col} (ln ${this.offset_line -2})\n`
+                +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}\n`
+                +`  [${this.kind}]`;
+  }
+  
+  toString() {
+   return this.stack;
+  }
+
+  represent() {        
+   return this.stack;
+  }
+ },
+ 
+ __n__: 0,
+ async ruin(source_code = '', context = {}, url) {
+  const prevCtx = $._currentCtx_;
+  const { code } = await $.__transpile__(source_code, url);
+  let ruin_script;
+  
+  const __line_offset__ = code.split('// sof;')[0].split('\n').length;
+  const ctx = {
+   __line_offset__,
+   ...context,
+   context,
+   ...$,
+  };
+  
+  try {
+   ruin_script = new Function(code);
+  } catch (e) {
+   const err = new $.RuinError(e, {
+    sourceUrl: url,
+    offset: __line_offset__,
+    kind: 'evaluation',
+   });
+   
+   console.error(err.represent());
+  }
+  
+  return (ruin_script ?? (x => x)).call(ctx).then(x => {
+   $._currentCtx_ = prevCtx;
+   $.setup_phase = false;
+  })
+ },
+ 
+ setup(code, ctx, name) {
+  $.setup_phase = true;
+  return $.ruin(code, ctx, name);
+ },
+ 
+ async __transpile__(code, url) {
   "Decode from base64 if needed";
   if ($.GitHub.isBase64(code))
   code = decodeURIComponent(escape(atob(code)));
+  const i = code.lastIndexOf('¿');
+  const macros = [];
+  let key, max = 50;
+  
+  [code, key] = [code.slice(0, i), code.slice(i +1)];
+  key = i != -1 ? $.shift(key, -(Number(key.length) **2).toString()) : null;
+  
+  const ext = $?.module?.ext;
+  code = key ? await $.Cipher.decrypt(code, key) : code;
+  url = (url ?? $?.module?.namespace ?? 'unknown').split('.')[0];
+  url = `${$.__n__ ++}--${url}${ext ? '-' +ext : ''}`;
+  
+  "Apply macros affecting the transpiler";
+  code = $.apply_macros(code, [
+   $.create_macro('##passes $1', num => {
+    return `// Maximum Transpiler Passes: ${max = Number(num)}`;
+   }),
+   
+   $.create_macro('##define $1 >>> $2!;', (pattern, transform) => {
+    const f = $.assess(transform);
+    if (!f) return '';
+    
+    macros.push($.create_macro(pattern, (...args) => f(...args)));
+    return `// Macro: pattern: ${pattern}, transform: ${transform};`; 
+   }, true),
+  ], 50);
   
   "Create macros";
-  const delay = $.create_macro('delay $1;', time => `await for_ \`${time}\`;`);
-  const import_ = $.create_macro('import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`);
-  const _import = $.create_macro('<import> $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`);
-  
-  const unless = $.create_macro('unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`, true);
-  const repeat = $.create_macro('repeat ($1) {$2}', (i, block) => `for (let i = 0; i < ${i}; i ++) {${block}}`, true);
-  
-  const struct = $.create_macro('struct $1 {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`);
-  const fl = $.create_macro('flux {$1}!', body => `RUIN.flux.run(\`${escape(body)}\`)`, true);
-  const fl2 = $.create_macro('flux ($1) {$2}!', (ctx, body) => `RUIN.flux.run(\`${escape(body)}\`, ${ctx || '{}'})`, true);
-  const vs = $.create_macro('viscript ($1) {$2}!', (ctx, body) => {
-   return `RUIN.viscript.run(\`${escape(body)}\`, ${ctx || '{}'})`;
-  }, true);
+  macros.unshift(...[
+   ['flux {$1}!', body => `RUIN.flux.run(\`${escape(body)}\`)`, true],
+   ['flux ($1) {$2}!', (ctx, body) => `RUIN.flux.run(\`${escape(body)}\`, ${ctx})`, true],
+   ['viscript ($1) {$2}!', (ctx, body) => {
+    return `RUIN.viscript.run(\`${escape(body)}\`, ${ctx || '{}'})`;
+   }, true],
+   
+   ['unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`, true],
+   ['repeat ($1) {$2}', (i, block) => `for (let i = 0; i < ${i}; i ++) {${block}}`, true],
+   ['struct $1 {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`],
+   
+   ['import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`],
+   ['<import> $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
+   
+   ['delay ($1)', time => `(for_ \`${time}\`)`, true],
+   ['print ($1);', output => `console.info(${output});`, true],
+   ['out $1!;', output => `return ${output};`, true],
+   
+   ['pipe $1!', pipe => {
+    const steps = pipe.split(' >> ').filter(Boolean);
+    pipe = steps.shift();
+    
+    for (let step of steps)
+    pipe = `${step}(${pipe})`;
+    
+    return pipe;
+   }],
+   
+   ['let $1: $2 = $3!;', (type, id, value) => {
+    return `let ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message)) };`;
+   }, true],
+   
+   ['def $1: $2 = $3!;', (type, id, value) => {
+    return `def ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message)) };`;
+   }, true],
+   
+   ['const $1: $2 = $3!;', (type, id, value) => {
+    return `const ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message)) };`;
+   }, true],
+  ].map(args => $.create_macro(...args)));
   
   "Apply the created macros";
-  const macros = [delay, import_, _import, unless, repeat, struct, fl, fl2, vs];
-  for (let type in $._TYPES_)
-  {
-   const macro = $.create_macro(`var ${type}: $1 = $2;`, (id, value) => {
-    return `let ${id} = checkForType('${type}', ${value})`;
-   }, true);
-   
-   macros.push(macro);
-  }
+  code = $.apply_macros(code, macros, max);
   
-  code = $.apply_macros(code, macros, 50);
-  return code.replaceAll('def ', 'this.');
+  "Add indentation";
+  code = code.split('\n')
+             .map(ln => '   ' +ln)
+             .join('\n')
+             .replaceAll('def ', 'this.');
+  
+  "Wrap The code in the ruin context";
+  code = `//# sourceURL=${url}.js
+return (async() => {
+ try {
+  with(this) {
+   RUIN._currentCtx_ = this;
+   
+   // sof;
+   ${code}
+   // eof;
+  }
+ } catch (e) {
+  const err = new this.RuinError(e, {
+   sourceUrl: '${url}',
+   offset: this.__line_offset__,
+   kind: 'runtime',
+  });
+  
+  console.error(err.represent());
+ }
+})();`;
+  
+  return { code };
  },
 
  extract(inputString, pattern) {
@@ -437,114 +582,6 @@ self.$ = ({
   }
   
   return num;
- },
- 
- setup_phase: true,
- RuinError: class {
-  constructor(e, { sourceUrl = 'ruin', offset = 0, kind = 'runtime', name } = {}) {
-   if (e instanceof SyntaxError)
-   {
-    this.name = 'RuinSyntaxError';
-    this.kind = 'syntax evaluation';
-   } else {
-    this.name = name ?? e.name ?? 'RuinError';
-    this.kind = kind;
-   }
-   
-   "Get the line and column the error occured on";
-   const match = e.stack.match(/:(\d+):(\d+)/);
-   this.line = match ? parseInt(match[1], 10) : 0;
-   this.col = match ? parseInt(match[2], 10) : 0;
-   
-   "Remap: subtract wrapper offset to get user input line";
-   this.offset_line = Math.max(1, this.line -offset);
-   this.sourceUrl = sourceUrl;
-   
-   this.stack = `${this.name}: ${e.message}\n`
-                +`  @ ${this.sourceUrl}.$:${this.offset_line}:${this.col} (ln ${this.offset_line -2})\n`
-                +`  @ ${this.sourceUrl}.js:${this.line}:${this.col}\n`
-                +`  [${this.kind}]`;
-  }
-  
-  toString() {
-   return this.stack;
-  }
-
-  represent() {        
-   return this.stack;
-  }
- },
- 
- __n__: 0,
- async ruin(encodedText = ``, context = {}, url) {
-  const prevCtx = $._currentCtx_;
-  const i = encodedText.lastIndexOf('¿');
-  
-  let [txt, key, length] = [encodedText.slice(0, i), encodedText.slice(i +1)];
-  if (i != -1) key = $.shift(key, -(Number(key.length) **2).toString());
-  else {
-   txt = encodedText;
-   key = null;
-  }
-  
-  const ext = $?.module?.ext;
-  let ruin_script, code = await (key ? $.Cipher.decrypt(txt, key) : txt);
-  url = (url ?? $?.module?.namespace ?? 'unknown').split('.')[0];
-  url = `${$.__n__ ++}--${url}${ext ? '-' +ext : ''}`;
-  
-  (new Function(`/*${code}*/
-//# sourceURL=${url}.$`))();
-  
-  code = `//# sourceURL=${url}.js
-return (async() => {
- try {
-  with(this) {
-   RUIN._currentCtx_ = this;
-   
-   // sof;
-   ${$._master_macro_(code)}
-   // eof;
-  }
- } catch (e) {
-  const err = new this.RuinError(e, {
-   sourceUrl: '${url}',
-   offset: this.__line_offset__,
-   kind: 'runtime',
-  });
-  
-  console.error(err.represent());
- }
-})();`;
-  
-  const __line_offset__ = code.split('// sof;')[0].split('\n').length;
-  const ctx = {
-   __line_offset__,
-   ...context,
-   context,
-   ...$,
-  };
-  
-  try {
-   ruin_script = new Function(code);
-  } catch (e) {
-   const err = new $.RuinError(e, {
-    sourceUrl: url,
-    offset: __line_offset__,
-    kind: 'evaluation',
-   });
-   
-   console.error(err.represent());
-  }
-  
-  return (ruin_script ?? (x => x)).call(ctx).then(x => {
-   $._currentCtx_ = prevCtx;
-   $.setup_phase = false;
-  })
- },
- 
- setup(code, ctx, name) {
-  $.setup_phase = true;
-  return $.ruin(code, ctx, name);
  },
  
  _: undefined,
