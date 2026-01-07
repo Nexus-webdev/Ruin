@@ -288,12 +288,11 @@ self.$ = ({
   if (!Number(maximum_passes)) maximum_passes = 10;
   for (let i = 0; i < maximum_passes; i ++)
   {
-   for (let m of macros)
-   {
-    const modified_code = m(code);
-    if (modified_code == code) break;
-    code = modified_code;
-   }
+   let modified_code = code;
+   for (let m of macros) modified_code = m(modified_code);
+   
+   if (modified_code == code) break;
+   code = modified_code;
   }
   
   return code;
