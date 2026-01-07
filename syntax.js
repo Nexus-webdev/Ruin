@@ -346,7 +346,7 @@ self.$ = ({
  
  __n__: 0,
  async ruin(source_code = '', context = {}, url) {
-  const { code } = await $.__transpile__(source_code, url);
+  const { code, url } = await $.__transpile__(source_code, url);
   const prevCtx = $._currentCtx_;
   let ruin_script;
   
@@ -387,11 +387,12 @@ self.$ = ({
   code = decodeURIComponent(escape(atob(code)));
   
   const i = code.lastIndexOf('¿');
-  let key = code.slice(i +1), max_passes = 10;
+  let key = code.slice(i +1);
+  let max_passes = 10;
   const macros = [];
   
   code = i != -1 ? code.slice(0, i) : code;
-  key = i != -1 ? $.shift(key, -(Number(key.length) **2).toString()) : null;
+  key = i != -1 ? $.shift(key, -(key.length **2)) : null;
   console.log({ key, code, max_passes });
   
   const ext = $?.module?.ext;
@@ -403,7 +404,7 @@ self.$ = ({
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
    $.create_macro('tpiler-passes $1', num => {
-    return `// Maximum Transpiler Passes: ${max = Number(num)};`;
+    return `// Maximum Transpiler Passes: ${max_passes = Number(num)};`;
    }),
    
    $.create_macro('tpiler-define $1 >>> $2!;', (pattern, transform) => {
@@ -492,7 +493,7 @@ return (async() => {
 })();`;
   
   console.log(code);
-  return code;
+  return { code, url };
  },
 
  extract(inputString, pattern) {
