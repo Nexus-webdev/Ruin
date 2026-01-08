@@ -273,10 +273,10 @@ self.$ = ({
   return(code) => {
    return code.replace(regex, (...matches) => {
     const args = [];
-    argLoop: for (let match of matches.slice(1))
+    for (let match of matches.slice(1))
     {
-     if (typeof match != 'string') break argLoop;
-     args.push(match.trim());
+     if (typeof match != 'string') break;
+     args.push(match);
     }
     
     return transformer(...args);
@@ -412,27 +412,27 @@ self.$ = ({
   
   const map = [
    ['flux {$1}!', body => `RUIN.flux.run(\`${escape(body)}\`)`, true],
-   ['flux ($1) {$2}!', (ctx, body) => `RUIN.flux.run(\`${escape(body)}\`, ${ctx})`, true],
-   ['viscript ($1) {$2}!', (ctx, body) => {
+   ['flux ($1) : {$2}!', (ctx, body) => `RUIN.flux.run(\`${escape(body)}\`, ${ctx})`, true],
+   ['viscript ($1) : {$2}!', (ctx, body) => {
     return `RUIN.viscript.run(\`${escape(body)}\`, ${ctx || '{}'})`;
    }, true],
    
-   ['repeat $1:', i => `for (let i = 0; i < ${i}; i ++)`, true],
-   ['unless $1:', condition => `if (!(${condition}))`],
-   ['for $1:', condition => `for (${condition})`],
-   ['if $1:', condition => `if (${condition})`],
+   ['repeat ($1) :', i => `for (let i = 0; i < ${i}; i ++)`, true],
+   ['unless ($1) :', condition => `if (!(${condition}))`, true],
+   ['for ($1) :', condition => `for (${condition})`, true],
+   ['if ($1) :', condition => `if (${condition})`, true],
    
-   ['struct $1 {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`],
+   ['structure ($1) : {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`, true],
    ['import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`],
-   ['<import> $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
+   ['import: $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
    
    ['delay ($1)', time => `(for_ \`${time}\`)`, true],
    ['print ($1);', output => `console.info(${output});`, true],
    ['out $1!;', output => `return ${output};`, true],
    
-   ['range: $1;', args => {
+   ['range: ($1);', args => {
     return `__range__(${args});`
-   }],
+   }, true],
    
    ['pipe $1!', pipe => {
     const steps = pipe.split(' >> ').filter(Boolean);
