@@ -288,13 +288,18 @@ self.$ = ({
   if (!Number(maximum_passes)) maximum_passes = 10;
   for (let i = 0; i < maximum_passes; i ++)
   {
+   console.log(i);
+   
    let modified_code = code;
-   for (let m of macros) modified_code = m(modified_code);
+   for (let m of macros) modified_code = m(modified_code) ?? modified_code;
+   console.log(modified_code);
    
    if (modified_code == code) break;
+   console.log(modified_code == code);
    code = modified_code;
   }
   
+  console.log(code);
   return code;
  },
  
@@ -383,13 +388,13 @@ self.$ = ({
   
   code = i != -1 ? code.slice(0, i) : code;
   key = i != -1 ? $.shift(key, -(key.length **2)) : null;
-  console.log({ key, code, max_passes });
+  console.log(key, max_passes, code);
   
   const ext = $?.module?.ext;
   code = key ? (await $.Cipher.decrypt(code, key)) : code;
   url = (url ?? $?.module?.namespace ?? 'unknown').split('.')[0];
   url = `${$.__n__ ++}--${url}${ext ? '-' +ext : ''}`;
-  console.log({ url, code });
+  console.log(url, code);
   
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
@@ -415,16 +420,22 @@ self.$ = ({
     return `RUIN.viscript.run(\`${escape(body)}\`, ${ctx || '{}'})`;
    }, true],
    
-   ['unless ($1) {$2}', (condition, block) => `if (!(${condition})) {${block}}`, true],
-   ['repeat ($1) {$2}', (i, block) => `for (let i = 0; i < ${i}; i ++) {${block}}`, true],
-   ['struct $1 {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`],
+   ['repeat $1:', i => `for (let i = 0; i < ${i}; i ++)`, true],
+   ['unless $1:', condition => `if (!(${condition}))`],
+   ['for $1:', condition => `for (${condition})`],
+   ['if $1:', condition => `if (${condition})`],
    
+   ['struct $1 {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`],
    ['import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`],
    ['<import> $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
    
    ['delay ($1)', time => `(for_ \`${time}\`)`, true],
    ['print ($1);', output => `console.info(${output});`, true],
    ['out $1!;', output => `return ${output};`, true],
+   
+   ['range: $1;', args => {
+    return `__range__(${args});`
+   }],
    
    ['pipe $1!', pipe => {
     const steps = pipe.split(' >> ').filter(Boolean);
@@ -437,20 +448,20 @@ self.$ = ({
    }],
    
    ['let $1: $2 = $3!;', (type, id, value) => {
-    return `let ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message)) };`;
+    return `let ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message) });`;
    }, true],
    
    ['def $1: $2 = $3!;', (type, id, value) => {
-    return `def ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message)) };`;
+    return `def ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message) });`;
    }, true],
    
    ['const $1: $2 = $3!;', (type, id, value) => {
-    return `const ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message)) };`;
+    return `const ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message) });`;
    }, true],
   ].map(args => $.create_macro(...args)));
   
   "Apply the created macros";
-  console.log({ macros });
+  console.log(macros);
   code = $.apply_macros(code, macros, max_passes);
   
   console.log(code);
@@ -485,6 +496,16 @@ return (async() => {
   
   console.log(code);
   return { code, url };
+ },
+ 
+ __range__(a, b, c) {
+  const array = [];
+  const start = b ? a : 0;
+  const end = b || a;
+  const step = c || 1;
+  
+  for (let i = start; i < end; i += step) array.push(i);
+  return array;
  },
 
  extract(inputString, pattern) {
