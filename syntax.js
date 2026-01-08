@@ -383,7 +383,7 @@ self.$ = ({
   
   const i = code.lastIndexOf('¿');
   let key = code.slice(i +1);
-  let max_passes = 10;
+  let max_passes = 5;
   const macros = [];
   
   code = i != -1 ? code.slice(0, i) : code;
