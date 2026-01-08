@@ -288,8 +288,6 @@ self.$ = ({
   if (!Number(maximum_passes)) maximum_passes = 5;
   for (let i = 0; i < maximum_passes; i ++)
   {
-   console.log(i);
-   
    let modified_code = code;
    for (let m of macros) modified_code = m(modified_code) ?? modified_code;
    
@@ -463,7 +461,7 @@ self.$ = ({
   const line_macs = map.filter(m => !multi_line(m)).map(map_fn);
   
   function multi_line(m) {
-   return m.includes('{');
+   return m[0].includes('{');
   }
   
   "Apply multi_line macros";
