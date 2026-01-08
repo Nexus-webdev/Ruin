@@ -284,22 +284,19 @@ self.$ = ({
   };
  },
 
- apply_macros(code, macros, maximum_passes = 10) {
-  if (!Number(maximum_passes)) maximum_passes = 10;
+ apply_macros(code, macros = [], maximum_passes = 5) {
+  if (!Number(maximum_passes)) maximum_passes = 5;
   for (let i = 0; i < maximum_passes; i ++)
   {
    console.log(i);
    
    let modified_code = code;
    for (let m of macros) modified_code = m(modified_code) ?? modified_code;
-   console.log(modified_code);
    
-   if (modified_code == code) break;
-   console.log(modified_code == code);
+   if (modified_code == code) return modified_code;
    code = modified_code;
   }
   
-  console.log(code);
   return code;
  },
  
@@ -382,22 +379,24 @@ self.$ = ({
   code = decodeURIComponent(escape(atob(code)));
   
   const i = code.lastIndexOf('¿');
-  let key = code.slice(i +1);
-  let max_passes = 5;
+  let key = code.slice(i +1), max_passes = 10, apply_macs = true;
   const macros = [];
   
   code = i != -1 ? code.slice(0, i) : code;
   key = i != -1 ? $.shift(key, -(key.length **2)) : null;
-  console.log(key, max_passes, code);
   
   const ext = $?.module?.ext;
   code = key ? (await $.Cipher.decrypt(code, key)) : code;
   url = (url ?? $?.module?.namespace ?? 'unknown').split('.')[0];
   url = `${$.__n__ ++}--${url}${ext ? '-' +ext : ''}`;
-  console.log(url, code);
   
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
+   $.create_macro('tpiler-applymacs $1', bool => {
+    apply_macs = bool.trim().toLowerCase() == 'true' ? true : false;
+    return `// Transpiler Applies Macros: ${apply_macs};`;
+   }),
+   
    $.create_macro('tpiler-passes $1', num => {
     return `// Maximum Transpiler Passes: ${max_passes = Number(num)};`;
    }),
@@ -411,9 +410,7 @@ self.$ = ({
    }, true),
   ], 5);
   
-  console.log(code);
-  "Create macros";
-  macros.unshift(...[
+  const map = [
    ['flux {$1}!', body => `RUIN.flux.run(\`${escape(body)}\`)`, true],
    ['flux ($1) {$2}!', (ctx, body) => `RUIN.flux.run(\`${escape(body)}\`, ${ctx})`, true],
    ['viscript ($1) {$2}!', (ctx, body) => {
@@ -458,20 +455,26 @@ self.$ = ({
    ['const $1: $2 = $3!;', (type, id, value) => {
     return `const ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message) });`;
    }, true],
-  ].map(args => $.create_macro(...args)));
+  ];
   
-  "Apply the created macros";
-  console.log(macros);
+  "Create macros";
+  const map_fn = args => $.create_macro(...args);
+  macros.unshift(...map.filter(multi_line).map(map_fn));
+  const line_macs = map.filter(m => !multi_line(m)).map(map_fn);
+  
+  function multi_line(m) {
+   return m.includes('{');
+  }
+  
+  "Apply multi_line macros";
   code = $.apply_macros(code, macros, max_passes);
   
-  console.log(code);
-  "Add indentation";
+  "Add indentation and apply single line macros";
   code = code.split('\n')
-             .map(ln => '   ' +ln)
+             .map(ln => '   ' +$.apply_macros(ln, line_macs, max_passes))
              .join('\n')
              .replaceAll('def ', 'this.');
   
-  console.log(code);
   "Wrap The code in the ruin context";
   code = `//# sourceURL=${url}.js
 return (async() => {
@@ -494,7 +497,6 @@ return (async() => {
  }
 })();`;
   
-  console.log(code);
   return { code, url };
  },
  
