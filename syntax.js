@@ -225,28 +225,183 @@ Object.defineProperty(String.prototype, 'decompress', {
  writable: true,
 });
 
+function split_params(paramStr) {
+ let current = '', depth = 0, in_string = null, esc = false;
+ const parts = [];
+
+ for (let i = 0; i < string.length; i ++)
+ {
+  const ch = string[i];
+  if (in_string)
+  {
+   current += ch;
+   if (esc) esc = false;
+   
+   else if (ch == '\\') esc = true;
+   else if (ch == in_string) in_string = null;
+   continue;
+  }
+
+  if ('\'"`'.includes(ch)) { in_string = ch; current += ch; continue; }
+  if ('([{'.includes(ch)) { depth ++; current += ch; continue; }
+  if (')]}'.includes(ch)) { -- depth; current += ch; continue; }
+
+  if (ch == ',' && !depth)
+  {
+   parts.push(current.trim());
+   current = '';
+   
+   continue;
+  }
+
+  current += ch;
+ }
+ 
+ if (current.trim()) parts.push(current.trim());
+ return parts;
+}
+
 self.$ = ({
  _currentCtx_: {},
  _TYPES_: {
+  any: x => true, 
+  default: x => true, 
+  
   float: x => typeof x == 'number' && x.toString().includes('.'),
   int: x => typeof x == 'number' && !x.toString().includes('.'),
+  digit: x => typeof x == 'number' && x.toString().length == 1,
+  number: x => typeof x == 'number',
   num: x => typeof x == 'number',
   
   string: x => typeof x == 'string',
-  bool: x => [true, false, 1, 0].includes(x),
+  bool: x => [true, false].includes(x),
+  boolean: x => [true, false].includes(x),
   
-  array: x => Array.isArray(x),
+  array: x => typeof x == 'object' && Array.isArray(x),
   object: x => typeof x == 'object' && !Array.isArray(x),
  },
  
- checkForType(type, value) {
-  const f = $._TYPES_[type];
-  if (!f) return { error: ReferenceError, message: `Undefined Type ${type}` };
+ __apply_helpers__(f, helpers = []) {
+  return function(...args) {
+   const processed = args.map((arg, i) => helpers[i] ? helpers[i](arg) : arg);
+   return f(...processed);
+  };
+ },
+ 
+ __replace_within_delimiters__(s, f, closing = { '(': ')', '[': ']', '{': '}' }) {
+  s = s.trim();
+  const openers = new Set(Object.keys(closing));
   
-  const valid = f(value);
-  if (valid) return value;
+  const stack = [];
+  let out = '';
   
-  return { error: TypeError, message: `${value?.toString?.() || 'value'} is not of type ${type}` };
+  for (let i = 0; i < s.length; i ++)
+  {
+   const ch = s[i];
+   const top = stack[stack.length -1];
+  
+   "Handle escapes inside quotes/backticks";
+   if (top == "'" || top == '`')
+   {
+    if (ch == '\\')
+    {
+     out += ch;
+     if (i +1 < s.length) out += s[i ++];
+     continue;
+    }
+    
+    "Treat ${...} as nested braces even inside single quotes (DSL-style)";
+    if (ch == '$' && s[i +1] == '{')
+    {
+     stack.push('{');
+     out += ch + s[i ++]; "add '$' and '{'";
+     continue;
+    }
+   }
+  
+   "Opening delimiters";
+   if (openers.has(ch))
+   {
+    stack.push(ch);
+    out += ch;
+    continue;
+   }
+  
+   "Closing for ${...} inside quotes/backticks";
+   if (top == '{' && ch == '}')
+   {
+    stack.pop();
+    out += ch;
+    continue;
+   }
+  
+   "Closing delimiters";
+   if (top && ch == closing[top])
+   {
+    stack.pop();
+    out += ch;
+    continue;
+   }
+  
+   "Replace ONLY when depth > 0 (i.e., inside any delimiter)";
+   if (stack.length > 0)
+   {
+    if (typeof f == 'function') out = f(ch, out);
+    else {
+     if (ch == ',')
+     {
+      out += '_comma_';
+      continue;
+     }
+     
+     if (ch == ';')
+     {
+      out += '_semi_colon_';
+      continue;
+     }
+    }
+   
+    "Top-level: do not replace";
+    out += ch;
+   }
+  }
+  
+  return out;
+ },
+ 
+ typeof(value) {
+  const types = Object.keys($._TYPES_).filter(type => !['default', 'any', 'num'].includes(type)));
+  for (let type of types) if ($._TYPES_[type](value)) return type;
+ },
+ 
+ __TypedValue__(type, value) {
+  const proxy = new Proxy({ type }, {
+   set(target, _, new_value) {
+    const f = $._TYPES_[type];
+    if (!f)
+    {
+     throw new ReferenceError(`Undefined Type ${type}`);
+     return false;
+    }
+    
+    const valid = f(new_value);
+    if (!valid)
+    {
+     throw new TypeError(`${new_value?.toString?.() || 'value'} is not of type ${type}`);
+     return false;
+    }
+    
+    target.value = new_value;
+    return true;
+   },
+   
+   get(target, key) {
+    return traget[key] ?? target.value;
+   },
+  })
+  
+  proxy.value = value;
+  return proxy;
  },
  
  scramble(txt, key) {
@@ -258,14 +413,50 @@ self.$ = ({
   }).join('');
  },
  
+ __process_nested__(str, f, delimiters = { '(': ')', '[': ']', '{': '}', "'": "'", '"': '"', '`': '`' }) {
+  function walk(s, start = 0) {
+   let result = '';
+   while (start < s.length)
+   {
+    const ch = s[start];
+    if (delimiters[ch])
+    {
+     "Find matching closing delimiter";
+     let depth = 1, i = start +1;
+     while (i < s.length && depth > 0)
+     {
+      if (s[i] == ch && ch != "'" && ch != '"' && ch != "`") depth ++;
+      else if (s[i] == delimiters[ch]) -- depth;
+      
+      i ++;
+     }
+     
+     "Recursively process inner part";
+     const inner = s.slice(start +1, i -1);
+     const processedInner = f(walk(inner), ch, delimiters[ch]);
+  
+     result += ch +processedInner +delimiters[ch];
+     start = i;
+    } else {
+     result += ch;
+     start ++;
+    }
+   }
+   
+   return result;
+  }
+
+  return walk(str);
+ },
+ 
  create_macro(pattern, transformer, ignore_spaces) {
   "Convert pattern into regex with capture groups";
   pattern = pattern.replace(/\(/g, '\\(')
-                    .replace(/\)/g, '\\)')
-                    .replace(/\{/g, '\\{')
-                    .replace(/\}/g, '\\}')
-                    .replace(/\$([0-9]+)/g, '(.+?)');
-                    "$n → capture group";
+                   .replace(/\)/g, '\\)')
+                   .replace(/\{/g, '\\{')
+                   .replace(/\}/g, '\\}')
+                   .replace(/\$([0-9]+)/g, '(.+?)');
+                   "$n → capture group";
   
   if (ignore_spaces) pattern = pattern.replace(/\s+/g, '\\s*');
   const regex = new RegExp(pattern, 'gs');
@@ -288,9 +479,7 @@ self.$ = ({
   if (!Number(maximum_passes)) maximum_passes = 5;
   for (let i = 0; i < maximum_passes; i ++)
   {
-   let modified_code = code;
    for (let m of macros) modified_code = m(modified_code) ?? modified_code;
-   
    if (modified_code == code) return modified_code;
    code = modified_code;
   }
@@ -371,6 +560,38 @@ self.$ = ({
   return $.ruin(code, ctx, name);
  },
  
+ __extract_typed_params__(string) {
+  const parts = split_params(string);
+  return parts.map(part => {
+   const match = part.match(/^(\w+)\s*:\s*(\w+)(?:\s*=\s*(.+))?$/);
+   if (!match) return {
+    default: undefined,
+    type: 'any',
+    name: part,
+    match,
+   };
+   
+   const [, type, name, def] = match;
+   return {
+    type: type.toLowerCase(),
+    default: def,
+    match,
+    name,
+   };
+  });
+ },
+ 
+ __typed_func__(f, data = []) {
+  return $.__apply_helpers__(f, data.map(({ type, default: def, match }) => {
+   return value => {
+    if (!match) return value;
+    
+    if (value == undefined) return def ? __TypedValue__(type, def) : def;
+    return __TypedValue__(type, value);
+   };
+  }));
+ },
+ 
  async __transpile__(code, url) {
   "Decode from base64 if needed";
   if ($.GitHub.isBase64(code))
@@ -421,6 +642,15 @@ self.$ = ({
    ['if ($1) :', condition => `if (${condition})`, true],
    
    ['structure ($1) : {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`, true],
+   ['func $1($2) : {$3}!', (name, params, body) => {
+    const id = `___param_data_${Date.now()}___`;
+    const data = $.__extract_typed_params__(params);
+    
+    $[id] = data;
+    params = data.map(({ name }) => name);
+    return `const ${name} = __typed_func__((${params}) => {${body}}, RUIN.${id})`;
+   }, true],
+   
    ['import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`],
    ['import: $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
    
@@ -441,19 +671,12 @@ self.$ = ({
     
     return pipe;
    }],
-   
-   ['let $1: $2 = $3!;', (type, id, value) => {
-    return `let ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message) });`;
-   }, true],
-   
-   ['def $1: $2 = $3!;', (type, id, value) => {
-    return `def ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message) });`;
-   }, true],
-   
-   ['const $1: $2 = $3!;', (type, id, value) => {
-    return `const ${id} = await checkForType('${type}', ${value}).catch(({ error, message }) => { throw new error(message) });`;
-   }, true],
   ];
+  
+  for (let key of ['let', 'def', 'const'])
+  map.push([`${key} $1: $2 = $3!;`, (type, id, value) => {
+   return `${key} ${id} = __TypedValue__('${type}', ${value});`;
+  }, true]);
   
   "Create macros";
   const map_fn = args => $.create_macro(...args);
