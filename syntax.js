@@ -370,24 +370,28 @@ self.$ = ({
  },
  
  typeof(value) {
-  const types = Object.keys($._TYPES_).filter(type => !['default', 'any', 'num'].includes(type)));
-  for (let type of types) if ($._TYPES_[type](value)) return type;
+  const types = Object.keys($._TYPES_).filter(type => !['default', 'any', 'num'].includes(type));
+  for (let type of types)
+  {
+   const is_type = $._TYPES_[type](value);
+   if (is_type) return type;
+  }
  },
  
  __TypedValue__(type, value) {
   const proxy = new Proxy({ type }, {
    set(target, _, new_value) {
-    const f = $._TYPES_[type];
+    const f = $._TYPES_[target.type];
     if (!f)
     {
-     throw new ReferenceError(`Undefined Type ${type}`);
+     throw new ReferenceError(`Undefined Type ${target.type}`);
      return false;
     }
     
     const valid = f(new_value);
     if (!valid)
     {
-     throw new TypeError(`${new_value?.toString?.() || 'value'} is not of type ${type}`);
+     throw new TypeError(`${new_value?.toString?.() || 'value'} is not of type ${target.type}`);
      return false;
     }
     
