@@ -465,7 +465,7 @@ self.$ = ({
   if (ignore_spaces)
   {
    pattern = pattern.replace(/\s+/g, '\\s*')
-                    .replace(/_/g, ' ');
+                    .replaceAll('/', 's+');
   }
   
   const regex = new RegExp(pattern, 'gs');
@@ -652,15 +652,6 @@ self.$ = ({
    ['if ($1) :', condition => `if (${condition})`, true],
    
    ['structure ($1) : {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`, true],
-   ['func_$1($2) : {$3}!', (name, params, body) => {
-    const id = `___param_data_${Date.now()}___`;
-    const data = $.__extract_typed_params__(params);
-    
-    $[id] = data;
-    params = data.map(({ name }) => name);
-    return `const ${name} = __typed_func__((${params}) => {${body}}, RUIN.${id})`;
-   }, true],
-   
    ['import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`],
    ['import: $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
    
