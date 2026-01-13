@@ -225,7 +225,7 @@ Object.defineProperty(String.prototype, 'decompress', {
  writable: true,
 });
 
-function split_params(paramStr) {
+function split_params(string) {
  let current = '', depth = 0, in_string = null, esc = false;
  const parts = [];
 
