@@ -483,7 +483,9 @@ self.$ = ({
   if (!Number(maximum_passes)) maximum_passes = 5;
   for (let i = 0; i < maximum_passes; i ++)
   {
+   let modified_code = code;
    for (let m of macros) modified_code = m(modified_code) ?? modified_code;
+   
    if (modified_code == code) return modified_code;
    code = modified_code;
   }
