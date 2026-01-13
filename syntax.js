@@ -621,12 +621,12 @@ self.$ = ({
   
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
-   $.create_macro('tpiler-applymacs $1', bool => {
+   $.create_macro('tpiler-applymacs $1!;', bool => {
     apply_macs = bool.trim().toLowerCase() == 'true' ? true : false;
     return `// Transpiler Applies Macros: ${apply_macs};`;
    }),
    
-   $.create_macro('tpiler-passes $1', num => {
+   $.create_macro('tpiler-passes $1!;', num => {
     return `// Maximum Transpiler Passes: ${max_passes = Number(num)};`;
    }),
    
