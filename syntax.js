@@ -462,9 +462,13 @@ self.$ = ({
                    .replace(/\$([0-9]+)/g, '(.+?)');
                    "$n → capture group";
   
-  if (ignore_spaces) pattern = pattern.replace(/\s+/g, '\\s*');
-  const regex = new RegExp(pattern, 'gs');
+  if (ignore_spaces)
+  {
+   pattern = pattern.replace(/\s+/g, '\\s*')
+                    .replace(/_/g, ' ');
+  }
   
+  const regex = new RegExp(pattern, 'gs');
   return(code) => {
    return code.replace(regex, (...matches) => {
     const args = [];
@@ -648,7 +652,7 @@ self.$ = ({
    ['if ($1) :', condition => `if (${condition})`, true],
    
    ['structure ($1) : {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`, true],
-   ['func $1($2) : {$3}!', (name, params, body) => {
+   ['func_$1($2) : {$3}!', (name, params, body) => {
     const id = `___param_data_${Date.now()}___`;
     const data = $.__extract_typed_params__(params);
     
