@@ -621,16 +621,16 @@ self.$ = ({
   
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
-   $.create_macro('tpiler-applymacs $1!;', bool => {
-    apply_macs = bool.trim().toLowerCase() == 'true' ? true : false;
+   $.create_macro('#tpiler-applymacs $1!;', bool => {
+    apply_macs = bool.trim().toLowerCase() == 'true';
     return `// Transpiler Applies Macros: ${apply_macs};`;
    }),
    
-   $.create_macro('tpiler-passes $1!;', num => {
+   $.create_macro('#tpiler-passes $1!;', num => {
     return `// Maximum Transpiler Passes: ${max_passes = Number(num)};`;
    }),
    
-   $.create_macro('tpiler-define $1 >>> $2!;', (pattern, transform) => {
+   $.create_macro('#tpiler-define $1 >>> $2!;', (pattern, transform) => {
     const f = $.assess(transform);
     if (!f) return '';
     
@@ -688,14 +688,23 @@ self.$ = ({
    return m[0].includes('{');
   }
   
-  "Apply multi_line macros";
-  code = $.apply_macros(code, macros, max_passes);
-  
-  "Add indentation and apply single line macros";
-  code = code.split('\n')
-             .map(ln => '   ' +$.apply_macros(ln, line_macs, max_passes))
-             .join('\n')
-             .replaceAll('def ', 'this.');
+  const i = '   ';
+  if (apply_macs)
+  {
+   "Apply multi_line macros";
+   code = $.apply_macros(code, macros, max_passes);
+   
+   "Add indentation and apply single line macros";
+   code = code.split('\n')
+              .map(ln => i +$.apply_macros(ln, line_macs, max_passes))
+              .join('\n')
+              .replaceAll('def ', 'this.');
+  } else {
+   "Add indentation only";
+   code = code.split('\n')
+              .map(ln => i +ln)
+              .join('\n');
+  }
   
   "Wrap The code in the ruin context";
   code = `//# sourceURL=${url}.js
