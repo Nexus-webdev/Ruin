@@ -688,7 +688,7 @@ self.$ = ({
    return m[0].includes('{');
   }
   
-  const i = '   ';
+  const indent = '   ';
   if (apply_macs)
   {
    "Apply multi_line macros";
@@ -696,13 +696,13 @@ self.$ = ({
    
    "Add indentation and apply single line macros";
    code = code.split('\n')
-              .map(ln => i +$.apply_macros(ln, line_macs, max_passes))
+              .map(ln => indent +$.apply_macros(ln, line_macs, max_passes))
               .join('\n')
               .replaceAll('def ', 'this.');
   } else {
    "Add indentation only";
    code = code.split('\n')
-              .map(ln => i +ln)
+              .map(ln => indent +ln)
               .join('\n');
   }
   
