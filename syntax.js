@@ -657,8 +657,6 @@ self.$ = ({
    
    ['delay ($1)', time => `(for_ \`${time}\`)`, true],
    ['print ($1);', output => `console.info(${output});`, true],
-   ['out $1!;', output => `return ${output};`, true],
-   
    ['range: ($1);', args => {
     return `__range__(${args});`
    }, true],
