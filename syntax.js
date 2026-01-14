@@ -400,7 +400,7 @@ self.$ = ({
    },
    
    get(target, key) {
-    return traget[key] ?? target.value;
+    return target[key] ?? target.value;
    },
   })
   
