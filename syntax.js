@@ -1,4 +1,4 @@
-let db;
+let db; 
 function getDB() {
  return db || (db = createStore('IndexedDB', 'main'));
 }
