@@ -289,11 +289,11 @@ self.$ = ({
  },
  
  __replace_within_delimiters__(s, f, closing = { '(': ')', '[': ']', '{': '}' }) {
-  s = s.trim();
   const openers = new Set(Object.keys(closing));
-  
   const stack = [];
+  
   let out = '';
+  s = s.trim();
   
   for (let i = 0; i < s.length; i ++)
   {
@@ -314,7 +314,7 @@ self.$ = ({
     if (ch == '$' && s[i +1] == '{')
     {
      stack.push('{');
-     out += ch + s[i ++]; "add '$' and '{'";
+     out += ch +s[i ++]; "add '$' and '{'";
      continue;
     }
    }
@@ -346,7 +346,7 @@ self.$ = ({
    "Replace ONLY when depth > 0 (i.e., inside any delimiter)";
    if (stack.length > 0)
    {
-    if (typeof f == 'function') out = f(ch, out);
+    if (f && typeof f == 'function') out = f(ch, out);
     else {
      if (ch == ',')
      {
@@ -359,8 +359,10 @@ self.$ = ({
       out += '_semi_colon_';
       continue;
      }
+     
+     out += ch;
     }
-   
+   } else {
     "Top-level: do not replace";
     out += ch;
    }
@@ -369,7 +371,7 @@ self.$ = ({
   return out;
  },
  
- typeof(value) {
+ type_of(value) {
   const types = Object.keys($._TYPES_).filter(type => !['default', 'any', 'num'].includes(type));
   for (let type of types)
   {
