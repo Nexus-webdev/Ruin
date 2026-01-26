@@ -655,12 +655,6 @@ self.$ = ({
    ['import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`],
    ['import: $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
    
-   ['delay ($1)', time => `(for_ \`${time}\`)`, true],
-   ['print ($1);', output => `console.info(${output});`, true],
-   ['range: ($1);', args => {
-    return `__range__(${args});`
-   }, true],
-   
    ['pipe $1!', pipe => {
     const steps = pipe.split(' >> ').filter(Boolean);
     pipe = steps.shift();
@@ -712,7 +706,7 @@ return (async() => {
    RUIN._currentCtx_ = this;
    
    // sof;
-   ${code}
+${code}
    // eof;
   }
  } catch (e) {
@@ -729,7 +723,7 @@ return (async() => {
   return { code, url };
  },
  
- __range__(a, b, c) {
+ range(a, b, c) {
   const array = [];
   const start = b ? a : 0;
   const end = b || a;
@@ -744,44 +738,6 @@ return (async() => {
   const match = inputString.match(regex);
 
   return match;
- },
- 
- findBlock(string, open = '{', close = '}', index = 'lastI') {
-  string = ` ${string} `;
-  const openingBrace = string.indexOf(open) +open.length;
-  const closingBrace = (string[`${index}ndexOf`](close) -close.length) +1;
-  
-  return string.slice(openingBrace, closingBrace);
- },
- 
- replace(str = '', target = '', replacement = '', start = 0, end) {
-  const chars = str.split('');
- 
-  for (let i = start; i <= (end || chars.length); i++) {
-   if (chars[i] == target)
-   {
-    chars[i] = replacement;
-   }
-  }
- 
-  return chars.join('');
- },
- 
- findBraces(str, openingBrace = '{', closingBrace = '}') {
-  const result = [];
-  const stack = [];
- 
-  for (let i = 0; i < str.length; i ++) {
-   if (str[i] == openingBrace) stack.push(i);
-   else if (str[i] == closingBrace) {
-    if (stack.length > 0) {
-     const o = stack.pop();
-     result.push([o, i]);
-    }
-   }
-  }
- 
-  return result.sort((x, y) => x[0] -y[0]).map(([o, c]) => [o, c, result.some(([O, C]) => o < C && o > O) ? 1 : 0]);
  },
 
  log(...args) {
