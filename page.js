@@ -185,6 +185,7 @@ $.struct('xml: static', {
 $.struct('Terminal', {
  __init__({ width = 400, height = 300, backgroundColor = '#000', textColor = '#0f0', interpreter = x => x, header } = {}) {
   this.interpreter = interpreter;
+  this.path = '';
   
   this.el = document.createElement('div');
   this.el.className = 'terminal';
@@ -213,17 +214,17 @@ $.struct('Terminal', {
    if (!e.shiftKey && e.key == 'Enter')
    {
     const statement = this.input.value.trim();
-    const result = await this.interpreter(statement);
-    this.print('> ' +statement);
+    this.print(`${this.path}> ${statement}`);
     this.input.value = '';
     
+    const result = await this.interpreter(statement);
     if (result) this.print(result);
    }
   });
  },
 
  print(text) {
-  this.output.textContent += text + '\n';
+  this.output.textContent += json.stringify(text) +'\n';
   this.output.scrollTop = this.output.scrollHeight;
  },
 
