@@ -642,7 +642,7 @@ self.$ = ({
   ], 5);
   
   const map = [
-   ['structure ( $1 :: {$2}!', (name, body) => `RUIN.struct('${name}', {${body}`, true],
+   ['structure ( $1 :: {$2', (name, body) => `RUIN.struct('${name}', {${body}`, true],
    
    ['import $1 from $2;', (a, b) => `const ${a} = await meta.mod \`${b}\`;`],
    ['import: $1 from $2;', (a, b) => `const ${a} = module.import_ \`${b}\`;`],
