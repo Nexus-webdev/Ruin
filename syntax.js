@@ -73,31 +73,52 @@ function clear(db = getDB()) {
  });
 }
 
-function wrap(value) {
- const flags = ['toJSON', 'toString'];
- if (value && typeof value == 'function')
- {
-  return new Proxy(value, {
-   get(target, prop, receiver) {
-    if (flags.includes(prop)) return() => '[Native Code]';
-    return target[prop];
-   },
-  });
- }
- 
- if (value && typeof value == 'object')
- {
-  return new Proxy(value, {
-   get(target, prop, receiver) {
-    if (flags.includes(prop)) return() => '[Native Code]';
-    const v = Reflect.get(target, prop, receiver);
-    
-    return wrap(v);
-   },
-  });
- }
- 
- return value;
+function __MaskFunctions__(obj) {
+ return new Proxy(obj, {
+  get(target, prop, receiver) {
+   const value = Reflect.get(target, prop, receiver);
+   
+   if (typeof value == 'function')
+   {
+    return new Proxy(value, {
+     get(target, key) {
+      if (key == 'toString' || key == 'toJSON' || key == Symbol.toPrimitive) return() => '[Native Code]';
+      return Reflect.get(target, key);
+     },
+     
+     apply(target, thisArg, args) {
+      return Reflect.apply(target, thisArg, args);
+     },
+    });
+   }
+   
+   if (value && typeof value == 'object')
+   {
+    return new Proxy(value, {
+      get(target, objProp, objReceiver) {
+       const v = Reflect.get(target, objProp, objReceiver);
+       if (typeof v == 'function') {
+         return new Proxy(v, {
+           get(target, fnProp) {
+             if (fnProp == 'toString' || fnProp == 'toJSON' || fnProp == Symbol.toPrimitive) {
+               return () => '[Native Code]';
+             }
+             return Reflect.get(target, fnProp);
+           },
+           apply(target, thisArg, args) {
+             return Reflect.apply(target, thisArg, args);
+           }
+         });
+       }
+       
+       return v;
+      }
+    });
+   }
+   
+   return value;
+  },
+ })
 }
 
 Object.defineProperty(String.prototype, 'compress', {
@@ -259,6 +280,54 @@ function split_params(string) {
  
  if (current.trim()) parts.push(current.trim());
  return parts;
+}
+
+function transfer_params(str_1, str_2) {
+ "Extract parameter list from str_1 by scanning characters";
+ 
+ let start = str_1.indexOf('(');
+ if (start == -1) throw new Error('First function has no parameters');
+ 
+ let depth = 0, end = -1;
+ for (let i = start; i < str_1.length; i ++)
+ {
+  if (str_1[i] == '(') depth ++;
+  else if (str_1[i] == ')')
+  {
+   -- depth;
+   
+   if (!depth)
+   {
+    end = i;
+    break;
+   }
+  }
+ }
+ 
+ if (end == -1) throw new Error('Unmatched parentheses in first function');
+ const params = str_1.slice(start +1, end);
+ 
+ "Replace parameter list in str_2";
+ let start_2 = str_2.indexOf('(');
+ let depth_2 = 0, end_2 = -1;
+ 
+ for (let i = start_2; i < str_2.length; i ++)
+ {
+  if (str_2[i] == '(') depth_2 ++;
+  else if (str_2[i] == ')')
+  {
+   -- depth_2;
+   
+   if (!depth_2)
+   {
+    end_2 = i;
+    break;
+   }
+  }
+ }
+ 
+ if (end_2 == -1) throw new Error('Unmatched parentheses in second function');
+ return str_2.slice(0, start_2 +1) +params +str_2.slice(end_2);
 }
 
 self.$ = ({
@@ -643,6 +712,7 @@ self.$ = ({
   
   const map = [
    ['structure ( $1 :: {$2', (name, body) => `RUIN.struct('${name}', {${body}`, true],
+   ['enum ( $1 :: $2', (name, body) => `RUIN.TYPE('${name}', ${body}`, true],
    
    ['import $1 from $2;', (a, b) => `const ${a} = await meta.mod \`${b}\`;`],
    ['import: $1 from $2;', (a, b) => `const ${a} = module.import_ \`${b}\`;`],
@@ -677,7 +747,7 @@ self.$ = ({
    return m[0].includes('{');
   }
   
-  const indent = '   ';
+  const indent = '    ';
   if (apply_macs)
   {
    "Apply multi_line macros";
@@ -696,26 +766,26 @@ self.$ = ({
   }
   
   "Wrap The code in the ruin context";
-  code = `//# sourceURL=${url}.js
-return (async() => {
- try {
-  with(this) {
-   RUIN._currentCtx_ = this;
-   
-   // sof;
+  code = ` //# sourceURL=${url}.js
+ return (async() => {
+  try {
+   with(this) {
+    RUIN._currentCtx_ = this;
+    
+    // sof;
 ${code}
-   // eof;
+    // eof;
+   }
+  } catch (e) {
+   const err = new this.RuinError(e, {
+    sourceUrl: '${url}',
+    offset: this.__line_offset__,
+    kind: 'runtime',
+   });
+   
+   console.error(err.represent());
   }
- } catch (e) {
-  const err = new this.RuinError(e, {
-   sourceUrl: '${url}',
-   offset: this.__line_offset__,
-   kind: 'runtime',
-  });
-  
-  console.error(err.represent());
- }
-})();`;
+ })();`;
   
   return { code, url };
  },
@@ -804,23 +874,9 @@ ${code}
   },
  }),
  
- struct(name, { relationships = {}, destinationObject = $.RUIN, _this, overrideModule, override, ...prototype } = {}) {
-  if (_this)
-  {
-   overrideModule = true;
-   destinationObject = _this;
-  }
-  
-  function opt(value, options = {}) {
-   return options[value] ?? options.default;
-  };
-  
-  const ruinContext = { ...this };
-  const Obj = this.module && !overrideModule ? this.module.exports : destinationObject;
-  
-  const obj = $.setup_phase == true ? $.RUIN : Obj;
-  const staticValues = {};
-  const [arg, config] = name.split(':').map(t => t.trim());
+ struct(_name, { __relations__ = {}, __destination__, ...prototype } = {}) {  
+  const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : this);
+  const [name, config] = _name.split(':').map(t => t.trim());
 
   function CONSTRUCTOR(...args) {
    const t = this;
@@ -863,102 +919,41 @@ ${code}
 
    set(prototype);
    set({
-    $relationships: relationships,
+    $relations: __relations__,
     $constructor: constructor,
+    $types: types,
     $setdata: set,
     $args: args,
+    name,
     
-    $extension(type) {
+    $extend(type) {
      const _struct = types[type];
      this.parent = _struct;
      
      set(_struct);
-     delete this.$extension;
-     this.$uper = function(...args) {
-      delete this.$uper; 
+     this.$init = function(...args) {
       const __init__ = func(_struct.__init__ ) ?? func(_struct.construct);
       return __init__.bind(this)(...args);
      };
     },
-    
-    $addRelationship({ name, object = obj, type = 'parent' } = {}) {
-     const structs = {};
-     if (typeof name == 'string') opt(type?.trim()?.toLowerCase(), options)(this, name, object, structs);
-     
-     set(structs);
-    },
    });
    
-   const structs = {};
-   const contractExists = this.$contract && this.$contract.length > 0;
-   
    const options = {
-    default: x => x,
-    parent(name, obj, structs) {
-     const Obj = obj[name] ? obj : ruinContext;
-     if (!Obj[name]) throw `structure '${arg}' cannot receive Inheritance from Non-Existant Parent structure '${name}';`;
-     if (typeof structs.parent == 'string') throw `structure '${arg}' attempted to exceed the max amount of Parent structures (1);`
-
-     const _parent = new Obj[name]('⌀');
-     structs.parent = _parent;
-     this.$uper = (...args) => {
-      delete this.$uper;
-      return _parent.construct.bind(t)(...args);
-     };
+    extension(name, obj) {
+     const struct = obj[name] ?? ruinContext[name];
+     if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be an extension`);
      
-     const contract = (contractExists ? t.$contract : Object.keys(_parent)).filter(key => !(['construct', 'constructor']).includes(key));
-     
-     for (let key of contract)
-     {
-      if (t[key] == undefined || structs[key] == undefined)
-      structs[key] = _parent[key];
-     }
-    },
-    
-    component(name, obj, structs) {
-     const Obj = obj[name] ? obj : ruinContext;
-     if (!Obj[name]) throw `structure '${name}' does not exist`;
-     if (Obj[name].name != 'CONSTRUCTOR')
-     {
-      structs[name] = Obj[name];
-      delete Obj[name];
-      return;
-     }
-     
-     const INSTANCE = Obj[name];
-     structs[`_${name}_`] = (...args) => {
-      const instance = new INSTANCE('⌀');
-      instance[arg?.toLowerCase()] = t;
-      
-      const construct = instance.__init__ ?? instance.construct ?? instance.constructor;
-      if (construct && typeof construct == 'function') construct(...args);
-      
-      if (t[name] != undefined) return instance;
-      t[name] = instance;
-     };
-    },
-    
-    extension(name, obj, structs) {
-     const Obj = obj[name] ? obj : ruinContext;
-     if (!Obj[name]) throw `structure '${arg}' cannot receive Inheritance from Non-Existant Parent structure '${name}';`;
-     
-     const _struct = new Obj[name]('⌀');
-     types[_struct._typename ?? name] = _struct;
-    },
-    
-    static(name, obj, structs) {
-     const Obj = obj[name] ? obj : ruinContext;
-     if (Obj[name] == undefined) throw `structure '${name}' does not exist`;
-     
-     CONSTRUCTOR.static[name] = Obj[name];
-     CONSTRUCTOR[name] = Obj[name];
+     const instance = new struct[name]('*bypass init*');
+     types[instance.__typename__ ?? name] = instance;
     },
    };
   
-   for (let member in relationships)
-   meta.opt(relationships[member], options)(member, obj, structs);
+   for (let member in __relations__)
+   {
+    const f = options[__relations__[member]];
+    if (f) f(member, obj);
+   }
    
-   set(structs);
    const __init__ = func(this.__init__) ?? func(this.construct);
    if (args[0] != '*bypass init*' && __init__)
    {
@@ -967,18 +962,15 @@ ${code}
    }
   };
   
-  const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', arg)}`)).call({
-   relationships, arg,
-   destinationObject,
-   _this,
-   obj,
-   
-   overrideModule,
-   ruinContext,
+  const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', name)}`)).call({
+   ruinContext: $.RUIN,
+   __relations__,
    prototype,
+   name,
+   obj,
   })
   
-  constructor._name = arg;
+  constructor.__name__ = name;
   const __prototype__ = {};
   for (let key in prototype)
   {
@@ -995,9 +987,9 @@ ${code}
    }
   }
   
-  if (config?.toLowerCase?.() == 'static') return obj[arg] = new constructor();
+  if (config?.toLowerCase?.() == 'static') return obj[name] = new constructor();
   if (config?.toLowerCase?.() == 'return') return constructor;
-  return obj[arg] = constructor;
+  return obj[name] = constructor;
  },
 
  uniqueString(base = 36, range = [2, 10]) {
