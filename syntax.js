@@ -642,23 +642,18 @@ self.$ = ({
   ], 5);
   
   const map = [
-   ['flux {$1}!', body => `RUIN.flux.run(\`${escape(body)}\`)`, true],
-   ['flux ($1) : {$2}!', (ctx, body) => `RUIN.flux.run(\`${escape(body)}\`, ${ctx})`, true],
-   ['viscript ($1) : {$2}!', (ctx, body) => {
-    return `RUIN.viscript.run(\`${escape(body)}\`, ${ctx || '{}'})`;
-   }, true],
+   ['structure ( $1 :: {$2}!', (name, body) => `RUIN.struct('${name}', {${body}`, true],
    
-   ['repeat ($1) :', i => `for (let i = 0; i < ${i}; i ++)`, true],
-   ['unless ($1) :', condition => `if (!(${condition}))`, true],
-   ['for ($1) :', condition => `for (${condition})`, true],
-   ['if ($1) :', condition => `if (${condition})`, true],
+   ['import $1 from $2;', (a, b) => `const ${a} = await meta.mod \`${b}\`;`],
+   ['import: $1 from $2;', (a, b) => `const ${a} = module.import_ \`${b}\`;`],
+   ['import: $1;', (a, b) => `const ${a} = module.import_ \`library\`;`],
    
-   ['structure ($1) : {$2}!', (name, body) => `RUIN.struct('${name}', {${body}})`, true],
-   ['import $1 from $2;', (a, b) => `const ${a} = module.import_\`${b}\`;`],
-   ['import: $1 from $2;', (a, b) => `const ${a} = await meta.mod\`${b}\`;`],
+   ['export: $1 as $2;', (a, b) => `module.exports[${b}.name] = ${a};`],
+   ['export: $1;', a => `module.exports[${a}._name ?? ${a}.name] = ${a};`],
    
    ['pipe $1!', pipe => {
-    const steps = pipe.split(' >> ').filter(Boolean);
+    const steps = pipe.split('>>').map(step => step.trim())
+                                  .filter(Boolean);
     pipe = steps.shift();
     
     for (let step of steps)
