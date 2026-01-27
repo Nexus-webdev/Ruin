@@ -223,8 +223,11 @@ $.struct('Terminal', {
   });
  },
 
- print(text) {
-  this.output.textContent += json.stringify(text) +'\n';
+ print(value) {
+  if (typeof value == 'object')
+  value = JSON.stringify(value);
+  
+  this.output.textContent += value +'\n';
   this.output.scrollTop = this.output.scrollHeight;
  },
 
