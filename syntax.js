@@ -84,9 +84,10 @@ function tokenizeInitializer(code, startIndex) {
   const ch = code[i];
   const prev = code[i - 1];
  
-  "Handle string start/end";
   if (!inString && (ch == '"' || ch == "'" || ch == '`'))
   {
+   "Handle string start/end";
+   
    inString = ch;
    stack.push(ch);
    
@@ -99,27 +100,23 @@ function tokenizeInitializer(code, startIndex) {
     stack.pop();
     inString = null;
    }
-  }
-  
-  "Handle braces/brackets/parentheses";
-  else if (ch == '{' || ch == '[' || ch == '(')
+  } else if (ch == '{' || ch == '[' || ch == '(')
   {
+   "Handle braces/brackets/parentheses";
+   
    stack.push(ch);
    value += ch;
   } else if (ch == '}' || ch == ']' || ch == ')')
   {
    stack.pop();
    value += ch;
-  }
-  
-  "Handle semicolon";
-  else if (ch == ';' && !stack.length) break;
+  } else if (ch == ';' && !stack.length) break;
   else value += ch;
  
   i ++;
  }
 
- return { value: value.trim(), endIndex: i };
+ return { value, endIndex: i };
 }
 
 function __MaskFunctions__(obj) {
