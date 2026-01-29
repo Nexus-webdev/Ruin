@@ -88,6 +88,7 @@ for (let key in mods)
 }
 
 $.struct('Event', {
+ __destination__: $,
  __init__(self, id, { details = {}, defaultElement = document, options = {} } = {}) {
   this.id = id;
   this.defaultElement = defaultElement;
@@ -105,8 +106,10 @@ $.struct('Event', {
 })
 
 $.struct('xml: static', {
+ __destination__: $,
  parser: new DOMParser(),
  serializer: new XMLSerializer(),
+ 
  $add_methods(self, doc) {
   "Make sure xml documents can stringify or convert themselves into arrays independently";
   doc.stringify = _ => this.stringify(doc);
@@ -183,6 +186,7 @@ $.struct('xml: static', {
 })
 
 $.struct('Terminal', {
+ __destination__: $,
  __init__(self, { width = 400, height = 300, backgroundColor = '#000', textColor = '#0f0', interpreter = x => x, header } = {}) {
   this.interpreter = interpreter;
   this.path = '';
