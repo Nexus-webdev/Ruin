@@ -88,14 +88,14 @@ for (let key in mods)
 }
 
 $.struct('Event', {
- construct(id, { details = {}, defaultElement = document, options = {} } = {}) {
+ __init__(self, id, { details = {}, defaultElement = document, options = {} } = {}) {
   this.id = id;
   this.defaultElement = defaultElement;
   this.details = details;
   this.options = options;
  },
  
- dispatch(elem, details = {}) {
+ dispatch(self, elem, details = {}) {
   const element = elem ?? this.defaultElement;
   const detail = { ...this.details, ...details };
   
@@ -107,7 +107,7 @@ $.struct('Event', {
 $.struct('xml: static', {
  parser: new DOMParser(),
  serializer: new XMLSerializer(),
- $add_methods(doc) {
+ $add_methods(self, doc) {
   "Make sure xml documents can stringify or convert themselves into arrays independently";
   doc.stringify = _ => this.stringify(doc);
   doc.to_array = _ => this.to_array(doc);
@@ -133,7 +133,7 @@ $.struct('xml: static', {
   };
  },
  
- to_array(doc) {
+ to_array(self, doc) {
   "Converts xml doc into an array of { tag, text }";
   const root = doc.documentElement;
   const array = [];
@@ -149,7 +149,7 @@ $.struct('xml: static', {
   return array;
  },
  
- parse(str) {
+ parse(self, str) {
   "Evaluates to an xml doc based on the string provided";
   return new Promise(async resolve => {
    const doc = await this.parser.parseFromString(str, 'application/xml');
@@ -159,12 +159,12 @@ $.struct('xml: static', {
   })
  },
  
- stringify(doc) {
+ stringify(self, doc) {
   "Serializes an xml doc to string form";
   return this.serializer.serializeToString(doc);
  },
  
- build(name, nodes = [], elem) {
+ build(self, name, nodes = [], elem) {
   "Builds an xml doc from an array of { tag, text }";
   const doc = elem || document.implementation.createDocument('', '', null);
   const root = doc.createElement(name);
@@ -183,7 +183,7 @@ $.struct('xml: static', {
 })
 
 $.struct('Terminal', {
- __init__({ width = 400, height = 300, backgroundColor = '#000', textColor = '#0f0', interpreter = x => x, header } = {}) {
+ __init__(self, { width = 400, height = 300, backgroundColor = '#000', textColor = '#0f0', interpreter = x => x, header } = {}) {
   this.interpreter = interpreter;
   this.path = '';
   
@@ -223,7 +223,7 @@ $.struct('Terminal', {
   });
  },
 
- print(value) {
+ print(self, value) {
   if (typeof value == 'object')
   value = JSON.stringify(value);
   

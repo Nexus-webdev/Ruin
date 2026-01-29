@@ -357,7 +357,7 @@ self.$ = ({
   };
  },
  
- __replace_within_delimiters__(s, f, closing = { '(': ')', '[': ']', '{': '}' }) {
+ __replace_within_delimiters__(s, f, f2, closing = { '(': ')', '[': ']', '{': '}' }) {
   const openers = new Set(Object.keys(closing));
   const stack = [];
   
@@ -432,8 +432,8 @@ self.$ = ({
      out += ch;
     }
    } else {
-    "Top-level: do not replace";
-    out += ch;
+    if (f2 && typeof f2 == 'function') out = f2(ch, out);
+    else out += ch;
    }
   }
   
@@ -734,7 +734,7 @@ self.$ = ({
   ];
   
   for (let key of ['let', 'def', 'const'])
-  map.push([`${key} $1: $2 = $3!;`, (type, id, value) => {
+  map.push([`${key} $1: $2 = $3;`, (type, id, value) => {
    return `${key} ${id} = __TypedValue__('${type}', ${value});`;
   }, true]);
   
@@ -888,23 +888,24 @@ ${code}
     if (func(objB[key]))
     {
      objA[key] = function(...args) {
-      const proxy = new Proxy({}, {
-       get(_, prop) {
-        if (typeof prop == 'string' && prop.startsWith('$')) return secrets[prop];
-        return t[prop];
+      const proxy = new Proxy(t, {
+       get(target, key) {
+        if (key == 'self') return target;
+        if (typeof key == 'string' && key.startsWith('$')) return secrets[key];
+        return target[key];
        },
        
-       set(_, prop, value) {
-        if (typeof prop == 'string' && prop.startsWith('$')) return secrets[prop] = value;
-        return t[prop] = value;
+       set(target, key, value) {
+        if (typeof key == 'string' && key.startsWith('$')) return secrets[key] = value;
+        return target[key] = value;
        },
        
-       has(_, prop) {
-        return prop in t || prop in secrets;
+       has(target, key) {
+        return key in target || key in secrets;
        },
       });
       
-      return objB[key].bind(proxy)(...args);
+      return objB[key].bind(proxy)(proxy, ...args);
      };
     } else objA[key] = objB[key];
    };
@@ -1144,34 +1145,34 @@ ${indentation}${t.value.substring(t.selectionEnd)}`;
 });
 
 $.struct('GitHub: static', {
- __init__() {
-  this.$tokens = {};
-  this.$token = '';
+ __init__(self) {
+  self.$tokens = {};
+  self.$token = '';
   
-  this.url = '';
-  this.repository = '';
-  this.subdir = '';
-  this.owner = '';
+  self.url = '';
+  self.repository = '';
+  self.subdir = '';
+  self.owner = '';
  },
  
- repo(owner, name, subdirectory) {
+ repo(self, owner, name, subdirectory) {
   const path = subdirectory ? subdirectory +'/' : '';
-  this.url = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
+  self.url = `https://api.github.com/repos/${owner}/${name}/contents/${path}`;
   
-  this.subdir = subdirectory;
-  this.repository = name;
-  this.owner = owner;
+  self.subdir = subdirectory;
+  self.repository = name;
+  self.owner = owner;
  },
  
- token(token, id) {
-  this.$token = token;
-  this.$tokens[id] = id ? token : null;
+ token(self, token, id) {
+  self.$token = token;
+  self.$tokens[id] = id ? token : null;
  },
  
- get(path) {
+ get(self, path) {
   return new Promise(async resolve => {
    try {
-    const response = await fetch(this.url +path, { headers: { Authorization: this.auth() } });
+    const response = await fetch(self.url +path, { headers: { Authorization: self.auth() } });
     if (!response.ok) throw `Failed to fetch: ${response.status}`;
     const data = await response.json();
   
@@ -1183,7 +1184,7 @@ $.struct('GitHub: static', {
   })
  },
  
- isBase64(str) {
+ isBase64(self, str) {
   if (typeof str !== 'string') return false;
   const notBase64 = /[^A-Z0-9+\/=]/i;
   
@@ -1197,17 +1198,17 @@ $.struct('GitHub: static', {
  },
  
  auth() {
-  return this.$token ? `Bearer ${this.$token}` : undefined;
+  return self.$token ? `Bearer ${self.$token}` : undefined;
  },
  
- dir(path) {
+ dir(self, path) {
   return new Promise(async resolve => {
    try {
-    const config = { headers: { Authorization: this.auth() } };
+    const config = { headers: { Authorization: self.auth() } };
     const directories = {};
     const files = {};
     
-    const response = await fetch(this.url +path, config);
+    const response = await fetch(self.url +path, config);
     if (!response.ok) throw `Failed to fetch: ${response.status}`;
     const data = await response.json();
     
@@ -1220,7 +1221,7 @@ $.struct('GitHub: static', {
       {
        const data = await (await fetch(item.url, config)).json();
        if (data.content) files[item.name] = decodeURIComponent(escape(atob(data.content)));
-      } else directories[item.name] = await this.dir(item.path);
+      } else directories[item.name] = await self.dir(item.path);
      }
     };
     
@@ -1232,24 +1233,24 @@ $.struct('GitHub: static', {
   })
  },
  
- importScript(url) {
+ importScript(self, url) {
   return new Promise(async resolve => {
-   this.url = url;
-   const data = await this.read('');
+   self.url = url;
+   const data = await self.read('');
    const result = await $.ruin(data.content);
    
-   this.repo(this.owner, this.repository, this.subdir);
+   self.repo(self.owner, self.repository, self.subdir);
    resolve(result);
   })
  },
  
- read(path) {
+ read(self, path) {
   return new Promise(async resolve => {
    try {
-    const url = this.url +path;
+    const url = self.url +path;
     const response = await fetch(url, {
      headers: {
-      Authorization: this.auth(),
+      Authorization: self.auth(),
       Accept: 'application/vnd.github.v3.raw',
      },
     });
@@ -1264,7 +1265,7 @@ $.struct('GitHub: static', {
      content: txt,
     };
     
-    if (this.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
+    if (self.isBase64(data.content)) data.content = decodeURIComponent(escape(atob(data.content)));
     resolve(data);
    } catch(e) {
     throw `Failed to read: '${path}'`;
@@ -1273,11 +1274,11 @@ $.struct('GitHub: static', {
   })
  },
  
- write(path, content, create = false) {
+ write(self, path, content, create = false) {
   return new Promise(async resolve => {
    try {
-    const sha = create ? null : (await this.get(path)).sha;
-    const url = this.url +path;
+    const sha = create ? null : (await self.get(path)).sha;
+    const url = self.url +path;
     const body = {
      message: 'Update file via API',
      content: btoa(unescape(encodeURIComponent(content))),
@@ -1287,7 +1288,7 @@ $.struct('GitHub: static', {
     const res = await fetch(url, {
      method: 'PUT',
      headers: {
-      Authorization: this.auth(),
+      Authorization: self.auth(),
       Accept: 'application/vnd.github.v3+json',
      },
      
@@ -1303,11 +1304,11 @@ $.struct('GitHub: static', {
   })
  },
  
- delete(path) {
+ delete(self, path) {
   return new Promise(async resolve => {
    try {
-    const sha = (await this.get(path)).sha;
-    const url = this.url +path;
+    const sha = (await self.get(path)).sha;
+    const url = self.url +path;
     const body = {
      message: 'Delete file via API',
      sha,
@@ -1316,7 +1317,7 @@ $.struct('GitHub: static', {
     const res = await fetch(url, {
      method: 'DELETE',
      headers: {
-      Authorization: this.auth(),
+      Authorization: self.auth(),
       Accept: 'application/vnd.github.v3+json',
      },
      
@@ -1339,12 +1340,12 @@ $.struct('GitHub: static', {
 })
 
 $.struct('Cipher: static', {
- __init__() {
-  this.$enc = new TextEncoder();
-  this.$dec = new TextDecoder();
+ __init__(self) {
+  self.$enc = new TextEncoder();
+  self.$dec = new TextDecoder();
  },
  
- toBase64(buf) {
+ toBase64(self, buf) {
   const bytes = new Uint8Array(buf);
   let binary = '';
   
@@ -1353,7 +1354,7 @@ $.struct('Cipher: static', {
   return btoa(binary);
  },
  
- fromBase64(b64) {
+ fromBase64(self, b64) {
   const binary = atob(b64);
   const bytes = new Uint8Array(binary.length);
   
@@ -1362,8 +1363,8 @@ $.struct('Cipher: static', {
   return bytes.buffer;
  },
  
- async $deriveKey(passphrase, salt, iterations = 150_000) {
-  const encoded = this.$enc.encode(passphrase);
+ async $deriveKey(self, passphrase, salt, iterations = 150_000) {
+  const encoded = self.$enc.encode(passphrase);
   const baseKey = await crypto.subtle.importKey('raw', encoded, { name: 'PBKDF2' }, false, ['deriveKey']);
 
   return crypto.subtle.deriveKey(...[
@@ -1373,17 +1374,17 @@ $.struct('Cipher: static', {
   ]);
  },
  
- async encrypt(txt, passphrase, comp = false) {
+ async encrypt(self, txt, passphrase, comp = false) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
   txt = comp ? txt.compress() : txt;
 
-  const key = await this.$deriveKey(passphrase, salt);
-  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, this.$enc.encode(txt));
+  const key = await self.$deriveKey(passphrase, salt);
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, self.$enc.encode(txt));
   
-  const s = this.toBase64(salt.buffer);
-  const i = this.toBase64(iv.buffer);
-  const c = this.toBase64(ciphertext);
+  const s = self.toBase64(salt.buffer);
+  const i = self.toBase64(iv.buffer);
+  const c = self.toBase64(ciphertext);
   
   const payload = {
    s: comp ? s.compress() : s,
@@ -1395,7 +1396,7 @@ $.struct('Cipher: static', {
   return JSON.stringify(payload);
  },
 
- async decrypt(payloadJson, passphrase, decomp = false) {
+ async decrypt(self, payloadJson, passphrase, decomp = false) {
   const payload = JSON.parse(payloadJson);
   if (decomp)
   {
@@ -1404,15 +1405,15 @@ $.struct('Cipher: static', {
    payload.c = payload.c.decompress();
   }
   
-  const salt = new Uint8Array(this.fromBase64(payload.s));
-  const iv = new Uint8Array(this.fromBase64(payload.i));
+  const salt = new Uint8Array(self.fromBase64(payload.s));
+  const iv = new Uint8Array(self.fromBase64(payload.i));
   
-  const ciphertext = this.fromBase64(payload.c);
-  const key = await this.$deriveKey(passphrase, salt);
+  const ciphertext = self.fromBase64(payload.c);
+  const key = await self.$deriveKey(passphrase, salt);
   
   try {
    const plaintextBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ciphertext);
-   const decoded = this.$dec.decode(plaintextBuf);
+   const decoded = self.$dec.decode(plaintextBuf);
    return decomp ? decoded.decompress() : decoded;
   } catch(err) {
    throw new Error('Decryption failed: invalid passphrase or corrupted data.');
