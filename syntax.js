@@ -73,6 +73,55 @@ function clear(db = getDB()) {
  });
 }
 
+function tokenizeInitializer(code, startIndex) {
+ let i = startIndex;
+ let stack = [];
+ let value = '';
+ let inString = null;
+
+ while (i < code.length)
+ {
+  const ch = code[i];
+  const prev = code[i - 1];
+ 
+  "Handle string start/end";
+  if (!inString && (ch == '"' || ch == "'" || ch == '`'))
+  {
+   inString = ch;
+   stack.push(ch);
+   
+   value += ch;
+  } else if (inString)
+  {
+   value += ch;
+   if (ch == inString && prev != '\\')
+   {
+    stack.pop();
+    inString = null;
+   }
+  }
+  
+  "Handle braces/brackets/parentheses";
+  else if (ch == '{' || ch == '[' || ch == '(')
+  {
+   stack.push(ch);
+   value += ch;
+  } else if (ch == '}' || ch == ']' || ch == ')')
+  {
+   stack.pop();
+   value += ch;
+  }
+  
+  "Handle semicolon";
+  else if (ch == ';' && !stack.length) break;
+  else value += ch;
+ 
+  i ++;
+ }
+
+ return { value: value.trim(), endIndex: i };
+}
+
 function __MaskFunctions__(obj) {
  return new Proxy(obj, {
   get(target, prop, receiver) {
@@ -440,6 +489,28 @@ self.$ = ({
   return out;
  },
  
+ __typed_declaration_macro__(code) {
+  const declPattern = /\b(const|let|def)\s+(\w+)\s*:\s*([a-zA-Z0-9_\{\}\[\]\s,]+)\s*=/g;
+  let match, result = '', lastIndex = 0;
+ 
+  declPattern.lastIndex = 0;
+  while ((match = declPattern.exec(code)) != null)
+  {
+   const [full, decl, type, id] = match;
+   result += code.slice(lastIndex, match.index); "keep text before match";
+ 
+   "Find initializer safely";
+   const { value, endIndex } = tokenizeInitializer(code, declPattern.lastIndex);
+   result += `${decl} ${id.trim()} = RUIN.__TypedValue__('${type}', ${value});`;
+ 
+   lastIndex = endIndex +1; "skip semicolon";
+   declPattern.lastIndex = lastIndex;
+  }
+  
+  result += code.slice(lastIndex); "append remainder";
+  return result;
+ },
+ 
  type_of(value) {
   const types = Object.keys($._TYPES_).filter(type => !['default', 'any', 'num'].includes(type));
   for (let type of types)
@@ -733,15 +804,12 @@ self.$ = ({
    }],
   ];
   
-  for (let key of ['let', 'def', 'const'])
-  map.push([`${key} $1: $2 = $3;`, (type, id, value) => {
-   return `${key} ${id} = __TypedValue__('${type}', ${value});`;
-  }, true]);
-  
   "Create macros";
   const map_fn = args => $.create_macro(...args);
   macros.unshift(...map.filter(multi_line).map(map_fn));
+  
   const line_macs = map.filter(m => !multi_line(m)).map(map_fn);
+  line_macs.push($.__typed_declaration_macro__);
   
   function multi_line(m) {
    return m[0].includes('{');
