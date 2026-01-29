@@ -940,7 +940,7 @@ ${code}
  }),
  
  struct(_name, { __relations__ = {}, __destination__, ...prototype } = {}) {  
-  const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : this);
+  const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : $._currentCtx_);
   const [name, config] = _name.split(':').map(t => t.trim());
 
   function CONSTRUCTOR(...args) {
