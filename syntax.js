@@ -1025,7 +1025,6 @@ ${code}
    set({
     $relations: __relations__,
     $constructor: constructor,
-    $types: types,
     $setdata: set,
     $args: args,
     name,
