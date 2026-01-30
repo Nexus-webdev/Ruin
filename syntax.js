@@ -495,11 +495,11 @@ self.$ = ({
   {
    const [full, decl, type, id] = match;
    result += code.slice(lastIndex, match.index); "keep text before match";
- 
+   
    "Find initializer safely";
    const { value, endIndex } = tokenizeInitializer(code, declPattern.lastIndex);
-   result += `${decl} ${id.trim()} = RUIN.__TypedValue__('${type}', ${value});`;
- 
+   result += `${decl} ${id.trim()} = RUIN.__TypedValue__('${type}', ${value}, '${decl}');`;
+   
    lastIndex = endIndex +1; "skip semicolon";
    declPattern.lastIndex = lastIndex;
   }
@@ -517,33 +517,53 @@ self.$ = ({
   }
  },
  
- __TypedValue__(type, value) {
-  const proxy = new Proxy({ type }, {
-   set(target, _, new_value) {
-    const f = $._TYPES_[target.type];
-    if (!f)
+ __TypedValue__(type = 'any', value = null, decl = 'let') {
+  const target = { type };
+  const proxy = new Proxy(target, {
+   get(target, key) {
+    if (key == '__v') return target.value;
+    if (key == '__type') return target.type;
+   
+    if (key == Symbol.toPrimitive)
     {
-     throw new ReferenceError(`Undefined Type ${target.type}`);
-     return false;
+     return hint => {
+      if (target.value && typeof target.value[Symbol.toPrimitive] == 'function')
+      return target.value[Symbol.toPrimitive](hint);
+      
+      return target.value;
+     };
     }
     
-    const valid = f(new_value);
-    if (!valid)
-    {
-     throw new TypeError(`${new_value?.toString?.() || 'value'} is not of type ${target.type}`);
-     return false;
-    }
-    
-    target.value = new_value;
-    return true;
+    return target.value[key];
    },
    
-   get(target, key) {
-    return target[key] ?? target.value;
-   },
-  })
+   set(target, key, new_value) {
+    if (key == '__v')
+    {
+     if (decl == 'const') throw new Error(`Cannot change the value of a constant`);
   
-  proxy.value = value;
+     const f = $._TYPES_[target.type];
+     if (!f) throw new ReferenceError(`Undefined Type '${target.type}'`);
+     if (!f(new_value)) throw new TypeError(`${new_value} is not of type '${target.type}'`);
+  
+     target.value = new_value;
+     return true;
+    }
+    
+    if (target.value && typeof target.value == 'object')
+    {
+     target.value[key] = new_value;
+     return true;
+    }
+   
+    return false;
+   }
+  });
+  
+  proxy.toString = x => String(target.v);
+  proxy.valueOf = x => target.v;
+  proxy.__v = value;
+  
   return proxy;
  },
  
