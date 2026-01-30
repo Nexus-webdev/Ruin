@@ -959,13 +959,16 @@ ${code}
   },
  }),
  
- struct(_name, { __relations__ = {}, __destination__, ...prototype } = {}) {  
-  const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : $._currentCtx_);
+ struct(_name, { __ext_name__, __relations__ = {}, __destination__, ...prototype } = {}) {  
+  const ctx = $._currentCtx_;
+  const config = { extension_types: {}, parent: null };
+  
+  const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : ctx);
   const [name, config] = _name.split(':').map(t => t.trim());
-
+  
+  const find_struct = (name, obj) => (obj ?? {})[name] ?? ctx[name] ?? ruinContext[name];
   function CONSTRUCTOR(...args) {
    const t = this;
-   const types = {};
    const secrets = {};
    
    const func = f => (f && typeof f == 'function' ? f : null);
@@ -1002,6 +1005,21 @@ ${code}
      else apply(t, obj, key);
     }
    };
+   
+   const struct = config.parent;
+   if (struct)
+   {
+    const instance = new struct('*bypass init*');
+    set(instance, false);
+    
+    set({
+     parent: struct,
+     $init(...args) {
+      const __init__ = func(instance.__init__ ) ?? func(instance.construct);
+      return __init__.bind(this)(...args);
+     },
+    })
+   }
 
    set(prototype);
    set({
@@ -1013,32 +1031,19 @@ ${code}
     name,
     
     $extend(type) {
-     const _struct = types[type];
-     this.parent = _struct;
+     const struct = config.extension_types[type];
+     const instance = new struct('*bypass init*');
+     set(instance, false);
      
-     set(_struct);
-     this.$init = function(...args) {
-      const __init__ = func(_struct.__init__ ) ?? func(_struct.construct);
-      return __init__.bind(this)(...args);
-     };
+     set({
+      extension: struct,
+      $init(...args) {
+       const __init__ = func(instance.__init__ ) ?? func(instance.construct);
+       return __init__.bind(this)(...args);
+      },
+     });
     },
    });
-   
-   const options = {
-    extension(name, obj) {
-     const struct = obj[name] ?? ruinContext[name];
-     if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be an extension`);
-     
-     const instance = new struct[name]('*bypass init*');
-     types[instance.__typename__ ?? name] = instance;
-    },
-   };
-  
-   for (let member in __relations__)
-   {
-    const f = options[__relations__[member]];
-    if (f) f(member, obj);
-   }
    
    const __init__ = func(this.__init__) ?? func(this.construct);
    if (args[0] != '*bypass init*' && __init__)
@@ -1052,12 +1057,44 @@ ${code}
    ruinContext: $.RUIN,
    __relations__,
    prototype,
+   config,
    name,
-   obj,
   })
   
-  constructor.__name__ = name;
+  constructor.static_values = {};
   const __prototype__ = {};
+  
+  const options = {
+   parent(name, obj) {
+    const struct = find_struct(name, obj);
+    if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be a parent`);
+    config.parent = struct;
+    
+    for (let key in struct.prototype)
+    constructor.prototype[key] = struct.prototype[key];
+    
+    for (let key in struct.static_values)
+    {
+     constructor.static_values[key] = struct.static_values[key];
+     constructor[key] = struct.static_values[key];
+    }
+   },
+   
+   extension(name, obj) {
+    const struct = find_struct(name, obj);
+    if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be an extension`);
+    config.extension_types[struct.__ext_name__] = struct;
+   },
+  };
+ 
+  for (let key in __relations__)
+  {
+   const f = options[__relations__[key]];
+   if (f) f(key, obj);
+  }
+  
+  constructor.__ext_name__ = __ext_name__ ?? name;
+  constructor.__name__ = name;
   for (let key in prototype)
   {
    if (typeof key == 'string' && key.startsWith('*')) {
@@ -1069,7 +1106,10 @@ ${code}
     {
      key = key.slice(1);
      constructor.prototype[Symbol[key]] = property;
-    } else constructor[key] = property;
+    } else {
+     constructor.static_values[key] = property;
+     constructor[key] = property;
+    }
    }
   }
   
