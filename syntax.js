@@ -964,7 +964,7 @@ ${code}
   const config = { extension_types: {}, parent: null };
   
   const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : ctx);
-  const [name, config] = _name.split(':').map(t => t.trim());
+  const [name, _type] = _name.split(':').map(t => t.trim());
   
   const find_struct = (name, obj) => (obj ?? {})[name] ?? ctx[name] ?? ruinContext[name];
   function CONSTRUCTOR(...args) {
@@ -1113,8 +1113,8 @@ ${code}
    }
   }
   
-  if (config?.toLowerCase?.() == 'static') return obj[name] = new constructor();
-  if (config?.toLowerCase?.() == 'return') return constructor;
+  if (_type?.toLowerCase?.() == 'static') return obj[name] = new constructor();
+  if (_type?.toLowerCase?.() == 'return') return constructor;
   return obj[name] = constructor;
  },
 
