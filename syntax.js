@@ -1065,7 +1065,7 @@ ${code}
   const options = {
    parent(name) {
     const struct = _find(name);
-    if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be a parent`);
+    if (typeof struct != 'function') throw new Error(`Structure '${name}' does not exist, ergo it cannot be a parent`);
     config.parent = struct;
     
     for (let key in struct.prototype)
@@ -1080,7 +1080,7 @@ ${code}
    
    extension(name) {
     const struct = _find(name);
-    if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be an extension`);
+    if (typeof struct != 'function') throw new Error(`Structure '${name}' does not exist, ergo it cannot be an extension`);
     config.extension_types[struct.__ext_name__] = struct;
    },
   };
