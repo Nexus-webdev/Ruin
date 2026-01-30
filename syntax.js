@@ -1012,13 +1012,11 @@ ${code}
     const instance = new struct('*bypass init*');
     set(instance, false);
     
-    set({
-     parent: struct,
-     $init(...args) {
-      const __init__ = func(instance.__init__ ) ?? func(instance.construct);
-      return __init__.bind(this)(...args);
-     },
-    })
+    t.parent = struct;
+    t.$init = function(...args) {
+     const __init__ = func(instance.__init__ ) ?? func(instance.construct);
+     return __init__.bind(this)(...args);
+    };
    }
 
    set(prototype);
@@ -1034,13 +1032,11 @@ ${code}
      const instance = new struct('*bypass init*');
      set(instance, false);
      
-     set({
-      extension: struct,
-      $init(...args) {
-       const __init__ = func(instance.__init__ ) ?? func(instance.construct);
-       return __init__.bind(this)(...args);
-      },
-     });
+     t.extension = struct;
+     t.$init = function(...args) {
+      const __init__ = func(instance.__init__ ) ?? func(instance.construct);
+      return __init__.bind(this)(...args);
+     };
     },
    });
    
