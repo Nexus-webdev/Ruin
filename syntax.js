@@ -966,7 +966,7 @@ ${code}
   const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : ctx);
   const [name, _type] = _name.split(':').map(t => t.trim());
   
-  const find_struct = (name, obj) => (obj ?? {})[name] ?? ctx[name] ?? ruinContext[name];
+  const _find = name => (...$.RUIN, ...ctx, ...obj)[name];
   function CONSTRUCTOR(...args) {
    const t = this;
    const secrets = {};
@@ -1053,7 +1053,6 @@ ${code}
   };
   
   const constructor = (new Function(`with(this) return ${CONSTRUCTOR.toString().replace('CONSTRUCTOR', name)}`)).call({
-   ruinContext: $.RUIN,
    __relations__,
    prototype,
    config,
@@ -1064,8 +1063,8 @@ ${code}
   const __prototype__ = {};
   
   const options = {
-   parent(name, obj) {
-    const struct = find_struct(name, obj);
+   parent(name) {
+    const struct = _find(name);
     if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be a parent`);
     config.parent = struct;
     
@@ -1079,8 +1078,8 @@ ${code}
     }
    },
    
-   extension(name, obj) {
-    const struct = find_struct(name, obj);
+   extension(name) {
+    const struct = _find(name);
     if (typeof struct != 'object') throw new Error(`Structure '${name}' does not exist, ergo it cannot be an extension`);
     config.extension_types[struct.__ext_name__] = struct;
    },
@@ -1089,7 +1088,7 @@ ${code}
   for (let key in __relations__)
   {
    const f = options[__relations__[key]];
-   if (f) f(key, obj);
+   if (f) f(key);
   }
   
   constructor.__ext_name__ = __ext_name__ ?? name;
