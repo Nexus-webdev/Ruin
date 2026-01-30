@@ -966,7 +966,7 @@ ${code}
   const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : ctx);
   const [name, _type] = _name.split(':').map(t => t.trim());
   
-  const _find = name => (...$.RUIN, ...ctx, ...obj)[name];
+  const _find = name => ({ ...$.RUIN, ...ctx, ...obj })[name];
   function CONSTRUCTOR(...args) {
    const t = this;
    const secrets = {};
