@@ -995,6 +995,8 @@ ${code}
       
       return objB[key].bind(proxy)(proxy, ...args);
      };
+     
+     objA[key].original = objB[key];
     } else objA[key] = objB[key];
    };
    
@@ -1012,11 +1014,13 @@ ${code}
     const instance = new struct('*bypass init*');
     set(instance, false);
     
-    t.parent = struct;
-    t.$init = function(...args) {
-     const __init__ = func(instance.__init__ ) ?? func(instance.construct);
-     return __init__.bind(this)(...args);
-    };
+    set({
+     parent: struct,
+     $init(...args) {
+      const __init__ = (func(instance.__init__ ) ?? func(instance.construct)).original;
+      return __init__.bind(this)(...args);
+     },
+    })
    }
 
    set(prototype);
@@ -1032,11 +1036,13 @@ ${code}
      const instance = new struct('*bypass init*');
      set(instance, false);
      
-     t.extension = struct;
-     t.$init = function(...args) {
-      const __init__ = func(instance.__init__ ) ?? func(instance.construct);
-      return __init__.bind(this)(...args);
-     };
+     set({
+      extension: struct,
+      $init(...args) {
+       const __init__ = (func(instance.__init__ ) ?? func(instance.construct)).original;
+       return __init__.bind(this)(...args);
+      },
+     })
     },
    });
    
