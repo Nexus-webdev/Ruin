@@ -1070,9 +1070,7 @@ ${code}
     if (typeof struct != 'function') throw new Error(`Structure '${name}' does not exist, ergo it cannot be a parent`);
     config.parent = struct;
     
-    for (let key in struct.prototype)
-    constructor.prototype[key] = struct.prototype[key];
-    
+    constructor.prototype = { ...struct.prototype };
     for (let key in struct.static_values)
     {
      constructor.static_values[key] = struct.static_values[key];
