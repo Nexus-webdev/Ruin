@@ -706,9 +706,9 @@ self.$ = ({
    ...$,
   };
   
-  try {
+  // try {
    ruin_script = new Function(code);
-  } catch (e) {
+  /*} catch (e) {
    const err = new $.RuinError(e, {
     offset: __line_offset__,
     kind: 'evaluation',
@@ -716,7 +716,7 @@ self.$ = ({
    });
    
    console.error(err.represent());
-  }
+  }*/
   
   return (ruin_script ?? (x => x)).call(ctx).then(x => {
    $._currentCtx_ = prevCtx;
@@ -853,7 +853,7 @@ self.$ = ({
   "Wrap The code in the ruin context";
   code = ` //# sourceURL=${url}.js
  return (async() => {
-  try {
+  // try {
    with(this) {
     RUIN._currentCtx_ = this;
     
@@ -861,7 +861,7 @@ self.$ = ({
 ${code}
     // eof;
    }
-  } catch (e) {
+  /*} catch (e) {
    const err = new this.RuinError(e, {
     sourceUrl: '${url}',
     offset: this.__line_offset__,
@@ -869,7 +869,7 @@ ${code}
    });
    
    console.error(err.represent());
-  }
+  }*/
  })();`;
   
   return { code, url };
