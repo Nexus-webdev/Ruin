@@ -382,18 +382,20 @@ self.$ = ({
   any: x => true, 
   default: x => true, 
   
-  float: x => typeof x == 'number' && x.toString().includes('.'),
-  int: x => typeof x == 'number' && !x.toString().includes('.'),
-  digit: x => typeof x == 'number' && x.toString().length == 1,
-  number: x => typeof x == 'number',
-  num: x => typeof x == 'number',
+  float: x => x != null && typeof x == 'number' && x.toString().includes('.'),
+  int: x => x != null && typeof x == 'number' && !x.toString().includes('.'),
+  digit: x => x != null && typeof x == 'number' && x.toString().length == 1,
+  number: x => x != null && typeof x == 'number',
+  num: x => x != null && typeof x == 'number',
   
-  string: x => typeof x == 'string',
-  bool: x => [true, false].includes(x),
-  boolean: x => [true, false].includes(x),
+  string: x => x != null && typeof x == 'string',
+  bool: x => x != null && [true, false].includes(x),
+  boolean: x => x != null && [true, false].includes(x),
   
-  array: x => typeof x == 'object' && Array.isArray(x),
-  object: x => typeof x == 'object' && !Array.isArray(x),
+  array: x => x != null && typeof x == 'object' && Array.isArray(x),
+  object: x => x != null && typeof x == 'object' && !Array.isArray(x),
+  func: x => x != null && typeof x == 'function' && !x.__is_structure__,
+  struct: x => x != null && typeof x == 'function' && x.__is_structure__,
  },
  
  __apply_helpers__(f, helpers = []) {
@@ -1061,6 +1063,7 @@ ${code}
    name,
   })
   
+  constructor.__is_structure__ = true;
   constructor.static_values = {};
   const __prototype__ = {};
   
