@@ -520,11 +520,12 @@ self.$ = ({
  },
  
  __TypedValue__(type = 'any', value = null, decl = 'let') {
-  const target = { type };
+  const target = { type, changes: 0 };
   const proxy = new Proxy(target, {
    get(target, key) {
     if (key == '__v') return target.value;
     if (key == '__type') return target.type;
+    if (key == '__changes') return target.changes;
    
     if (key == Symbol.toPrimitive)
     {
@@ -542,19 +543,21 @@ self.$ = ({
    set(target, key, new_value) {
     if (key == '__v')
     {
-     if (decl == 'const') throw new Error(`Cannot change the value of a constant`);
+     if (decl == 'const' && target.changes > 0) throw new Error(`Cannot change the value of a constant`);
   
      const f = $._TYPES_[target.type];
      if (!f) throw new ReferenceError(`Undefined Type '${target.type}'`);
      if (!f(new_value)) throw new TypeError(`${new_value} is not of type '${target.type}'`);
   
      target.value = new_value;
+     target.changes ++;
      return true;
     }
     
     if (target.value && typeof target.value == 'object')
     {
      target.value[key] = new_value;
+     target.changes ++;
      return true;
     }
    
