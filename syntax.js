@@ -782,22 +782,11 @@ self.$ = ({
   
   "Apply macros affecting the transpiler";
   code = $.apply_macros(code, [
-   $.create_macro('#tpiler-applymacs $1!;', bool => {
+   $.create_macro('#tpiler-passes $1;', num => `// Maximum Transpiler Passes: ${max_passes = Number(num)};`),
+   $.create_macro('#tpiler-applymacs $1;', bool => {
     apply_macs = bool.trim().toLowerCase() == 'true';
     return `// Transpiler Applies Macros: ${apply_macs};`;
    }),
-   
-   $.create_macro('#tpiler-passes $1!;', num => {
-    return `// Maximum Transpiler Passes: ${max_passes = Number(num)};`;
-   }),
-   
-   $.create_macro('#tpiler-define $1 >>> $2!;', (pattern, transform) => {
-    const f = $.assess(transform);
-    if (!f) return '';
-    
-    macros.push($.create_macro(pattern, (...args) => f(...args)));
-    return `// Macro: pattern: ${pattern}, transform: ${transform};`; 
-   }, true),
   ], 5);
   
   const map = [
