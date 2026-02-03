@@ -1060,9 +1060,8 @@ ${code}
   const __prototype__ = {};
   
   const options = {
-   parent(name) {
-    const struct = _find(name);
-    if (typeof struct != 'function') throw new Error(`Structure '${name}' does not exist, ergo it cannot be a parent`);
+   parent(struct) {
+    if (typeof struct != 'function' || !struct.__is_structure__) throw new Error(`${struct} is not a structure, ergo it cannot be a parent`);
     config.parent = struct;
     
     constructor.prototype = { ...struct.prototype };
@@ -1073,17 +1072,23 @@ ${code}
     }
    },
    
-   extension(name) {
-    const struct = _find(name);
-    if (typeof struct != 'function') throw new Error(`Structure '${name}' does not exist, ergo it cannot be an extension`);
-    config.extension_types[struct.__ext_name__] = struct;
+   extensions(struct, ext_name) {
+    if (typeof struct != 'function' || !struct.__is_structure__) throw new Error(`${struct} is not a structure, ergo it cannot be a parent`);
+    config.extension_types[ext_name ?? struct.__ext_name__] = struct;
    },
   };
  
   for (let key in __relations__)
   {
-   const f = options[__relations__[key]];
-   if (f) f(key);
+   const f = options[key];
+   const relatives = __relations__[key];
+   
+   if (typeof f == 'function')
+   {
+    if (Array.isArray(relatives)) for (let relative of relatives) f(relative);
+    else if (typeof relatives == 'object') for (let key in relatives) f(relatives[key], key);
+    else f(relatives);
+   }
   }
   
   constructor.__ext_name__ = __ext_name__ ?? name;
