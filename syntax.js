@@ -995,8 +995,11 @@ ${code}
    function set(obj, override = true) {
     for (let key in obj)
     {
-     if (key.startsWith('$')) apply(secrets, obj, key);
-     else apply(t, obj, key);
+     if (!t[key] || override)
+     {
+      if (key.startsWith('$')) apply(secrets, obj, key);
+      else apply(t, obj, key);
+     }
     }
    };
    
@@ -1026,9 +1029,9 @@ ${code}
     $extend(self, type) {
      const struct = config.extension_types[type];
      const instance = new struct('*bypass init*');
-     self.$setdata(instance, false);
+     set(instance, false);
      
-     self.$setdata({
+     set({
       extension: struct,
       $init(...args) {
        const __init__ = (func(instance.__init__ ) ?? func(instance.construct)).original;
