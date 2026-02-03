@@ -967,6 +967,7 @@ ${code}
    function apply(objA, objB, key) {
     if (func(objB[key]))
     {
+     const f = func(objB[key].original) ?? objB[key];
      objA[key] = function(...args) {
       const proxy = new Proxy(t, {
        get(target, key) {
@@ -985,7 +986,7 @@ ${code}
        },
       });
       
-      return objB[key].bind(proxy)(proxy, ...args);
+      return f.bind(proxy)(proxy, ...args);
      };
      
      objA[key].original = objB[key];
