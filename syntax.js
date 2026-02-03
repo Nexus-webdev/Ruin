@@ -959,8 +959,6 @@ ${code}
   
   const obj = typeof __destination__ == 'object' ? __destination__ : ($.setup_phase == true ? $.RUIN : ctx);
   const [name, _type] = _name.split(':').map(t => t.trim());
-  
-  const _find = name => ({ ...$.RUIN, ...ctx, ...obj })[name];
   function CONSTRUCTOR(...args) {
    const t = this;
    const secrets = {};
@@ -1025,13 +1023,12 @@ ${code}
     $args: args,
     name,
     
-    $extend(type) {
-     console.log({ type, config });
+    $extend(self, type) {
      const struct = config.extension_types[type];
      const instance = new struct('*bypass init*');
-     set(instance, false);
+     self.$setdata(instance, false);
      
-     set({
+     self.$setdata({
       extension: struct,
       $init(...args) {
        const __init__ = (func(instance.__init__ ) ?? func(instance.construct)).original;
@@ -1075,7 +1072,7 @@ ${code}
    
    extensions(struct, ext_name) {
     if (typeof struct != 'function' || !struct.__is_structure__) throw new Error(`${struct} is not a structure, ergo it cannot be a parent`);
-    config.extension_types[ext_name ?? struct.__ext_name__] = struct; console.log({ struct, config });
+    config.extension_types[ext_name ?? struct.__ext_name__] = struct;
    },
   };
  
