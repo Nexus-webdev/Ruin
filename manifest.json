@@ -16,7 +16,7 @@
     {
       "action": "/Ruin/file_opener.html",
       "accept": {
-        "application/octet-stream": [".mthd", ".$", ".fx"]
+        "application/octet-stream": [".$", ".flx"]
       }
     }
   ]
