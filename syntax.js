@@ -673,21 +673,9 @@ self.$ = ({
   });
  },
  
- __typed_func__(f, data = []) {
-  return $.__apply_helpers__(f, data.map(({ type, default: def, match }) => {
-   return value => {
-    if (!match) return value;
-    
-    if (value == undefined) return def ? __TypedValue__(type, def) : def;
-    return __TypedValue__(type, value);
-   };
-  }));
- },
- 
  async __transpile__(code, url) {
   "Decode from base64 if needed";
-  if ($.GitHub.isBase64(code))
-  code = decodeURIComponent(escape(atob(code)));
+  if ($.GitHub.isBase64(code)) code = decodeURIComponent(escape(atob(code)));
   
   const i = code.lastIndexOf('¿');
   let key = code.slice(i +1), max_passes = 10, apply_macs = true;

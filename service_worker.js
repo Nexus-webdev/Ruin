@@ -35,11 +35,18 @@ self.addEventListener('activate', event => {
 "Fetch event: serve cached files ignoring query params";
 self.addEventListener('fetch', event => {
  const url = new URL(event.request.url);
- const stripped = new Request(url.origin +url.pathname, { method: event.request.method, headers: event.request.headers });
-
+ 
+ "Preserve query for documents";
+ const key = event.request.destination == 'document' ? url.pathname +url.search : url.pathname;
+ const stripped = new Request(url.origin +key, {
+  method: event.request.method,
+  headers: event.request.headers,
+ });
+ 
  event.respondWith(caches.match(stripped).then(cached => {
   if (cached)
   {
+   "Update cache in background";
    fetch(event.request).then(response => {
     if (response.ok)
     {
@@ -54,13 +61,13 @@ self.addEventListener('fetch', event => {
     }
     
     offline = true;
-   })
+   });
    
    return cached;
   }
   
   return fetch(event.request).catch(x => {
-   if (event.request.destination == 'document') return caches.match('/Ruin/index.html');
+   if (event.request.destination == 'document') return caches.match(stripped) || caches.match('/Ruin/index.html');
   });
  }));
 });
