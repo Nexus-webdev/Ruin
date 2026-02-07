@@ -1,37 +1,45 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>File Opener</title>
+</head>
+<body>
  <p>Please Wait...</p>
+ 
  <script>
   window.bootstrap = true;
   script('syntax.js').then(_ => {
+   if (!window.bootstrapper == 'undefined') console.error('bootstrapper not defined after syntax.js load.');
+   
    bootstrapper.then(_ => {
     const script_files = new $.Database('ScriptFiles');
     if ('launchQueue' in window)
     {
-     launchQueue.setConsumer(async launchParams => {
-      const [handle] = launchParams.files;
-      if (!handle) return null;
+     launchQueue.setConsumer(async ({ files: [handle] }) => {
+      if (!handle) console.error('No file handle found.');
       
       const file = await handle.getFile();
       await script_files.set(file.name, handle);
       
       sessionStorage['file-mode'] = true;
-      location.href = 'https://nexus-webdev.github.io/Ruin/Output.html?name=' +file.name;
-     })
+      location.href = `/Ruin/Output.html?name=${encodeURIComponent(file.name)}`;
+     });
     }
-   })
-  })
-  
+   });
+  });
+ 
   function script(src) {
    return new Promise((resolve, reject) => {
-    const scriptTag = document.createElement('script');
-    scriptTag.src = src;
-    scriptTag.async = true;
-
-    scriptTag.onload = _ => resolve(scriptTag);
-    scriptTag.onerror = _ => reject(new Error(`Failed to load ${src}`));
-    document.head.appendChild(scriptTag);
+    const tag = document.createElement('script');
+    tag.src = src;
+    tag.async = true;
+    
+    tag.onload = x => resolve(tag);
+    tag.onerror = x => reject(new Error(`Failed to load ${src}`));
+    document.head.appendChild(tag);
    });
   }
  </script>
+</body>
 </html>
