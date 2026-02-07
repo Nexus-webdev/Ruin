@@ -73,7 +73,7 @@ function clear(db = getDB()) {
  });
 }
 
-function tokenizeInitializer(code, startIndex) {
+function tokenizeInitializer(code, startIndex, accepted = ';') {
  let i = startIndex;
  let stack = [];
  let value = '';
@@ -82,7 +82,7 @@ function tokenizeInitializer(code, startIndex) {
  while (i < code.length)
  {
   const ch = code[i];
-  const prev = code[i - 1];
+  const prev = code[i -1];
  
   if (!inString && (ch == '"' || ch == "'" || ch == '`'))
   {
@@ -100,17 +100,17 @@ function tokenizeInitializer(code, startIndex) {
     stack.pop();
     inString = null;
    }
-  } else if (ch == '{' || ch == '[' || ch == '(')
+  } else if ('{[('.includes(ch))
   {
    "Handle braces/brackets/parentheses";
    
    stack.push(ch);
    value += ch;
-  } else if (ch == '}' || ch == ']' || ch == ')')
+  } else if ('}])'.includes(ch))
   {
    stack.pop();
    value += ch;
-  } else if (ch == ';' && !stack.length) break;
+  } else if (accepted.includes(ch) && !stack.length) break;
   else value += ch;
  
   i ++;
@@ -363,6 +363,49 @@ self.$ = ({
   return out;
  },
  
+ __func_params__: {},
+ __get_params__(params) {
+  return split_params(params).map(str => {
+   "Try to match typed param with optional default";
+   let match = str.match(/^\s*(\w+)\s*:\s*(\w+)(?:\s*=\s*(.+))?\s*$/i);
+   
+   if (match)
+   {
+    const [, type, name, _default] = match;
+    return {
+     name,
+     type: type || null,
+     default: _default ? $.assess(_default) : undefined,
+    };
+   }
+   
+   "Try to match untyped param with optional default";
+   match = str.match(/^\s*(\w+)(?:\s*=\s*(.+))?\s*$/i);
+   
+   if (match)
+   {
+    const [, name, default] = match;
+    return {
+     name,
+     type: null,
+     default: _default ? $.assess(_default) : undefined,
+    };
+   }
+   
+   throw new SyntaxError('Invalid parameter: ' +str);
+  });
+ },
+ 
+ __Function__(ts, f) {
+  return function(...args) {
+   const params = $.__func_params__[ts];
+   return fn(...params.map((p, i) => {
+    const value = args[i] != undefined ? args[i] : p.default;
+    return p.type ? $.__TypedValue__(p.type, value, 'argument') ? value;
+   }));
+  };
+ },
+ 
  __typed_declaration_macro__(code) {
   const declPattern = /\b(const|let|def)\s+(\w+)\s*:\s*([a-zA-Z0-9_\{\}\[\]\s,]+)\s*=/g;
   let match, result = '', lastIndex = 0;
@@ -517,7 +560,7 @@ self.$ = ({
      args.push(match);
     }
     
-    return transformer(...args);
+    return transformer(...args) ?? matches[0];
    });
   };
  },
@@ -670,6 +713,29 @@ self.$ = ({
   const map = [
    ['structure ( $1 :: {$2', (name, body) => `RUIN.struct('${name}', {${body}`, true],
    ['enum ( $1 :: $2', (name, body) => `RUIN.TYPE('${name}', ${body}`, true],
+   ['func $1( $2 :: {$3', (name, params, body) => {
+    const invalid = ' !@#$%^&)[]{}/|:;~\n'.split('').find(char => name.trim().includes(char));
+    if (invalid) return;
+    
+    params = $.__get_params__(params);
+    const ts = Date.now() +Math.random();
+    
+    $.__func_params__[ts] = params;
+    const names = params.map(p => p.name).join(', ');
+    return `const ${name} = __Function__('${ts}', (${names}) => {${body}`;
+   }, true],
+   
+   [', $1( $2 :: {$3', (name, params, body) => {
+    const invalid = ' !@#$%^&)[]{}/|:;~\n'.split('').find(char => name.trim().includes(char));
+    if (invalid) return;
+    
+    params = $.__get_params__(params);
+    const ts = Date.now() +Math.random();
+    
+    $.__func_params__[ts] = params;
+    const names = params.map(p => p.name).join(', ');
+    return `${name}: __Function__('${ts}', (${names}) => {${body}`;
+   }, true],
    
    ['import $1 from $2;', (a, b) => `const ${a} = await meta.mod \`${b}\`;`],
    ['import: $1 from $2;', (a, b) => `const ${a} = module.import_ \`${b}\`;`],
@@ -711,7 +777,7 @@ self.$ = ({
    code = code.split('\n')
               .map(ln => indent +$.apply_macros(ln, line_macs, max_passes))
               .join('\n')
-              .replaceAll('def ', 'this.');
+              .replace(/def\s+(\w+)\s*=/g, (_, name) => `this.${name} =`);
   } else {
    "Add indentation only";
    code = code.split('\n')
