@@ -384,7 +384,7 @@ self.$ = ({
    
    if (match)
    {
-    const [, name, default] = match;
+    const [, name, _default] = match;
     return {
      name,
      type: null,
@@ -485,7 +485,7 @@ self.$ = ({
   
   proxy.toString = x => String(target.v);
   proxy.valueOf = x => target.v;
-  proxy.__v = value;
+  proxy.__v = value.__v ?? value;
   
   return proxy;
  },
