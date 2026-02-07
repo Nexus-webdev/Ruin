@@ -401,7 +401,7 @@ self.$ = ({
    const params = $.__func_params__[ts];
    return fn(...params.map((p, i) => {
     const value = args[i] != undefined ? args[i] : p.default;
-    return p.type ? $.__TypedValue__(p.type, value, 'argument') ? value;
+    return p.type ? $.__TypedValue__(p.type, value, 'argument') : value;
    }));
   };
  },
