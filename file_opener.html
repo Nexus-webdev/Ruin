@@ -29,17 +29,17 @@
       handle,
      };
      
-     script('page.js');
+     script('page.js', false);
     });
    });
   });
   
   // DATA - END;
-  function script(src) {
+  function script(src, _async = true) {
    return new Promise((resolve, reject) => {
     const tag = document.createElement('script');
     tag.src = src;
-    tag.async = true;
+    tag.async = _async;
     
     tag.onload = x => resolve(tag);
     tag.onerror = x => reject(new Error(`Failed to load ${src}`));
