@@ -3,12 +3,11 @@
 <head>
  <meta charset="UTF-8">
  <title>File Opener</title>
-  <meta charset='UTF-8' content-type='utf-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <meta name='description' content='This is the original description of the webpage.'>
-  
-  <link rel='icon' href='icons/rre.png' type='image/png'>
-  <link rel='stylesheet' href='output-styles.css'>
+ <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+ <meta name='description' content='This is the original description of the webpage.'>
+ 
+ <link rel='icon' href='icons/rre.png' type='image/png'>
+ <link rel='stylesheet' href='output-styles.css'>
 </head>
 <body>
  <script>
@@ -17,15 +16,18 @@
   
   // DATA - START;
   script('syntax.js').then(_ => {
-   if (!window.bootstrapper == 'undefined') console.error('bootstrapper not defined after syntax.js load.');
+   if (!window.bootstrapper || typeof window.bootstrapper.then != 'function')
+    return console.error('bootstrapper not defined after syntax.js load.');
    
    bootstrapper.then(_ => {
     if (!('launchQueue' in window)) return;
     
     launchQueue.setConsumer(async ({ files: [handle] }) => {
-     if (!handle) console.error('No file handle found.');
-     window.__file_code__ = await (await handle.getFile()).txt();
-     window.__file_handle___ = handle;
+     if (!handle) return console.error('No file handle found.');
+     window.__file__ = {
+      code: await (await handle.getFile()).text(),
+      handle,
+     };
      
      script('page.js');
     });

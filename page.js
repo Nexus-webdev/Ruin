@@ -348,12 +348,11 @@ class RuinScript extends HTMLElement {
 }
 
 customElements.define('r-script', RuinScript);
-(async _ => {
- if (!window.__file_code__ || !window.__file_handle__) return;
- const type = window.__file_handle___.name.split('.').pop();
+if (window.__file__) (async _ => {
+ const type = window.__file__.handle.name.split('.').pop();
  $.meta.htmlTarget = document.body;
  
  const ext = $.meta.supported_exts[ensure_file_type_is_valid(type)];
- return ext(window.__file_code__, false, 'main');
+ return await ext(window.__file__.code, false, 'main');
 })().then(x => (window.result = x));
 
