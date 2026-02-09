@@ -3,32 +3,36 @@
 <head>
  <meta charset="UTF-8">
  <title>File Opener</title>
+  <meta charset='UTF-8' content-type='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta name='description' content='This is the original description of the webpage.'>
+  
+  <link rel='icon' href='icons/rre.png' type='image/png'>
+  <link rel='stylesheet' href='output-styles.css'>
 </head>
 <body>
- <p>Please Wait...</p>
- 
  <script>
+  window.page_content = document.documentElement.outerHTML;
   window.bootstrap = true;
+  
+  // DATA - START;
   script('syntax.js').then(_ => {
    if (!window.bootstrapper == 'undefined') console.error('bootstrapper not defined after syntax.js load.');
    
    bootstrapper.then(_ => {
-    const script_files = new $.Database('ScriptFiles');
-    if ('launchQueue' in window)
-    {
-     launchQueue.setConsumer(async ({ files: [handle] }) => {
-      if (!handle) console.error('No file handle found.');
-      
-      const file = await handle.getFile();
-      await script_files.set(file.name, handle);
-      
-      sessionStorage['file-mode'] = true;
-      location.href = `/Ruin/Output.html?name=${encodeURIComponent(file.name)}`;
-     });
-    }
+    if (!('launchQueue' in window)) return;
+    
+    launchQueue.setConsumer(async ({ files: [handle] }) => {
+     if (!handle) console.error('No file handle found.');
+     window.__file_code__ = await (await handle.getFile()).txt();
+     window.__file_handle___ = handle;
+     
+     script('page.js');
+    });
    });
   });
- 
+  
+  // DATA - END;
   function script(src) {
    return new Promise((resolve, reject) => {
     const tag = document.createElement('script');
@@ -40,6 +44,17 @@
     document.head.appendChild(tag);
    });
   }
+   
+  function urlData() {
+   const Params = new URLSearchParams(window.location.search).entries();
+   const data = {};
+   
+   for (let param of Params)
+   data[param[0]] = param[1];
+   return data;
+  }
+  
+  window.urlData = urlData;
  </script>
 </body>
 </html>

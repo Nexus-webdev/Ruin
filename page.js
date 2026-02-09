@@ -63,23 +63,8 @@ const mods = {
  },
  
  session: sessionStorage,
- liveReload: {
-  push(...names) {
-   watch.push(...names);
-  },
-  
-  remove(...names) {
-   const w = [...watch];
-   watch.length = 0;
-   
-   watch.push(...w.filter(name => !names.includes(name)));
-  },
- },
 };
 
-const program = urlData();
-const watch = [program.name];
-const current = { ...localStorage };
 for (let key in mods)
 {
  if (typeof mods[key] == 'function')
@@ -333,6 +318,8 @@ function ensure_file_type_is_valid(type) {
 
 class RuinScript extends HTMLElement {
  async connectedCallback() {
+  const src_url = this.hasAttribute('as') ? this.getAttribute('as') : undefined;
+  const is_module = this.hasAttribute('module');
   const exts = $.meta.supported_exts;
   let code, type = '$';
   
@@ -352,38 +339,21 @@ class RuinScript extends HTMLElement {
    }
    
    const ext = exts[ensure_file_type_is_valid(url.split('.').pop())];
-   await ext(code);
+   await ext(code, is_module, src_url);
   };
   
   const content = this.textContent.trim();
-  if (content) await f(content);
+  if (content) await f(content, false, src_url);
  }
 }
 
 customElements.define('r-script', RuinScript);
-window.addEventListener('storage', _ => {
- for (let key of watch)
- if (localStorage[key] != current[key] && $.meta.autoReload)
- location.reload();
-});
-
 (async _ => {
- const [, type] = program.name.split('.');
+ if (!window.__file_code__ || !window.__file_handle__) return;
+ const type = window.__file_handle___.name.split('.').pop();
  $.meta.htmlTarget = document.body;
  
- if (sessionStorage['file-mode'] == 'true')
- {
-  const ext = $.meta.supported_exts[ensure_file_type_is_valid(type)];
-  const script_files = new $.Database('ScriptFiles');
-  const handle = await script_files.get(program.name);
-  
-  if (handle)
-  {
-   const file = await handle.getFile();
-   return ext(await file.text());
-  }
- }
- 
- return $.ruin(sessionStorage['__PROGRAM__'], window, 'main');
+ const ext = $.meta.supported_exts[ensure_file_type_is_valid(type)];
+ return ext(window.__file_code__, false, 'main');
 })().then(x => (window.result = x));
 
