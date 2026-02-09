@@ -32,19 +32,35 @@ self.addEventListener('activate', event => {
  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key != CACHE_NAME).map(key => caches.delete(key)))));
 });
 
-"Fetch event: serve cached files";
+"Fetch event: serve cached files ignoring query params";
 self.addEventListener('fetch', event => {
  const url = new URL(event.request.url);
- const cache_key = url.pathname;
- 
- event.respondWith(caches.match(cache_key).then(cached => {
-  console.log('Destination: ', event.request.destination);
-  console.log('Cached Key: ', cached_key);
-  console.log('Cached: ', cached);
-  if (cached) return cached;
+ const stripped = new Request(url.origin +url.pathname, { method: event.request.method, headers: event.request.headers });
+
+ event.respondWith(caches.match(stripped).then(cached => {
+  if (cached)
+  {
+   fetch(event.request).then(response => {
+    if (response.ok)
+    {
+     caches.open(CACHE_NAME).then(cache => cache.put(stripped, response.clone()));
+     offline = false;
+    }
+   }).catch(e => {
+    if (!offline)
+    {
+     console.log('User Offline, falling back to cached resources');
+     console.log(`%cEncountered Error: ${e.message}`, 'color: red');
+    }
+    
+    offline = true;
+   })
+   
+   return cached;
+  }
   
-  return fetch(event.request).catch(() => {
-   if (event.request.destination == 'document') return caches.match(cache_key) || caches.match('/Ruin/index.html');
+  return fetch(event.request).catch(x => {
+   if (event.request.destination == 'document') return caches.match('/Ruin/index.html');
   });
  }));
 });
