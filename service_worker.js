@@ -33,16 +33,18 @@ self.addEventListener('activate', event => {
 });
 
 "Fetch event: serve cached files";
-self.addEventListener('fetch', async event => {
+self.addEventListener('fetch', event => {
  const url = new URL(event.request.url);
  const cache_key = url.pathname;
  
- event.respondWith(caches.match(cache_key).then(cached => {
-  console.log('Cached: ', cached);
-  if (cached) return cached;
-  
-  return fetch(event.request).catch(() => {
-   if (event.request.destination == 'document') return caches.match('/Ruin/index.html');
-  });
- }));
+ event.respondWith(caches.open(CACHE_NAME).then(cache => cache.match(cache_key).then(cached => {
+  "Always attempt to update in the background. If network fails, fall back to cached";
+  const promise = fetch(event.request).then(response => {
+   if (response && response.ok) cache.put(cache_key, response.clone());
+   return response;
+  }).catch(x => cached);
+
+  "If we have cached content, serve it immediately. Otherwise, we wait on the fetch promise";
+  return cached || promise;
+ })));
 });
