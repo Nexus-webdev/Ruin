@@ -357,5 +357,5 @@ if (window.__file__) (async _ => {
  
  const ext = $.meta.supported_exts[ensure_file_type_is_valid(type)];
  return await ext(window.__file__.code, false, 'main');
-})().then(x => (window.result = x));
+})().then(res => (window.result = res));
 
