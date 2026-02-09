@@ -37,11 +37,6 @@ self.addEventListener('fetch', async event => {
  const url = new URL(event.request.url);
  const cache_key = url.pathname;
  
- console.log('Request: ', event.request);
- console.log('Cached Key: ', cache_key);
- console.log('Url: ', url);
- console.log('Matched: ', await caches.match(cache_key));
- 
  event.respondWith(caches.match(cache_key).then(cached => {
   console.log('Cached: ', cached);
   if (cached) return cached;
