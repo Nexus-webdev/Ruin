@@ -33,20 +33,21 @@ self.addEventListener('activate', event => {
 });
 
 "Fetch event: serve cached files";
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', async event => {
  const url = new URL(event.request.url);
  const cache_key = url.pathname;
  
  console.log('Request: ', event.request);
- console.log('Cached Key: ', cached_key);
+ console.log('Cached Key: ', cache_key);
  console.log('Url: ', url);
-
+ console.log('Matched: ', await caches.match(cache_key));
+ 
  event.respondWith(caches.match(cache_key).then(cached => {
   console.log('Cached: ', cached);
   if (cached) return cached;
   
   return fetch(event.request).catch(() => {
-   if (event.request.destination == 'document') return caches.match(cache_key) || caches.match('/Ruin/index.html');
+   if (event.request.destination == 'document') return caches.match('/Ruin/index.html');
   });
  }));
 });
