@@ -24,11 +24,14 @@
     
     launchQueue.setConsumer(async ({ files: [handle] }) => {
      if (!handle) return console.error('No file handle found.');
+     console.log(handle);
+     
      window.__file__ = {
       code: await (await handle.getFile()).text(),
       handle,
      };
      
+     console.log(window.__file__);
      script('page.js', false);
     });
    });
