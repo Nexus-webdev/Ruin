@@ -16,7 +16,6 @@
   
   // DATA - START;
   script('syntax.js').then(_ => {
-   console.log('syntax.js loaded.');
    if (!window.bootstrapper || typeof window.bootstrapper.then != 'function')
     return console.error('bootstrapper not defined after syntax.js load.');
    
@@ -25,8 +24,6 @@
     
     launchQueue.setConsumer(async ({ files: [handle] }) => {
      if (!handle) return console.error('No file handle found.');
-     console.log('FileHandle: ', handle);
-     
      window.__file__ = {
       code: '',
       handle,
