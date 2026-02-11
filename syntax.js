@@ -701,29 +701,6 @@ self.$ = ({
   const map = [
    ['structure ( $1 :: {$2', (name, body) => `RUIN.struct('${name}', {${body}`, true],
    ['enum ( $1 :: $2', (name, body) => `RUIN.TYPE('${name}', ${body}`, true],
-   ['func $1( $2 :: {$3', (name, params, body) => {
-    const invalid = ' !@#$%^&)[]{}/|:;~\n'.split('').find(char => name.trim().includes(char));
-    if (invalid) return;
-    
-    params = $.__get_params__(params);
-    const ts = Date.now() +Math.random();
-    
-    $.__func_params__[ts] = params;
-    const names = params.map(p => p.name).join(', ');
-    return `const ${name} = __Function__('${ts}', (${names}) => {${body}`;
-   }, true],
-   
-   [', $1( $2 :: {$3', (name, params, body) => {
-    const invalid = ' !@#$%^&)[]{}/|:;~\n'.split('').find(char => name.trim().includes(char));
-    if (invalid) return;
-    
-    params = $.__get_params__(params);
-    const ts = Date.now() +Math.random();
-    
-    $.__func_params__[ts] = params;
-    const names = params.map(p => p.name).join(', ');
-    return `${name}: __Function__('${ts}', (${names}) => {${body}`;
-   }, true],
    
    ['import $1 from $2;', (a, b) => `const ${a} = await meta.mod \`${b}\`;`],
    ['import: $1 from $2;', (a, b) => `const ${a} = module.import_ \`${b}\`;`],
