@@ -418,7 +418,7 @@ self.$ = ({
    
    "Find initializer safely";
    const { value, endIndex } = tokenizeInitializer(code, declPattern.lastIndex);
-   result += `${decl ? decl.trim() == 'def' : 'this.'} ${id.trim()} = RUIN.__TypedValue__('${type}', ${value}, '${decl}');`;
+   result += `${decl.trim() == 'def' ? decl : 'this.'} ${id.trim()} = RUIN.__TypedValue__('${type}', ${value}, '${decl}');`;
    
    lastIndex = endIndex +1; "skip semicolon";
    declPattern.lastIndex = lastIndex;
