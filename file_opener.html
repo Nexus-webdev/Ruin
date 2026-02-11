@@ -16,6 +16,7 @@
   
   // DATA - START;
   script('syntax.js').then(_ => {
+   console.log('syntax.js loaded.');
    if (!window.bootstrapper || typeof window.bootstrapper.then != 'function')
     return console.error('bootstrapper not defined after syntax.js load.');
    
@@ -24,25 +25,29 @@
     
     launchQueue.setConsumer(async ({ files: [handle] }) => {
      if (!handle) return console.error('No file handle found.');
-     console.log(handle);
+     console.log('FileHandle: ', handle);
      
      window.__file__ = {
-      code: await (await handle.getFile()).text(),
+      code: '',
       handle,
      };
      
-     console.log(window.__file__);
-     script('page.js', false);
+     handle.getFile().then(file => {
+      file.text().then(code => {
+       window.__file__.code = code;
+       script('page.js');
+      })
+     })
     });
    });
   });
   
   // DATA - END;
-  function script(src, _async = true) {
+  function script(src) {
    return new Promise((resolve, reject) => {
     const tag = document.createElement('script');
+    tag.async = true;
     tag.src = src;
-    tag.async = _async;
     
     tag.onload = x => resolve(tag);
     tag.onerror = x => reject(new Error(`Failed to load ${src}`));
@@ -58,8 +63,6 @@
    data[param[0]] = param[1];
    return data;
   }
-  
-  window.urlData = urlData;
  </script>
 </body>
 </html>
